@@ -1,0 +1,157 @@
+[
+  {
+    "clause_id": "Clause 1.1",
+    "title": "Authorized Visitor & Personnel Entry",
+    "section": "Section 1: Site Access, Identification & Entry Protocols",
+    "page": 4,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "access_control",
+    "keywords": ["entry", "visitor", "id badge", "security", "credentials", "access"],
+    "summary": "Mandatory display of active ID badge or visitor pass on upper torso at all times upon entering site.",
+    "severity": "Moderate"
+  },
+  {
+    "clause_id": "Clause 1.2",
+    "title": "Delivery Gate Logistics Check",
+    "section": "Section 1: Site Access, Identification & Entry Protocols",
+    "page": 4,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "access_control",
+    "keywords": ["gate", "vehicle", "truck", "plate", "consignment", "delivery", "logistics"],
+    "summary": "All delivery vehicles must be logged with license plate, driver identity, arrival time, and consignment notes.",
+    "severity": "High"
+  },
+  {
+    "clause_id": "Clause 2.1",
+    "title": "Head Protection (Safety Helmet Mandate)",
+    "section": "Section 2: Personal Protective Equipment (PPE) Requirements",
+    "page": 7,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "required_object_present",
+    "keywords": ["ppe", "helmet", "hard hat", "head", "protection", "operational_floor", "loading_bay", "person"],
+    "summary": "Mandatory approved safety helmet for every person in active operational zones, warehouse floors, and loading docks. Critical violation.",
+    "severity": "Critical"
+  },
+  {
+    "clause_id": "Clause 2.2",
+    "title": "High-Visibility Clothing",
+    "section": "Section 2: Personal Protective Equipment (PPE) Requirements",
+    "page": 8,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "required_object_present",
+    "keywords": ["high-vis", "vest", "jacket", "traffic", "forklift", "transit_corridor", "reflective"],
+    "summary": "Personnel in areas with vehicle or forklift traffic must wear EN ISO 20471 Class 2 compliant high-vis vests.",
+    "severity": "High"
+  },
+  {
+    "clause_id": "Clause 2.3",
+    "title": "Safety Footwear",
+    "section": "Section 2: Personal Protective Equipment (PPE) Requirements",
+    "page": 9,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "required_object_present",
+    "keywords": ["shoes", "boots", "footwear", "steel-toe", "slip-resistant"],
+    "summary": "Steel-toe or composite protective shoes with slip-resistant soles required in storage and transit areas. Open-toe prohibited.",
+    "severity": "High"
+  },
+  {
+    "clause_id": "Clause 3.1",
+    "title": "Fire Extinguisher Accessibility & Inspection Tagging",
+    "section": "Section 3: Fire Safety, Emergency Equipment & Signage",
+    "page": 14,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "zone_clear",
+    "keywords": ["fire extinguisher", "extinguisher", "tag", "inspection date", "clearance", "expiry", "fire"],
+    "summary": "Radial clearance of at least 1.0 meter around fire extinguishers must be maintained. Valid inspection tag within 365 days required.",
+    "severity": "Critical"
+  },
+  {
+    "clause_id": "Clause 3.2",
+    "title": "Emergency Exit Signage & Illuminated Path Indicators",
+    "section": "Section 3: Fire Safety, Emergency Equipment & Signage",
+    "page": 16,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "required_object_present",
+    "keywords": ["exit sign", "signage", "running man", "emergency light", "illumination"],
+    "summary": "Illuminated green/white exit signs conforming to ISO 7010 required over all exit doors and escape routes 24/7.",
+    "severity": "Critical"
+  },
+  {
+    "clause_id": "Clause 4.1",
+    "title": "Primary Walkway Minimum Clearance",
+    "section": "Section 4: Walkways, Transit Corridors & Emergency Exits",
+    "page": 21,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "zone_clear",
+    "keywords": ["walkway", "aisle", "clearance", "transit", "width", "passage", "1.2m", "pallet", "box"],
+    "summary": "Primary pedestrian transit walkways must maintain a continuous minimum unobstructed clearance width of 1.2 meters.",
+    "severity": "High"
+  },
+  {
+    "clause_id": "Clause 4.2",
+    "title": "Emergency Fire Exit Zero-Tolerance Clearance",
+    "section": "Section 4: Walkways, Transit Corridors & Emergency Exits",
+    "page": 22,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "forbidden_object_absent",
+    "keywords": ["fire exit", "emergency exit", "door", "obstruction", "blocked", "egress", "zero tolerance"],
+    "summary": "Designated emergency exit doors and routes must be 100% unobstructed. Storing pallets, boxes, or debris within 2.0m is strictly prohibited.",
+    "severity": "Critical"
+  },
+  {
+    "clause_id": "Clause 5.1",
+    "title": "Pallet Stacking Height Limits",
+    "section": "Section 5: Pallet Stacking, Storage & Racking Integrity",
+    "page": 28,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "count_threshold",
+    "keywords": ["pallet", "stacking", "height", "2.4m", "shrink wrap", "storage", "unstable", "lean"],
+    "summary": "Pallet stacks must not exceed 2.4 meters or 3 units high. Must be uniformly shrink-wrapped with no lean exceeding 5 degrees.",
+    "severity": "High"
+  },
+  {
+    "clause_id": "Clause 5.2",
+    "title": "Racking Upright Protection & Overhang",
+    "section": "Section 5: Pallet Stacking, Storage & Racking Integrity",
+    "page": 29,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "zone_clear",
+    "keywords": ["racking", "overhang", "upright", "aisle", "safe working load", "swl"],
+    "summary": "Merchandise on racking must not overhang into transit aisles by more than 50 mm (2 inches). Must adhere to certified beam load limits.",
+    "severity": "High"
+  },
+  {
+    "clause_id": "Clause 6.1",
+    "title": "Immediate Spill Containment",
+    "section": "Section 6: Spill Control, Liquid Hazards & Housekeeping",
+    "page": 35,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "hazard_present",
+    "keywords": ["spill", "liquid", "leak", "oil", "chemical", "hazard", "slip", "cones"],
+    "summary": "Liquid spills exceeding 0.5L must be cordoned off with caution cones within 15 minutes and neutralized using spill kits.",
+    "severity": "Critical"
+  },
+  {
+    "clause_id": "Clause 7.1",
+    "title": "Consignment Delivery Note Matching",
+    "section": "Section 7: Delivery Documentation, Permits & Ingestion Compliance",
+    "page": 42,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "structured_extraction_match",
+    "keywords": ["delivery note", "consignment", "vendor", "po", "purchase order", "invoice", "signature", "quantity"],
+    "summary": "Inbound deliveries must match delivery note line items, vendor name, PO reference, and receiver signature. Extractions below 0.85 confidence route to human review.",
+    "severity": "High"
+  },
+  {
+    "clause_id": "Clause 8.1",
+    "title": "Remediation Ticket Generation & Approval Gate",
+    "section": "Section 8: Automated Compliance Ticketing & Human Approval Gate",
+    "page": 49,
+    "source_file": "policies/SITESENSE_OPERATIONS_AND_SAFETY_HANDBOOK_2026.md",
+    "rule_type": "approval_gate",
+    "keywords": ["ticket", "approval", "human in the loop", "manager", "remediation", "action", "sla"],
+    "summary": "Agent proposes remediation tickets for High/Critical failures. Tickets remain in proposed status until explicitly approved by an authorized manager in the UI.",
+    "severity": "High"
+  }
+]
+

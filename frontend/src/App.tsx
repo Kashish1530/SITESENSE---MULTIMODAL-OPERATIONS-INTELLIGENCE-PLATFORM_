@@ -13,6 +13,7 @@ import TaskUpload from './components/inspections/TaskUpload'
 import MyHistory from './components/inspections/MyHistory'
 import ReviewQueue from './components/inspections/ReviewQueue'
 import ChatPage from './components/chat/ChatPage'
+import SitesZonesPage from './components/zones/SitesZonesPage'
 import Login from './components/auth/Login'
 import { useOrganizationUsers } from './hooks/useOrganizationUsers'
 import type { DemoUser } from './data/users'
@@ -428,6 +429,12 @@ function AppContent() {
   }
 
   function renderDashboard(user: DemoUser) {
+    if (
+      activePage === 'Sites & Zones' &&
+      ['admin', 'supervisor'].includes(user.role)
+    ) {
+      return <SitesZonesPage currentUser={user} />
+    }
     if (
       activePage === 'Team' &&
       currentUser?.role === 'admin' &&

@@ -40,6 +40,7 @@ vi.mock('../src/components/layout/AppLayout', () => ({
             <button onClick={() => onNavigate('Search')}>Search</button>
             <button onClick={() => onNavigate('Inspections')}>Inspections</button>
             <button onClick={() => onNavigate('Settings')}>Settings</button>
+            <button onClick={() => onNavigate('Sites & Zones')}>Sites & Zones</button>
             <button onClick={() => onNavigate('Upload')}>Upload</button>
             <button onClick={() => onNavigate('Review Queue')}>Review Queue</button>
             <button onClick={() => onNavigate('My Tasks')}>My Tasks</button>
@@ -81,6 +82,14 @@ vi.mock('../src/components/search/EmployeeSearch', () => ({
 vi.mock('../src/components/inspections/InspectionDashboard', () => ({
     default: () => (
         <div data-testid="inspection-dashboard">Inspection Workspace</div>
+    ),
+}))
+
+vi.mock('../src/components/zones/SitesZonesPage', () => ({
+    default: ({ currentUser }: { currentUser: DemoUser }) => (
+        <div data-testid="sites-zones-page">
+            {currentUser.role} Sites & Zones
+        </div>
     ),
 }))
 
@@ -375,6 +384,50 @@ describe('App integration', () => {
 
         expect(screen.getByTestId('inspection-dashboard')).toBeInTheDocument()
         expect(screen.getByTestId('current-user')).toHaveTextContent(supervisor.id)
+    })
+
+    it('allows an admin to open Sites & Zones', () => {
+        sessionStorage.setItem('sitesense_demo_session', admin.id)
+
+        render(<App />)
+
+        fireEvent.click(screen.getByRole('button', { name: 'Sites & Zones' }))
+
+        expect(screen.getByTestId('active-page')).toHaveTextContent('Sites & Zones')
+        expect(screen.getByTestId('sites-zones-page')).toHaveTextContent('admin Sites & Zones')
+    })
+
+    it('allows a supervisor to open Sites & Zones', () => {
+        sessionStorage.setItem('sitesense_demo_session', supervisor.id)
+
+        render(<App />)
+
+        fireEvent.click(screen.getByRole('button', { name: 'Sites & Zones' }))
+
+        expect(screen.getByTestId('active-page')).toHaveTextContent('Sites & Zones')
+        expect(screen.getByTestId('sites-zones-page')).toHaveTextContent('supervisor Sites & Zones')
+    })
+
+    it('blocks a manager from opening Sites & Zones', () => {
+        sessionStorage.setItem('sitesense_demo_session', manager.id)
+
+        render(<App />)
+
+        fireEvent.click(screen.getByRole('button', { name: 'Sites & Zones' }))
+
+        expect(screen.getByTestId('active-page')).toHaveTextContent('Overview')
+        expect(screen.queryByTestId('sites-zones-page')).not.toBeInTheDocument()
+    })
+
+    it('blocks an employee from opening Sites & Zones', () => {
+        sessionStorage.setItem('sitesense_demo_session', employee.id)
+
+        render(<App />)
+
+        fireEvent.click(screen.getByRole('button', { name: 'Sites & Zones' }))
+
+        expect(screen.getByTestId('active-page')).toHaveTextContent('My Dashboard')
+        expect(screen.queryByTestId('sites-zones-page')).not.toBeInTheDocument()
     })
 
     it('allows a manager to navigate to Upload because it is in their role navigation', () => {

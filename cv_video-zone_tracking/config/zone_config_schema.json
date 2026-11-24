@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SiteSenseZoneConfig",
+  "description": "JSON schema for SiteSense Visual Zone Configuration Editor (Admin Screen 12 - M6.9)",
+  "type": "object",
+  "required": [
+    "camera_id",
+    "zones"
+  ],
+  "properties": {
+    "camera_id": {
+      "type": "string",
+      "description": "Unique camera identifier (e.g. CAM_WH_01)"
+    },
+    "site_id": {
+      "type": "string",
+      "description": "Unique site / facility identifier (e.g. SITE_WH_01)"
+    },
+    "site_name": {
+      "type": "string",
+      "description": "Human-readable name of the facility or sector"
+    },
+    "site_type": {
+      "type": "string",
+      "enum": [
+        "warehouse",
+        "construction",
+        "manufacturing",
+        "logistics",
+        "general"
+      ],
+      "default": "warehouse"
+    },
+    "resolution": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "[width, height] in pixels (e.g. [1280, 720])"
+    },
+    "zones": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "zone_id",
+          "zone_name",
+          "coordinates"
+        ],
+        "properties": {
+          "zone_id": {
+            "type": "string",
+            "description": "Unique zone identifier (e.g. ZONE_EXIT_01)"
+          },
+          "zone_name": {
+            "type": "string",
+            "description": "Descriptive display title for alerts"
+          },
+          "zone_type": {
+            "type": "string",
+            "enum": [
+              "exclusion",
+              "walkway",
+              "equipment_clearance",
+              "machinery_perimeter",
+              "restricted",
+              "loading_dock",
+              "fire_exit",
+              "custom"
+            ],
+            "default": "exclusion"
+          },
+          "alert_severity": {
+            "type": "string",
+            "enum": [
+              "CRITICAL",
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "INFO"
+            ],
+            "default": "HIGH"
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "minItems": 3,
+            "description": "Ordered polygon vertices [[x1, y1], [x2, y2], [x3, y3], ...]"
+          },
+          "prohibited_classes": {
+            "type": "array",
+            "items": {
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "description": "Class IDs (0..15) or class names prohibited inside zone"
+          },
+          "blockage_threshold_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "default": 3.0,
+            "description": "Dwell time in seconds before triggering alert"
+          },
+          "description": {
+            "type": "string",
+            "description": "Safety procedure note or compliance description"
+          }
+        }
+      }
+    },
+    "counting_lines": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "line_id",
+          "name",
+          "coordinates"
+        ],
+        "properties": {
+          "line_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Endpoints of virtual counting line [[x1, y1], [x2, y2]]"
+          },
+          "count_classes": {
+            "type": "array",
+            "items": {
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "default": [
+              0
+            ]
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

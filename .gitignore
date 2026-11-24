@@ -1,0 +1,33 @@
+# Virtual Environments
+venv/
+env/
+.venv/
+ENV/
+**/venv/
+**/env/
+**/.venv/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+**/__pycache__/
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+**/.pytest_cache/
+
+# Outputs & Generated Artifacts
+outputs/
+**/outputs/
+*.db
+*.sqlite3
+*.pdf
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

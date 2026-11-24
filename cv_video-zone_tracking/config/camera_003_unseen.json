@@ -1,0 +1,37 @@
+{
+  "camera_id": "CAM_003_UNSEEN",
+  "site_id": "SITE_WH_EAST",
+  "site_name": "Distribution Hub East Wing - High-Rack Sorting Bay",
+  "resolution": [1920, 1080],
+  "zones": {
+    "high_rack_loading_dock": {
+      "zone_id": "ZONE_DOCK_EAST_01",
+      "zone_name": "East High-Rack Staging & Loading Bay",
+      "zone_type": "exclusion",
+      "alert_severity": "CRITICAL",
+      "coordinates": [[950, 350], [1750, 350], [1750, 950], [950, 950]],
+      "prohibited_classes": [5, 11, 13],
+      "blockage_threshold_seconds": 3.0,
+      "description": "Unseen camera angle: Staging bay must remain clear for automated AGVs."
+    },
+    "forklift_crossing_lane": {
+      "zone_id": "ZONE_CROSSING_01",
+      "zone_name": "Inter-bay Forklift Crossway",
+      "zone_type": "walkway",
+      "alert_severity": "HIGH",
+      "coordinates": [[150, 600], [900, 600], [900, 900], [150, 900]],
+      "prohibited_classes": [0],
+      "blockage_threshold_seconds": 1.0,
+      "description": "Pedestrians forbidden without traffic supervisor escort."
+    }
+  },
+  "counting_lines": {
+    "dock_portal_flow": {
+      "line_id": "LINE_PORTAL_01",
+      "name": "Staging Portal Boundary",
+      "coordinates": [[950, 650], [1750, 650]],
+      "count_classes": [11, 12],
+      "description": "Counts freight vehicles entering East Bay"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "camera_id": "CAM_CONST_01",
+  "site_id": "SITE_CONST_01",
+  "site_name": "West Perimeter Heavy Construction & Loading Bay",
+  "resolution": [1920, 1080],
+  "zones": {
+    "emergency_exit": {
+      "zone_id": "ZONE_CONST_EXIT_01",
+      "zone_name": "Main Emergency Evacuation Gate",
+      "zone_type": "exclusion",
+      "alert_severity": "CRITICAL",
+      "coordinates": [
+        [1350, 450],
+        [1850, 450],
+        [1850, 1020],
+        [1350, 1020]
+      ],
+      "prohibited_classes": [5, 11, 12, 13, 14],
+      "blockage_threshold_seconds": 4.0,
+      "description": "Evacuation gate must remain 100% unobstructed for emergency egress"
+    },
+    "pedestrian_walkway": {
+      "zone_id": "ZONE_CONST_WALKWAY_01",
+      "zone_name": "Designated Safe Pedestrian Corridor",
+      "zone_type": "walkway",
+      "alert_severity": "HIGH",
+      "coordinates": [
+        [720, 220],
+        [980, 220],
+        [980, 1020],
+        [720, 1020]
+      ],
+      "prohibited_classes": [5, 7, 13],
+      "blockage_threshold_seconds": 8.0,
+      "description": "Worker walking path must be kept free of pallets, fluid spills, and debris"
+    },
+    "machinery_restricted": {
+      "zone_id": "ZONE_CONST_MACHINERY_01",
+      "zone_name": "Excavator Swing Radius Exclusion Zone",
+      "zone_type": "proximity_exclusion",
+      "alert_severity": "CRITICAL",
+      "coordinates": [
+        [80, 200],
+        [680, 200],
+        [680, 800],
+        [80, 800]
+      ],
+      "prohibited_classes": [0],
+      "blockage_threshold_seconds": 1.0,
+      "description": "Strict exclusion zone: ground workers prohibited within active excavator swing radius"
+    }
+  }
+}
+

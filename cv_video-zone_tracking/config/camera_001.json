@@ -1,0 +1,37 @@
+{
+  "camera_id": "CAM_001",
+  "site_id": "SITE_WH_01",
+  "site_name": "Main Logistics Warehouse - South Aisle",
+  "resolution": [1920, 1080],
+  "zones": {
+    "emergency_exit": {
+      "zone_id": "ZONE_EXIT_01",
+      "zone_name": "Main Emergency Fire Exit Doorway",
+      "zone_type": "exclusion",
+      "alert_severity": "CRITICAL",
+      "coordinates": [[800, 500], [1400, 500], [1400, 1080], [800, 1080]],
+      "prohibited_classes": [5, 11, 12, 13, 14],
+      "blockage_threshold_seconds": 4.0,
+      "description": "Evacuation path must have zero obstruction at all times."
+    },
+    "pedestrian_aisle": {
+      "zone_id": "ZONE_AISLE_01",
+      "zone_name": "Walkway Aisle 3",
+      "zone_type": "walkway",
+      "alert_severity": "HIGH",
+      "coordinates": [[300, 200], [650, 200], [650, 1080], [300, 1080]],
+      "prohibited_classes": [5, 7, 11, 12, 13],
+      "blockage_threshold_seconds": 4.0,
+      "description": "Keep walkways clear of pallets, spills, and vehicle obstruction"
+    }
+  },
+  "counting_lines": {
+    "aisle_entry_counter": {
+      "line_id": "LINE_01",
+      "name": "Aisle 3 Entrance Flow",
+      "coordinates": [[300, 450], [650, 450]],
+      "count_classes": [0],
+      "description": "Counts workers entering and exiting Aisle 3"
+    }
+  }
+}

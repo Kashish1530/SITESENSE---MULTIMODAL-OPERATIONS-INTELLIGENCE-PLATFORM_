@@ -1,0 +1,12 @@
+ultralytics
+opencv-python
+numpy
+shapely
+PyYAML
+pytest
+fastapi
+uvicorn
+pydantic
+streamlit
+pandas
+fpdf2

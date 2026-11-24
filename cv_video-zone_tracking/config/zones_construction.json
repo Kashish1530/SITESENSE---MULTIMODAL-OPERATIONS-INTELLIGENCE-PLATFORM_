@@ -1,0 +1,27 @@
+{
+  "site_type": "construction",
+  "camera_id": "CAM_CONST_01",
+  "resolution": [1280, 720],
+  "zones": {
+    "machinery_restricted": {
+      "zone_id": "ZONE_MACHINERY_01",
+      "zone_name": "Heavy Machinery Swing & Operating Radius",
+      "zone_type": "proximity_exclusion",
+      "alert_severity": "CRITICAL",
+      "coordinates": [[200, 280], [600, 280], [600, 700], [200, 700]],
+      "prohibited_classes": [0],
+      "blockage_threshold_seconds": 1.5,
+      "description": "Workers must not enter active heavy machinery swing radius"
+    },
+    "hazard_loading_zone": {
+      "zone_id": "ZONE_HAZARD_01",
+      "zone_name": "Vehicle Movement & Loading Zone",
+      "zone_type": "exclusion",
+      "alert_severity": "HIGH",
+      "coordinates": [[0, 180], [350, 180], [350, 600], [0, 600]],
+      "prohibited_classes": [0, 7, 13],
+      "blockage_threshold_seconds": 2.0,
+      "description": "Vehicle and loading zone must remain clear of pedestrians and spills"
+    }
+  }
+}

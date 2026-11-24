@@ -1,0 +1,34 @@
+SITESENSE - YOLO11 BASELINE EVALUATION REPORT
+====================================================================
+
+Experiment : yolo11s_16classes_20261118_081355
+Model      : C:\Users\Vaishali\Gargi\sitesense\runs\baseline\yolo11s_16classes_20261118_081355\weights\best.pt
+Split      : test
+Precision  : 0.8979
+Recall     : 0.7917
+F1-Score   : 0.8415
+mAP@50     : 0.7922
+mAP@75     : 0.6288
+mAP@50-95  : 0.5870
+Speed      : 104.86 ms/img (9.5 FPS)
+
+PER-CLASS METRICS
+--------------------------------------------------------------------
+ ID  Class Name              Prec     Rec      F1    AP50  AP50-95
+--------------------------------------------------------------------
+  0  person                 0.974   0.790   0.873   0.803    0.542
+  1  safety_helmet          0.953   0.548   0.696   0.576    0.297
+  2  safety_vest            0.953   0.929   0.941   0.938    0.547
+  3  fire_extinguisher      0.877   0.589   0.705   0.584    0.573
+  4  fire_hose              0.541   1.000   0.702   0.878    0.814
+  5  pallet                 0.869   0.801   0.834   0.813    0.601
+  6  fire                   0.919   0.750   0.826   0.745    0.679
+  7  spill                  0.927   0.883   0.904   0.887    0.634
+  8  safety_signage         0.841   1.000   0.913   0.995    0.983
+  9  exit_sign              0.923   0.444   0.600   0.445    0.298
+ 10  empty_shelf            0.836   0.636   0.722   0.682    0.395
+ 11  forklift               1.000   1.000   1.000   0.995    0.764
+ 12  vehicle                0.875   0.703   0.780   0.721    0.502
+ 13  obstacle               0.952   0.929   0.940   0.925    0.607
+ 14  machinery              0.926   0.764   0.837   0.792    0.598
+ 15  safety_cone            1.000   0.900   0.947   0.895    0.558

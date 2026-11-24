@@ -1,0 +1,28 @@
+
+# SiteSense - YOLO11 Custom Dataset
+
+path: /content/drive/MyDrive/sitesense/datasets/processed
+
+train: train/images
+val: val/images
+test: test/images
+
+nc: 16
+
+names:
+  0: person
+  1: safety_helmet
+  2: safety_vest
+  3: fire_extinguisher
+  4: fire_hose
+  5: pallet
+  6: fire
+  7: spill
+  8: safety_signage
+  9: exit_sign
+  10: empty_shelf
+  11: forklift
+  12: vehicle
+  13: obstacle
+  14: machinery
+  15: safety_cone

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Virtual Environments
 venv/
 env/
@@ -31,3 +32,37 @@ outputs/
 .idea/
 .DS_Store
 Thumbs.db
+=======
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Training runs & checkpoints (large files > 100MB rejected by GitHub)
+runs/
+*.pt
+*.cache
+
+# Detection output videos & images
+detection/outputs/
+detection_*/outputs/
+
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Dataset images (keep directory structure and yaml configs)
+data/raw/images/
+
+>>>>>>> b7beaa850d104ed060f6b748ded764ac8a4c3161

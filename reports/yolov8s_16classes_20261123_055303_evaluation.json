@@ -1,0 +1,168 @@
+{
+    "experiment": "yolov8s_16classes_20261123_055303",
+    "model_path": "C:\\Users\\Vaishali\\Gargi\\sitesense\\runs\\baseline_yolo8\\yolov8s_16classes_20261123_055303\\weights\\best.pt",
+    "dataset": "C:\\Users\\Vaishali\\Gargi\\sitesense\\data\\processed\\data.yaml",
+    "split": "test",
+    "imgsz": 640,
+    "conf_threshold": 0.25,
+    "iou_threshold": 0.6,
+    "precision": 0.9481,
+    "recall": 0.8487,
+    "f1": 0.8957,
+    "mAP50": 0.865,
+    "mAP75": 0.7447,
+    "mAP50_95": 0.6842,
+    "speed_ms": {
+        "preprocess": 1.9,
+        "inference": 102.75,
+        "postprocess": 0.68,
+        "total": 105.32,
+        "fps": 9.5
+    },
+    "per_class_metrics": [
+        {
+            "class_id": 0,
+            "class_name": "person",
+            "precision": 0.9705,
+            "recall": 0.8692,
+            "f1": 0.9171,
+            "AP50": 0.8905,
+            "AP50_95": 0.6412
+        },
+        {
+            "class_id": 1,
+            "class_name": "safety_helmet",
+            "precision": 0.9247,
+            "recall": 0.7922,
+            "f1": 0.8533,
+            "AP50": 0.8807,
+            "AP50_95": 0.5698
+        },
+        {
+            "class_id": 2,
+            "class_name": "safety_vest",
+            "precision": 0.989,
+            "recall": 0.9495,
+            "f1": 0.9688,
+            "AP50": 0.9815,
+            "AP50_95": 0.6562
+        },
+        {
+            "class_id": 3,
+            "class_name": "fire_extinguisher",
+            "precision": 0.9939,
+            "recall": 1.0,
+            "f1": 0.997,
+            "AP50": 0.995,
+            "AP50_95": 0.9433
+        },
+        {
+            "class_id": 4,
+            "class_name": "fire_hose",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "AP50": 0.995,
+            "AP50_95": 0.9627
+        },
+        {
+            "class_id": 5,
+            "class_name": "pallet",
+            "precision": 0.9249,
+            "recall": 0.8691,
+            "f1": 0.8961,
+            "AP50": 0.8868,
+            "AP50_95": 0.6815
+        },
+        {
+            "class_id": 6,
+            "class_name": "fire",
+            "precision": 0.9036,
+            "recall": 0.75,
+            "f1": 0.8197,
+            "AP50": 0.745,
+            "AP50_95": 0.745
+        },
+        {
+            "class_id": 7,
+            "class_name": "spill",
+            "precision": 0.9609,
+            "recall": 0.847,
+            "f1": 0.9003,
+            "AP50": 0.8635,
+            "AP50_95": 0.6592
+        },
+        {
+            "class_id": 8,
+            "class_name": "safety_signage",
+            "precision": 0.994,
+            "recall": 1.0,
+            "f1": 0.997,
+            "AP50": 0.995,
+            "AP50_95": 0.9892
+        },
+        {
+            "class_id": 9,
+            "class_name": "exit_sign",
+            "precision": 1.0,
+            "recall": 0.4444,
+            "f1": 0.6154,
+            "AP50": 0.445,
+            "AP50_95": 0.2927
+        },
+        {
+            "class_id": 10,
+            "class_name": "empty_shelf",
+            "precision": 0.7553,
+            "recall": 0.6614,
+            "f1": 0.7052,
+            "AP50": 0.6629,
+            "AP50_95": 0.4008
+        },
+        {
+            "class_id": 11,
+            "class_name": "forklift",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "AP50": 0.995,
+            "AP50_95": 0.7872
+        },
+        {
+            "class_id": 12,
+            "class_name": "vehicle",
+            "precision": 0.8874,
+            "recall": 0.7887,
+            "f1": 0.8352,
+            "AP50": 0.8261,
+            "AP50_95": 0.624
+        },
+        {
+            "class_id": 13,
+            "class_name": "obstacle",
+            "precision": 0.9632,
+            "recall": 0.8571,
+            "f1": 0.9071,
+            "AP50": 0.92,
+            "AP50_95": 0.6529
+        },
+        {
+            "class_id": 14,
+            "class_name": "machinery",
+            "precision": 0.9028,
+            "recall": 0.8511,
+            "f1": 0.8762,
+            "AP50": 0.863,
+            "AP50_95": 0.7165
+        },
+        {
+            "class_id": 15,
+            "class_name": "safety_cone",
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9474,
+            "AP50": 0.895,
+            "AP50_95": 0.6247
+        }
+    ]
+}

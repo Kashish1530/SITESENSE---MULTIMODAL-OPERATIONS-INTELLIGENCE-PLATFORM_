@@ -1,0 +1,207 @@
+================================================================================
+Q001 - What are the safety rules for forklift operators?
+================================================================================
+Total candidates: 29
+
+--------------------------------------------------------------------------------
+Chunk: WHP-014-P05-C02
+Semantic rank: 1
+BM25 rank: 4
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-006 Forklift Safety; WHP-015 Electrical Safety; SHB-08 Equipment Defect Reporting.. Escalation guidance: Visual appearance alone cannot prove equipment is safe. Where a defect may affect safety, isolate and obtain competent assessment. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status. Do not allow an AI-generated finding to create a consequential maintenance or compliance action without the required human approval.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-03-P01-C01
+Semantic rank: 8
+BM25 rank: 1
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Forklift and Powered Truck Safety Handbook SAFETY HANDBOOK | DOCUMENT ID: SHB-03 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Provide practical guidance for authorised operators and pedestrians sharing warehouse space. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-005-P05-C02
+Semantic rank: 2
+BM25 rank: 5
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-006 Forklift Safety; WHP-014 Equipment Maintenance; WHP-020 Document Control; SHB-03.. Escalation guidance: Do not estimate a rack's capacity from appearance or copy the rating from a neighbouring bay. Obtain the approved rating for the exact asset and configuration. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-07-P02-C01
+Semantic rank: 3
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Avoid work at height where a safe ground-level method is practicable.  Use only suitable, inspected access equipment.  Do not use damaged ladders, platforms, guardrails or fall protection equipment.  Protect people below from falling objects and restrict the work area.  Use fall protection only with suitable training, equipment and rescue arrangements.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-06-P03-C03
+Semantic rank: 5
+BM25 rank: None
+Content:
+Step 5: Set down safely and report strain, damaged packaging or unsuitable equipment. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-011-P04-C01
+Semantic rank: 6
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Dock coordinator: controls bay assignment and vehicle movement. Forklift operator: transfers goods under traffic controls. Driver: follows site instructions and stays in designated safe areas. Supervisor: verifies dock controls and resolves exceptions. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-001-P02-C01
+Semantic rank: None
+BM25 rank: 6
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Only inducted and authorised people may enter operational zones. Visitors follow sign-in, escort and PPE rules.  Work is performed using current approved work instructions and the site layout. Unclear or changed tasks are paused for supervisor direction.  A shift-start readiness check covers access routes, housekeeping, emergency equipment, workstations and known equipment defects.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-06-P03-C02
+Semantic rank: 7
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Position securely and maintain a balanced posture. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Move smoothly and keep the load under control. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Set down safely and report strain, damaged packaging or unsuitable equipment.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-018-P02-C01
+Semantic rank: None
+BM25 rank: 7
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Visitors and contractors are approved and registered before entering controlled operational areas.  A site induction appropriate to the person's activity and exposure is completed before work begins.  Higher-risk work requires applicable permits, risk assessment and coordination with the site owner.  Visitors remain within approved areas and are escorted where site rules require an escort.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-011-P05-C02
+Semantic rank: 13
+BM25 rank: 8
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-006 Forklift Safety; WHP-012 Receiving and Dispatch; SHB-03.. Escalation guidance: A stationary-looking trailer in a photograph is not proof that it is immobilised. Verify the restraint or isolation process using the site record and physical check. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-018-P02-C02
+Semantic rank: None
+BM25 rank: 9
+Content:
+ Visitors remain within approved areas and are escorted where site rules require an escort.  Contractor work is inspected and permits, tools, materials and access arrangements are closed out before departure. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-08-P02-C01
+Semantic rank: 10
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Perform required pre-use inspections before operating designated equipment.  Never bypass guards, interlocks or safety devices.  Stop and isolate equipment when a safety-critical defect is suspected.  Use the approved defect identification process to prevent accidental use.  Only authorised personnel repair and release equipment.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-008-P02-C01
+Semantic rank: None
+BM25 rank: 10
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Smoking, hot work, open flames and other ignition sources are controlled under site rules and permit arrangements.  Combustible packaging and waste are kept in designated locations and managed to avoid accumulation near ignition sources.  Fire extinguishers, alarms, hose reels, hydrants, fire doors and fire equipment access remain visible and unobstructed.  Fire protection equipment is inspected and serviced at site-defined intervals by competent persons.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-07-P03-C02
+Semantic rank: 11
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Inspect equipment and establish the required exclusion zone. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Use the approved edge protection and fall controls. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Maintain communication and rescue readiness; inspect and store equipment after use.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-006-P01-C01
+Semantic rank: 12
+BM25 rank: 15
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Forklift and Powered Industrial Truck Safety Policy COMPANY POLICY | DOCUMENT ID: WHP-006 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Control powered industrial truck operation and reduce vehicle-pedestrian interaction risks. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-10-P03-C01
+Semantic rank: None
+BM25 rank: 12
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Notify the supervisor and emergency services where required by the site plan. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Record what happened, where and when, separating facts from assumptions. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-007-P02-C01
+Semantic rank: None
+BM25 rank: 13
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Substances remain in correctly labelled containers; safety data information is accessible to relevant users.  Incompatible materials are segregated according to supplier information and the approved site compatibility assessment.  Storage, ventilation, containment and access controls follow the substance-specific risk assessment.  Only trained and authorised personnel handle substances for which training or authorisation is required.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-019-P05-C02
+Semantic rank: None
+BM25 rank: 14
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-002 Workplace Safety; WHP-014 Equipment Maintenance; WHP-020 Document Control; SHB-10.. Escalation guidance: AI-generated detections or summaries are leads for review. They must not independently establish injury causation, individual blame or legal responsibility. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-002-P04-C02
+Semantic rank: 15
+BM25 rank: None
+Content:
+Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable. Communication and handover Communicate changes, temporary controls, isolated equipment, unresolved hazards and outstanding corrective actions to affected teams. Handover records should identify the receiving person or role and the status of each open item. Supervision and assurance Supervisors should verify controls through observation, record sampling and worker discussion. Repeated findings should trigger review of the process, training, layout or equipment rather than relying only on reminders.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P04-C02
+Semantic rank: 16
+BM25 rank: None
+Content:
+Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable. Communication and handover Communicate changes, temporary controls, isolated equipment, unresolved hazards and outstanding corrective actions to affected teams. Handover records should identify the receiving person or role and the status of each open item. Supervision and assurance Supervisors should verify controls through observation, record sampling and worker discussion. Repeated findings should trigger review of the process, training, layout or equipment rather than relying only on reminders.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-010-P01-C01
+Semantic rank: None
+BM25 rank: 16
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Safety Signage and Labelling Policy COMPANY POLICY | DOCUMENT ID: WHP-010 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Ensure safety signs, equipment labels and area markings are accurate, visible, legible and maintained. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-006-P04-C02
+Semantic rank: 17
+BM25 rank: None
+Content:
+Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable. Communication and handover Communicate changes, temporary controls, isolated equipment, unresolved hazards and outstanding corrective actions to affected teams. Handover records should identify the receiving person or role and the status of each open item. Supervision and assurance Supervisors should verify controls through observation, record sampling and worker discussion. Repeated findings should trigger review of the process, training, layout or equipment rather than relying only on reminders.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P05-C02
+Semantic rank: None
+BM25 rank: 17
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-002 Workplace Health and Safety; WHP-010 Safety Signage; SHB-02 PPE User Handbook.. Escalation guidance: If the required PPE is unavailable, damaged or incompatible with the task, pause the task and obtain a suitable replacement or revised safe method. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-008-P04-C02
+Semantic rank: 18
+BM25 rank: None
+Content:
+Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable. Communication and handover Communicate changes, temporary controls, isolated equipment, unresolved hazards and outstanding corrective actions to affected teams. Handover records should identify the receiving person or role and the status of each open item. Supervision and assurance Supervisors should verify controls through observation, record sampling and worker discussion. Repeated findings should trigger review of the process, training, layout or equipment rather than relying only on reminders.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-006-P03-C02
+Semantic rank: None
+BM25 rank: 18
+Content:
+Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Check route, floor condition, load dimensions, stability and pedestrian activity. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Travel defensively, use designated routes and follow site rules at crossings and intersections. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-004-P04-C02
+Semantic rank: 19
+BM25 rank: None
+Content:
+Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable. Communication and handover Communicate changes, temporary controls, isolated equipment, unresolved hazards and outstanding corrective actions to affected teams. Handover records should identify the receiving person or role and the status of each open item. Supervision and assurance Supervisors should verify controls through observation, record sampling and worker discussion. Repeated findings should trigger review of the process, training, layout or equipment rather than relying only on reminders.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-011-P02-C02
+Semantic rank: None
+BM25 rank: 19
+Content:
+ Unauthorised pedestrians remain outside active loading and unloading zones.  Drivers, dock coordinators and equipment operators use agreed communication and stop-work signals. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-014-P04-C02
+Semantic rank: 20
+BM25 rank: None
+Content:
+Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable. Communication and handover Communicate changes, temporary controls, isolated equipment, unresolved hazards and outstanding corrective actions to affected teams. Handover records should identify the receiving person or role and the status of each open item. Supervision and assurance Supervisors should verify controls through observation, record sampling and worker discussion. Repeated findings should trigger review of the process, training, layout or equipment rather than relying only on reminders.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-03-P03-C02
+Semantic rank: None
+BM25 rank: 20
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Check load, route, floor condition and pedestrian activity. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Travel defensively and follow crossings, warning and parking rules. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Park safely, secure the truck and report incidents or near misses.

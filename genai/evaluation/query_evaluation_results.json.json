@@ -1,0 +1,381 @@
+{
+    "experiment": "multi_query_retrieval",
+    "target_query_ids": [
+        "Q005",
+        "Q006"
+    ],
+    "retrieval_top_k": 20,
+    "rrf_top_k": 60,
+    "final_top_k": 20,
+    "queries": {
+        "Q005": {
+            "original_query": "How should workplace incidents and near misses be reported?",
+            "baseline": {
+                "dense": {
+                    "Recall@5": 0.0,
+                    "Recall@10": 0.0,
+                    "MRR": 0.0,
+                    "nDCG@5": 0.0,
+                    "nDCG@10": 0.0
+                },
+                "bm25": {
+                    "Recall@5": 0.1429,
+                    "Recall@10": 0.2857,
+                    "MRR": 0.2,
+                    "nDCG@5": 0.1559,
+                    "nDCG@10": 0.2594
+                },
+                "hybrid_rrf": {
+                    "Recall@5": 0.0,
+                    "Recall@10": 0.1429,
+                    "MRR": 0.125,
+                    "nDCG@5": 0.0,
+                    "nDCG@10": 0.1136
+                },
+                "hybrid_reranked": {
+                    "Recall@5": 0.2857,
+                    "Recall@10": 0.2857,
+                    "MRR": 0.5,
+                    "nDCG@5": 0.4558,
+                    "nDCG@10": 0.4073
+                },
+                "candidate_coverage": {
+                    "found": 2,
+                    "total": 7,
+                    "recall": 0.2857,
+                    "missing_chunks": [
+                        "WHP-019-P02-C02",
+                        "WHP-019-P03-C01",
+                        "WHP-019-P03-C02",
+                        "WHP-019-P03-C03",
+                        "WHP-019-P04-C01"
+                    ]
+                },
+                "reranked_chunk_ids": [
+                    "WHP-002-P02-C02",
+                    "SHB-10-P02-C01",
+                    "WHP-019-P02-C01",
+                    "SHB-10-P01-C01",
+                    "WHP-019-P01-C01",
+                    "SHB-03-P03-C03",
+                    "SHB-01-P02-C02",
+                    "SHB-03-P03-C02",
+                    "SHB-01-P02-C01",
+                    "WHP-006-P03-C03",
+                    "WHP-002-P03-C04",
+                    "WHP-016-P02-C02",
+                    "SHB-06-P03-C03",
+                    "WHP-018-P03-C04",
+                    "WHP-010-P03-C02",
+                    "WHP-003-P03-C04",
+                    "WHP-018-P05-C02",
+                    "SHB-01-P03-C03",
+                    "WHP-006-P03-C04",
+                    "WHP-014-P03-C02"
+                ]
+            },
+            "multi_query": {
+                "query_variants": [
+                    "How should workplace incidents and near misses be reported?",
+                    "What is the incident reporting procedure?",
+                    "How should workplace injuries and hazards be recorded?",
+                    "What is the process for reporting unsafe conditions?",
+                    "How are incidents investigated and corrective actions assigned?"
+                ],
+                "candidate_count": 117,
+                "candidate_coverage": {
+                    "found": 5,
+                    "total": 7,
+                    "recall": 0.7143,
+                    "missing_chunks": [
+                        "WHP-019-P03-C03",
+                        "WHP-019-P04-C01"
+                    ]
+                },
+                "rrf_candidate_count": 60,
+                "multi_query_rrf": {
+                    "Recall@5": 0.0,
+                    "Recall@10": 0.2857,
+                    "MRR": 0.125,
+                    "nDCG@5": 0.0,
+                    "nDCG@10": 0.222
+                },
+                "multi_query_reranked": {
+                    "Recall@5": 0.2857,
+                    "Recall@10": 0.4286,
+                    "MRR": 0.5,
+                    "nDCG@5": 0.4278,
+                    "nDCG@10": 0.4269
+                },
+                "rrf_chunk_ids": [
+                    "WHP-002-P02-C02",
+                    "WHP-019-P01-C01",
+                    "SHB-06-P03-C03",
+                    "SHB-01-P02-C02",
+                    "WHP-002-P05-C02",
+                    "WHP-014-P03-C02",
+                    "SHB-10-P01-C01",
+                    "WHP-019-P02-C01",
+                    "SHB-10-P02-C01",
+                    "WHP-007-P05-C02",
+                    "WHP-019-P05-C02",
+                    "WHP-014-P05-C02",
+                    "WHP-002-P04-C02",
+                    "WHP-018-P05-C02",
+                    "SHB-10-P03-C01",
+                    "SHB-04-P02-C02",
+                    "SHB-05-P03-C03",
+                    "WHP-019-P03-C01",
+                    "SHB-01-P02-C01",
+                    "WHP-003-P05-C02",
+                    "WHP-009-P02-C02",
+                    "WHP-003-P04-C02",
+                    "SHB-08-P01-C01",
+                    "WHP-018-P03-C01",
+                    "WHP-013-P04-C02",
+                    "WHP-012-P04-C02",
+                    "WHP-005-P03-C04",
+                    "WHP-002-P03-C04",
+                    "WHP-003-P03-C04",
+                    "WHP-014-P02-C02",
+                    "SHB-04-P03-C01",
+                    "WHP-009-P04-C02",
+                    "WHP-004-P04-C02",
+                    "SHB-03-P03-C03",
+                    "WHP-014-P04-C02",
+                    "WHP-019-P03-C02",
+                    "WHP-009-P03-C04",
+                    "WHP-007-P04-C02",
+                    "WHP-001-P04-C02",
+                    "WHP-010-P03-C04",
+                    "WHP-008-P03-C04",
+                    "WHP-017-P05-C02",
+                    "WHP-018-P03-C04",
+                    "WHP-020-P05-C02",
+                    "WHP-006-P03-C04",
+                    "WHP-001-P03-C04",
+                    "WHP-011-P03-C04",
+                    "WHP-004-P03-C04",
+                    "WHP-006-P04-C02",
+                    "WHP-005-P04-C02",
+                    "WHP-001-P05-C02",
+                    "WHP-015-P04-C02",
+                    "SHB-03-P05-C01",
+                    "WHP-008-P04-C02",
+                    "WHP-011-P04-C02",
+                    "WHP-006-P05-C01",
+                    "WHP-002-P03-C03",
+                    "WHP-019-P05-C01",
+                    "WHP-019-P02-C02",
+                    "WHP-019-P04-C02"
+                ],
+                "reranked_chunk_ids": [
+                    "WHP-002-P02-C02",
+                    "SHB-10-P02-C01",
+                    "WHP-019-P04-C02",
+                    "WHP-019-P02-C01",
+                    "WHP-019-P05-C02",
+                    "SHB-10-P01-C01",
+                    "WHP-019-P05-C01",
+                    "WHP-019-P01-C01",
+                    "SHB-03-P03-C03",
+                    "WHP-019-P03-C02",
+                    "SHB-10-P03-C01",
+                    "WHP-019-P03-C01",
+                    "WHP-019-P02-C02",
+                    "WHP-002-P03-C03",
+                    "SHB-01-P02-C02",
+                    "SHB-01-P02-C01",
+                    "WHP-006-P05-C01",
+                    "SHB-03-P05-C01",
+                    "WHP-002-P03-C04",
+                    "WHP-002-P05-C02"
+                ]
+            }
+        },
+        "Q006": {
+            "original_query": "What precautions should workers follow when handling chemicals?",
+            "baseline": {
+                "dense": {
+                    "Recall@5": 0.375,
+                    "Recall@10": 0.5,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.3982,
+                    "nDCG@10": 0.493
+                },
+                "bm25": {
+                    "Recall@5": 0.0,
+                    "Recall@10": 0.0,
+                    "MRR": 0.0769,
+                    "nDCG@5": 0.0,
+                    "nDCG@10": 0.0
+                },
+                "hybrid_rrf": {
+                    "Recall@5": 0.375,
+                    "Recall@10": 0.375,
+                    "MRR": 0.5,
+                    "nDCG@5": 0.3629,
+                    "nDCG@10": 0.3303
+                },
+                "hybrid_reranked": {
+                    "Recall@5": 0.5,
+                    "Recall@10": 0.5,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6508,
+                    "nDCG@10": 0.5922
+                },
+                "candidate_coverage": {
+                    "found": 4,
+                    "total": 8,
+                    "recall": 0.5,
+                    "missing_chunks": [
+                        "SHB-05-P03-C01",
+                        "SHB-05-P03-C02",
+                        "SHB-05-P03-C03",
+                        "SHB-05-P04-C01"
+                    ]
+                },
+                "reranked_chunk_ids": [
+                    "WHP-007-P02-C02",
+                    "SHB-05-P02-C01",
+                    "WHP-007-P02-C01",
+                    "WHP-002-P02-C01",
+                    "SHB-09-P02-C01",
+                    "SHB-05-P01-C01",
+                    "WHP-002-P04-C01",
+                    "WHP-016-P04-C01",
+                    "WHP-008-P02-C01",
+                    "WHP-012-P02-C01",
+                    "WHP-017-P02-C01",
+                    "WHP-010-P04-C01",
+                    "WHP-005-P02-C01",
+                    "WHP-007-P01-C01",
+                    "WHP-001-P04-C01",
+                    "WHP-006-P02-C01",
+                    "WHP-013-P02-C01",
+                    "SHB-06-P01-C01",
+                    "SHB-09-P01-C01",
+                    "SHB-10-P03-C01"
+                ]
+            },
+            "multi_query": {
+                "query_variants": [
+                    "What precautions should workers follow when handling chemicals?",
+                    "Chemical storage and handling safety procedures",
+                    "How should hazardous substances be transferred and stored?",
+                    "What PPE is required when handling chemical substances?",
+                    "How should incompatible chemicals be segregated?"
+                ],
+                "candidate_count": 84,
+                "candidate_coverage": {
+                    "found": 6,
+                    "total": 8,
+                    "recall": 0.75,
+                    "missing_chunks": [
+                        "SHB-05-P03-C01",
+                        "SHB-05-P03-C03"
+                    ]
+                },
+                "rrf_candidate_count": 60,
+                "multi_query_rrf": {
+                    "Recall@5": 0.25,
+                    "Recall@10": 0.5,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6045,
+                    "nDCG@10": 0.6236
+                },
+                "multi_query_reranked": {
+                    "Recall@5": 0.625,
+                    "Recall@10": 0.625,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6975,
+                    "nDCG@10": 0.6348
+                },
+                "rrf_chunk_ids": [
+                    "WHP-007-P02-C01",
+                    "SHB-05-P01-C01",
+                    "SHB-05-P02-C01",
+                    "WHP-017-P02-C01",
+                    "WHP-007-P01-C01",
+                    "WHP-007-P02-C02",
+                    "SHB-09-P02-C01",
+                    "WHP-002-P02-C01",
+                    "WHP-005-P02-C01",
+                    "WHP-007-P05-C02",
+                    "WHP-007-P04-C01",
+                    "WHP-016-P03-C01",
+                    "WHP-016-P02-C01",
+                    "WHP-008-P02-C01",
+                    "WHP-016-P04-C01",
+                    "WHP-017-P04-C01",
+                    "WHP-003-P02-C02",
+                    "SHB-02-P03-C02",
+                    "SHB-02-P03-C03",
+                    "WHP-007-P05-C01",
+                    "WHP-017-P01-C01",
+                    "SHB-05-P05-C01",
+                    "SHB-09-P01-C01",
+                    "WHP-015-P02-C01",
+                    "WHP-016-P03-C02",
+                    "SHB-06-P01-C01",
+                    "SHB-10-P03-C01",
+                    "WHP-013-P02-C01",
+                    "WHP-004-P02-C01",
+                    "WHP-003-P03-C02",
+                    "WHP-010-P02-C01",
+                    "WHP-003-P02-C01",
+                    "WHP-005-P02-C02",
+                    "WHP-012-P02-C01",
+                    "WHP-017-P03-C01",
+                    "SHB-02-P01-C01",
+                    "SHB-08-P01-C01",
+                    "SHB-02-P02-C02",
+                    "WHP-017-P05-C02",
+                    "SHB-05-P03-C02",
+                    "WHP-005-P03-C02",
+                    "SHB-02-P02-C01",
+                    "SHB-03-P04-C01",
+                    "WHP-014-P02-C01",
+                    "WHP-007-P03-C02",
+                    "WHP-002-P04-C01",
+                    "WHP-001-P04-C01",
+                    "WHP-010-P04-C01",
+                    "WHP-002-P03-C01",
+                    "WHP-003-P05-C02",
+                    "WHP-006-P02-C01",
+                    "WHP-015-P03-C02",
+                    "WHP-007-P03-C01",
+                    "WHP-011-P02-C01",
+                    "WHP-010-P02-C02",
+                    "WHP-002-P02-C02",
+                    "WHP-001-P02-C01",
+                    "WHP-005-P01-C01",
+                    "SHB-06-P05-C01",
+                    "SHB-05-P04-C01"
+                ],
+                "reranked_chunk_ids": [
+                    "SHB-05-P04-C01",
+                    "WHP-007-P02-C02",
+                    "SHB-05-P02-C01",
+                    "WHP-007-P02-C01",
+                    "SHB-05-P03-C02",
+                    "SHB-05-P05-C01",
+                    "WHP-002-P02-C01",
+                    "WHP-007-P05-C02",
+                    "WHP-007-P04-C01",
+                    "WHP-007-P05-C01",
+                    "WHP-002-P02-C02",
+                    "SHB-09-P02-C01",
+                    "SHB-05-P01-C01",
+                    "WHP-002-P04-C01",
+                    "WHP-016-P02-C01",
+                    "WHP-007-P03-C02",
+                    "WHP-015-P02-C01",
+                    "WHP-016-P04-C01",
+                    "WHP-008-P02-C01",
+                    "WHP-012-P02-C01"
+                ]
+            }
+        }
+    }
+}

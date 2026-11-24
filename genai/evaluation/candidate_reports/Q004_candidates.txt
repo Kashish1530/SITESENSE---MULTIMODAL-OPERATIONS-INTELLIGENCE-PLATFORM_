@@ -1,0 +1,221 @@
+================================================================================
+Q004 - What precautions apply to electrical work and damaged equipment?
+================================================================================
+Total candidates: 31
+
+--------------------------------------------------------------------------------
+Chunk: SHB-06-P03-C03
+Semantic rank: 1
+BM25 rank: 13
+Content:
+Step 5: Set down safely and report strain, damaged packaging or unsuitable equipment. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-015-P02-C02
+Semantic rank: 2
+BM25 rank: 9
+Content:
+ Electrical panels remain accessible, secured and free from unauthorised access or storage obstruction.  Equipment is used only in environmental conditions for which it is designed and authorised. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-015-P05-C02
+Semantic rank: 3
+BM25 rank: 12
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-014 Equipment Maintenance; WHP-008 Fire Safety; SHB-08.. Escalation guidance: An image cannot establish that a circuit is de-energised. Treat electrical status as unknown until verified under the approved isolation process. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status. Do not allow an AI-generated finding to create a consequential maintenance or compliance action without the required human approval.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-015-P05-C01
+Semantic rank: None
+BM25 rank: 3
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 5 of 5 4. Records, audit and continual improvement Maintain records sufficient to demonstrate that the process was planned, implemented, checked and improved. Apply the approved company retention schedule; this synthetic document does not set a legal retention period.  Isolation permits; lockout/tagout records; electrical inspections; defect logs; repair certificates; restoration approvals. 5. Monitoring and review Review inspection trends, incidents, repeat defects, overdue actions and worker feedback. Assign an owner and due date to corrective actions and verify effectiveness before closure. Review this document after material process changes, relevant incidents or scheduled document review. 6.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-08-P03-C03
+Semantic rank: 4
+BM25 rank: None
+Content:
+Step 5: Keep equipment isolated until documented release is provided. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-015-P01-C01
+Semantic rank: None
+BM25 rank: 4
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Electrical Safety and Energy Isolation Policy COMPANY POLICY | DOCUMENT ID: WHP-015 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Prevent electric shock, burns, fire and unexpected energisation during operation, maintenance and electrical work. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-014-P05-C02
+Semantic rank: 5
+BM25 rank: 10
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-006 Forklift Safety; WHP-015 Electrical Safety; SHB-08 Equipment Defect Reporting.. Escalation guidance: Visual appearance alone cannot prove equipment is safe. Where a defect may affect safety, isolate and obtain competent assessment. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status. Do not allow an AI-generated finding to create a consequential maintenance or compliance action without the required human approval.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-10-P03-C01
+Semantic rank: None
+BM25 rank: 5
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Notify the supervisor and emergency services where required by the site plan. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Record what happened, where and when, separating facts from assumptions. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-014-P02-C02
+Semantic rank: 6
+BM25 rank: None
+Content:
+ Safety-critical repairs require inspection and documented release before equipment returns to service.  Inspection and maintenance records are linked to a unique asset identity. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-010-P03-C02
+Semantic rank: None
+BM25 rank: 6
+Content:
+Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Report missing, damaged, faded, obstructed or conflicting signage and apply interim controls where needed. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Arrange replacement through the authorised owner; do not create or alter safety signs informally. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-07-P03-C03
+Semantic rank: 7
+BM25 rank: None
+Content:
+Step 5: Maintain communication and rescue readiness; inspect and store equipment after use. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-016-P02-C01
+Semantic rank: None
+BM25 rank: 8
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Spills and loose materials are addressed promptly using the approved method and appropriate competence.  Waste is placed in designated containers and segregated according to the site waste plan.  Damaged flooring, standing water, loose wrapping, trailing cables and other hazards are reported and controlled.  Tools, pallets and equipment are returned to designated storage at task completion and shift end.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-014-P03-C02
+Semantic rank: 9
+BM25 rank: None
+Content:
+Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Stop use, isolate and tag equipment when a safety-critical defect is suspected. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Raise a work order with asset ID, defect description and supporting evidence. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-07-P03-C02
+Semantic rank: 10
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Inspect equipment and establish the required exclusion zone. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Use the approved edge protection and fall controls. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Maintain communication and rescue readiness; inspect and store equipment after use.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-008-P02-C02
+Semantic rank: 11
+BM25 rank: None
+Content:
+ Fire protection equipment is inspected and serviced at site-defined intervals by competent persons.  Hot work requires documented authorisation, area preparation, required fire watch and post-work checks. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-008-P03-C01
+Semantic rank: None
+BM25 rank: 11
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Identify ignition sources and combustible materials during routine area inspections. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Verify fire equipment access and report missing, damaged, discharged or obstructed equipment. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-06-P03-C02
+Semantic rank: 12
+BM25 rank: 15
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Position securely and maintain a balanced posture. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Move smoothly and keep the load under control. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Set down safely and report strain, damaged packaging or unsuitable equipment.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-001-P05-C02
+Semantic rank: 13
+BM25 rank: None
+Content:
+Assign an owner and due date to corrective actions and verify effectiveness before closure. Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-002 Workplace Health and Safety; WHP-004 Walkway Clearance; WHP-012 Receiving and Dispatch; WHP-016 Housekeeping; WHP-020 Document Control.. Escalation guidance: Do not start work in an area with an uncontrolled immediate hazard. Secure the area, inform the supervisor and record the temporary control. Resume only when the authorised person verifies the condition is safe. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-03-P03-C03
+Semantic rank: 14
+BM25 rank: None
+Content:
+Step 5: Park safely, secure the truck and report incidents or near misses. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-005-P03-C02
+Semantic rank: None
+BM25 rank: 14
+Content:
+Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Place the load within the designated footprint using authorised equipment and a suitable handling method. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Conduct routine visual checks for leaning loads, damaged uprights, displaced beams and missing labels. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-008-P03-C04
+Semantic rank: 15
+BM25 rank: None
+Content:
+Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-010-P03-C04
+Semantic rank: 16
+BM25 rank: None
+Content:
+Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-005-P03-C03
+Semantic rank: None
+BM25 rank: 16
+Content:
+Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Isolate affected bays and arrange assessment; do not improvise repairs or unload damaged structures without an authorised plan. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-009-P03-C04
+Semantic rank: 17
+BM25 rank: None
+Content:
+Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-004-P02-C02
+Semantic rank: None
+BM25 rank: 17
+Content:
+ An unavoidable temporary obstruction requires supervisor authorisation, physical segregation, warning controls and a safe alternative route.  Emergency exits, fire equipment, alarm points and emergency access paths remain accessible at all times.  Damaged, faded or unclear route markings are reported and managed with interim controls until restored. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-001-P03-C04
+Semantic rank: 18
+BM25 rank: None
+Content:
+Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P02-C02
+Semantic rank: None
+BM25 rank: 18
+Content:
+ Users receive instruction on limitations, correct wearing, inspection, cleaning, storage and replacement.  Damaged, contaminated, expired or unsuitable PPE is removed from service and replaced before exposure continues.  PPE supplements rather than replaces feasible elimination, substitution and engineering controls. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-005-P03-C04
+Semantic rank: 19
+BM25 rank: None
+Content:
+Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-004-P04-C01
+Semantic rank: None
+BM25 rank: 19
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Facilities: maintains approved layouts and markings. Shift supervisor: coordinates inspections, isolation and reopening. Material handlers: keep loads within designated footprints. All workers: report blocked, damaged or confusing routes. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P03-C04
+Semantic rank: 20
+BM25 rank: None
+Content:
+Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-01-P02-C01
+Semantic rank: None
+BM25 rank: 20
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Understand the site map, restricted zones, pedestrian routes, vehicle routes and assembly point before starting.  Attend shift briefings and confirm assigned tasks, changed conditions and known hazards.  Keep aisles, exits, fire equipment and electrical panels accessible.  Use approved equipment and storage locations; do not improvise a process when instructions are unclear.  Report hazards, near misses, equipment defects and unsafe conditions promptly.

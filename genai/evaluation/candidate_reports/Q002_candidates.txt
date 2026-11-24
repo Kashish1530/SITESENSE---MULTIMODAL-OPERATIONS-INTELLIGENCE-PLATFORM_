@@ -1,0 +1,228 @@
+================================================================================
+Q002 - How should warehouse PPE be selected and maintained?
+================================================================================
+Total candidates: 32
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P04-C01
+Semantic rank: 1
+BM25 rank: 10
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. EHS: defines task-based PPE requirements and approved specifications. Supervisor: ensures availability, training and compliance checks. Storekeeper: maintains stock and issue records. Worker: inspects, uses and cares for issued PPE. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-002-P02-C01
+Semantic rank: None
+BM25 rank: 2
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Risk assessments are required for non-routine work, material changes, new equipment, new substances and tasks with changed conditions.  Controls are selected using the hierarchy of controls: eliminate, substitute, engineer, administrate and PPE, in that order where practicable.  Every worker may stop or pause work when an immediate danger is reasonably suspected and must promptly notify a supervisor.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-02-P02-C01
+Semantic rank: 3
+BM25 rank: 7
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Read area signs and task risk information before selecting PPE.  Check fit, condition and compatibility of footwear, high-visibility clothing and task-specific protection.  Do not modify PPE or use it outside its intended purpose.  Remove damaged, contaminated or unsuitable PPE from service and report it.  PPE is not a substitute for safer equipment, layout or work methods.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-02-P01-C01
+Semantic rank: 12
+BM25 rank: 3
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Personal Protective Equipment User Handbook SAFETY HANDBOOK | DOCUMENT ID: SHB-02 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Explain how to select, inspect, wear, maintain and replace warehouse PPE. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P03-C01
+Semantic rank: 4
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Identify the task, exposure and required protection from the current assessment and signs. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Issue approved PPE in a suitable size and record issue where required by site procedure. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-02-P02-C02
+Semantic rank: None
+BM25 rank: 4
+Content:
+ PPE is not a substitute for safer equipment, layout or work methods. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-005-P02-C01
+Semantic rank: 5
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Store goods only in approved locations with known capacity and suitable access.  Stacking arrangements must be stable and suitable for the pallet, packaging, floor and handling method.  Never exceed a posted rack, shelf, floor or mezzanine capacity; missing or unreadable ratings are escalated before loading.  Stored goods must not intrude into marked aisles, exits, fire equipment access or site-defined protection clearances.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-02-P03-C01
+Semantic rank: 6
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Identify task hazards and required protection. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Select approved PPE in the correct size and specification. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-05-P02-C01
+Semantic rank: None
+BM25 rank: 6
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Read labels and relevant safety data information before use.  Never use an unlabelled or unidentified container.  Segregate incompatible materials according to approved guidance.  Use specified PPE and suitable transfer equipment.  Do not mix substances unless an approved instruction explicitly requires it. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-02-P04-C01
+Semantic rank: 7
+BM25 rank: 8
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Worker: inspects, wears and cares for PPE. Supervisor: provides availability and verifies use. EHS: advises on suitability and task-specific requirements. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P01-C01
+Semantic rank: 8
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Personal Protective Equipment Policy COMPANY POLICY | DOCUMENT ID: WHP-003 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Set requirements for PPE selection, issue, fit, inspection, use, care, replacement and training. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P05-C01
+Semantic rank: 9
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 5 of 5 4. Records, audit and continual improvement Maintain records sufficient to demonstrate that the process was planned, implemented, checked and improved. Apply the approved company retention schedule; this synthetic document does not set a legal retention period.  PPE issue register; training and fit records where applicable; pre-use checks; replacement and disposal records; inspection findings. 5. Monitoring and review Review inspection trends, incidents, repeat defects, overdue actions and worker feedback. Assign an owner and due date to corrective actions and verify effectiveness before closure. Review this document after material process changes, relevant incidents or scheduled document review. 6.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-006-P02-C02
+Semantic rank: None
+BM25 rank: 9
+Content:
+ Operators follow posted site speed limits, traffic plans, warning systems and designated travel routes.  Pedestrian routes and vehicle routes are separated as defined by the approved layout; crossings and blind spots receive additional controls.  Loads must be stable and handled within equipment capacity; visibility and safe stopping distance must be maintained. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-016-P02-C01
+Semantic rank: 10
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Spills and loose materials are addressed promptly using the approved method and appropriate competence.  Waste is placed in designated containers and segregated according to the site waste plan.  Damaged flooring, standing water, loose wrapping, trailing cables and other hazards are reported and controlled.  Tools, pallets and equipment are returned to designated storage at task completion and shift end.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-02-P05-C01
+Semantic rank: 11
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 5 of 5 4. Records, audit and continual improvement Maintain records sufficient to demonstrate that the process was planned, implemented, checked and improved. Apply the approved company retention schedule; this synthetic document does not set a legal retention period.  PPE issue records; training; inspection; cleaning; replacement and disposal records. 5. Monitoring and review Review inspection trends, incidents, repeat defects, overdue actions and worker feedback. Assign an owner and due date to corrective actions and verify effectiveness before closure. Review this document after material process changes, relevant incidents or scheduled document review. 6.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-08-P01-C01
+Semantic rank: None
+BM25 rank: 11
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Equipment Inspection and Defect Reporting Handbook SAFETY HANDBOOK | DOCUMENT ID: SHB-08 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Explain how to identify, isolate, report and verify warehouse equipment defects. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-05-P02-C02
+Semantic rank: None
+BM25 rank: 12
+Content:
+Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-017-P04-C01
+Semantic rank: 13
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Environmental coordinator: maintains waste arrangements and contractor approvals. Supervisor: checks segregation and storage. Workers: use designated containers and report releases. Storekeeper: maintains relevant waste inventory where assigned. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-007-P04-C01
+Semantic rank: 14
+BM25 rank: 13
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. EHS: maintains substance risk assessments and response guidance. Storekeeper: maintains inventory, labels and segregation. Authorised user: follows handling instructions and PPE requirements. Supervisor: controls access and escalates releases. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-08-P02-C02
+Semantic rank: None
+BM25 rank: 14
+Content:
+ Only authorised personnel repair and release equipment. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-012-P02-C01
+Semantic rank: 15
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Inbound goods are compared with the relevant purchase, transfer or delivery record.  Shortages, overages, damage, wrong items and identifier mismatches are recorded before acceptance or put-away.  Required lot, batch, serial and handling identifiers are retained through the applicable process.  Dispatch checks confirm order identity, quantity, packaging and destination before release.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-017-P02-C02
+Semantic rank: None
+BM25 rank: 15
+Content:
+ Reuse and recycling are preferred where safe and operationally appropriate. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-005-P01-C01
+Semantic rank: 16
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Storage, Stacking and Racking Policy COMPANY POLICY | DOCUMENT ID: WHP-005 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Prevent falling goods, unstable stacks, rack overload and unsafe storage arrangements. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-01-P02-C02
+Semantic rank: None
+BM25 rank: 16
+Content:
+ Report hazards, near misses, equipment defects and unsafe conditions promptly. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-017-P02-C01
+Semantic rank: 17
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Waste is segregated into site-approved streams using labelled containers.  Hazardous waste is kept closed, identified and segregated pending authorised collection.  Waste storage and transfer controls prevent leaks, uncontrolled release and entry into drains.  Controlled waste is transferred only through approved channels with required records.  Reuse and recycling are preferred where safe and operationally appropriate.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-09-P02-C02
+Semantic rank: None
+BM25 rank: 17
+Content:
+ Prevent spread to drains only when safe and within training. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-004-P02-C01
+Semantic rank: 18
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Pallets, cartons, waste, tools, cables and equipment must not be stored in marked pedestrian routes or crossings.  Maintain the route dimensions and boundaries shown in the approved site layout; do not invent a universal width where the layout is silent.  An unavoidable temporary obstruction requires supervisor authorisation, physical segregation, warning controls and a safe alternative route.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-10-P02-C02
+Semantic rank: None
+BM25 rank: 18
+Content:
+ Avoid blame and unsupported conclusions; track actions to verified closure. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-018-P03-C01
+Semantic rank: 19
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Verify identity, visit purpose, host and approved access areas. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Provide induction covering hazards, PPE, routes, restricted zones, emergency signals and reporting. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-07-P02-C02
+Semantic rank: None
+BM25 rank: 19
+Content:
+ Use fall protection only with suitable training, equipment and rescue arrangements. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-05-P04-C01
+Semantic rank: 20
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Storekeeper: maintains inventory, labels and segregation. Worker: follows product-specific instructions. EHS: reviews risk controls and response arrangements. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-03-P02-C02
+Semantic rank: None
+BM25 rank: 20
+Content:
+ Pedestrians use marked routes and never assume a driver has seen them. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.

@@ -1,0 +1,122 @@
+{
+    "experiment": "query_analyzer_evaluation",
+    "dataset_name": "sitesense_retrieval_evaluation",
+    "dataset_version": null,
+    "total_queries": 8,
+    "strategy_distribution": {
+        "STANDARD": 3,
+        "EXPANDED": 4,
+        "KEYWORD_FOCUSED": 1
+    },
+    "results": [
+        {
+            "query_id": "Q001",
+            "original_query": "What are the safety rules for forklift operators?",
+            "normalized_query": "what are the safety rules for forklift operators?",
+            "word_count": 8,
+            "expansion_signals": [],
+            "keyword_signals": [
+                "forklift"
+            ],
+            "has_multiple_concepts": false,
+            "has_complex_intent": false,
+            "strategy": "KEYWORD_FOCUSED"
+        },
+        {
+            "query_id": "Q002",
+            "original_query": "How should warehouse PPE be selected and maintained?",
+            "normalized_query": "how should warehouse ppe be selected and maintained?",
+            "word_count": 8,
+            "expansion_signals": [
+                "and"
+            ],
+            "keyword_signals": [
+                "ppe"
+            ],
+            "has_multiple_concepts": true,
+            "has_complex_intent": true,
+            "strategy": "EXPANDED"
+        },
+        {
+            "query_id": "Q003",
+            "original_query": "What should workers do during an emergency evacuation?",
+            "normalized_query": "what should workers do during an emergency evacuation?",
+            "word_count": 8,
+            "expansion_signals": [],
+            "keyword_signals": [],
+            "has_multiple_concepts": false,
+            "has_complex_intent": false,
+            "strategy": "STANDARD"
+        },
+        {
+            "query_id": "Q004",
+            "original_query": "What precautions apply to electrical work and damaged equipment?",
+            "normalized_query": "what precautions apply to electrical work and damaged equipment?",
+            "word_count": 9,
+            "expansion_signals": [
+                "and",
+                "precautions"
+            ],
+            "keyword_signals": [
+                "electrical"
+            ],
+            "has_multiple_concepts": true,
+            "has_complex_intent": false,
+            "strategy": "EXPANDED"
+        },
+        {
+            "query_id": "Q005",
+            "original_query": "How should workplace incidents and near misses be reported?",
+            "normalized_query": "how should workplace incidents and near misses be reported?",
+            "word_count": 9,
+            "expansion_signals": [
+                "and"
+            ],
+            "keyword_signals": [
+                "near misses"
+            ],
+            "has_multiple_concepts": true,
+            "has_complex_intent": true,
+            "strategy": "EXPANDED"
+        },
+        {
+            "query_id": "Q006",
+            "original_query": "What precautions should workers follow when handling chemicals?",
+            "normalized_query": "what precautions should workers follow when handling chemicals?",
+            "word_count": 8,
+            "expansion_signals": [
+                "precautions"
+            ],
+            "keyword_signals": [
+                "chemicals"
+            ],
+            "has_multiple_concepts": false,
+            "has_complex_intent": true,
+            "strategy": "EXPANDED"
+        },
+        {
+            "query_id": "Q007",
+            "original_query": "How should workers safely handle and move heavy materials?",
+            "normalized_query": "how should workers safely handle and move heavy materials?",
+            "word_count": 9,
+            "expansion_signals": [
+                "and"
+            ],
+            "keyword_signals": [],
+            "has_multiple_concepts": true,
+            "has_complex_intent": false,
+            "strategy": "STANDARD"
+        },
+        {
+            "query_id": "Q008",
+            "original_query": "How should pedestrian routes be kept clear?",
+            "normalized_query": "how should pedestrian routes be kept clear?",
+            "word_count": 7,
+            "expansion_signals": [],
+            "keyword_signals": [],
+            "has_multiple_concepts": false,
+            "has_complex_intent": false,
+            "strategy": "STANDARD"
+        }
+    ]
+}

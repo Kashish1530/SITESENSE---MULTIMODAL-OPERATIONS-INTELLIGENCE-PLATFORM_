@@ -1,0 +1,782 @@
+{
+    "dataset_name": "sitesense_retrieval_evaluation",
+    "dataset_version": "2.0",
+    "total_queries": 8,
+    "top_k": 20,
+    "baseline_file": "retrieval_evaluation_minilm_l12_baseline.json",
+    "adaptive_configuration": {
+        "strategy_selection": "automatic",
+        "candidate_count": 20,
+        "keyword_candidate_count": 40,
+        "reranker": "cross-encoder/ms-marco-MiniLM-L-12-v2"
+    },
+    "aggregate_comparison": {
+        "baseline": {
+            "Recall@5": 0.4576,
+            "Recall@10": 0.5501,
+            "MRR": 0.9375,
+            "nDCG@5": 0.6847,
+            "nDCG@10": 0.6393
+        },
+        "adaptive": {
+            "Recall@5": 0.4419,
+            "Recall@10": 0.5869,
+            "MRR": 0.9375,
+            "nDCG@5": 0.6875,
+            "nDCG@10": 0.6617
+        },
+        "delta": {
+            "Recall@5": -0.0157,
+            "Recall@10": 0.0368,
+            "MRR": 0.0,
+            "nDCG@5": 0.0028,
+            "nDCG@10": 0.0224
+        }
+    },
+    "latency_summary": {
+        "average_ms": 2234.9,
+        "median_ms": 2673.15,
+        "minimum_ms": 979.99,
+        "maximum_ms": 3616.43
+    },
+    "strategy_distribution": {
+        "KEYWORD_FOCUSED": 1,
+        "EXPANDED": 4,
+        "STANDARD": 3
+    },
+    "results": [
+        {
+            "query_id": "Q001",
+            "query": "What are the safety rules for forklift operators?",
+            "relevant_chunks": {
+                "SHB-03-P02-C01": 3,
+                "WHP-006-P02-C01": 3,
+                "WHP-006-P02-C02": 3,
+                "SHB-03-P03-C03": 2,
+                "SHB-03-P03-C02": 3,
+                "WHP-006-P03-C02": 3
+            },
+            "adaptive": {
+                "strategy": "KEYWORD_FOCUSED",
+                "query_variants": [],
+                "query_variant_count": 0,
+                "retrieval_source_count": 2,
+                "fusion_candidate_count": 40,
+                "latency_ms": 2858.62,
+                "metrics": {
+                    "Recall@5": 0.6667,
+                    "Recall@10": 1.0,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.8539,
+                    "nDCG@10": 0.9728
+                },
+                "ranked_chunk_ids": [
+                    "SHB-03-P02-C01",
+                    "WHP-006-P02-C02",
+                    "WHP-006-P02-C01",
+                    "WHP-011-P04-C01",
+                    "SHB-03-P03-C02",
+                    "WHP-006-P03-C02",
+                    "SHB-03-P03-C03",
+                    "WHP-006-P05-C02",
+                    "WHP-005-P04-C01",
+                    "WHP-014-P05-C02",
+                    "WHP-011-P05-C02",
+                    "SHB-03-P01-C01",
+                    "WHP-006-P01-C01",
+                    "WHP-005-P05-C02",
+                    "WHP-011-P02-C02",
+                    "WHP-018-P02-C02",
+                    "WHP-011-P04-C02",
+                    "WHP-018-P02-C01",
+                    "WHP-018-P04-C02",
+                    "WHP-002-P04-C02"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.6667,
+                    "Recall@10": 0.6667,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.779,
+                    "nDCG@10": 0.7406
+                },
+                "ranked_chunk_ids": [
+                    "SHB-03-P02-C01",
+                    "WHP-006-P02-C02",
+                    "WHP-006-P02-C01",
+                    "WHP-011-P04-C01",
+                    "SHB-03-P03-C03",
+                    "WHP-014-P05-C02",
+                    "WHP-011-P05-C02",
+                    "SHB-03-P01-C01",
+                    "WHP-006-P01-C01",
+                    "WHP-005-P05-C02",
+                    "WHP-018-P02-C02",
+                    "WHP-018-P02-C01",
+                    "SHB-06-P03-C03",
+                    "SHB-08-P02-C01",
+                    "WHP-008-P02-C01",
+                    "SHB-07-P03-C02",
+                    "SHB-06-P03-C02",
+                    "SHB-07-P02-C01",
+                    "WHP-001-P02-C01",
+                    "SHB-10-P03-C01"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": 0.0,
+                "Recall@10": 0.3333,
+                "MRR": 0.0,
+                "nDCG@5": 0.0749,
+                "nDCG@10": 0.2322
+            }
+        },
+        {
+            "query_id": "Q002",
+            "query": "How should warehouse PPE be selected and maintained?",
+            "relevant_chunks": {
+                "WHP-003-P02-C01": 3,
+                "WHP-003-P02-C02": 3,
+                "SHB-02-P02-C01": 3,
+                "WHP-003-P03-C01": 3,
+                "SHB-02-P03-C01": 3,
+                "WHP-003-P04-C01": 2,
+                "SHB-02-P04-C01": 2,
+                "WHP-003-P05-C01": 2,
+                "SHB-02-P05-C01": 2
+            },
+            "adaptive": {
+                "strategy": "EXPANDED",
+                "query_variants": [
+                    "How should warehouse PPE be selected and maintained? personal protective equipment requirements",
+                    "How should warehouse PPE be selected and maintained? protective equipment selection inspection maintenance"
+                ],
+                "query_variant_count": 2,
+                "retrieval_source_count": 6,
+                "fusion_candidate_count": 51,
+                "latency_ms": 2787.54,
+                "metrics": {
+                    "Recall@5": 0.4444,
+                    "Recall@10": 0.7778,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.672,
+                    "nDCG@10": 0.7401
+                },
+                "ranked_chunk_ids": [
+                    "WHP-003-P02-C01",
+                    "SHB-02-P02-C01",
+                    "SHB-02-P01-C01",
+                    "WHP-003-P04-C01",
+                    "SHB-02-P05-C01",
+                    "WHP-003-P05-C01",
+                    "SHB-02-P03-C01",
+                    "WHP-002-P02-C01",
+                    "SHB-02-P04-C01",
+                    "WHP-003-P01-C01",
+                    "WHP-007-P04-C01",
+                    "SHB-05-P02-C01",
+                    "WHP-003-P02-C02",
+                    "WHP-001-P02-C01",
+                    "SHB-02-P02-C02",
+                    "WHP-003-P03-C01",
+                    "SHB-02-P03-C03",
+                    "SHB-05-P04-C01",
+                    "SHB-01-P02-C02",
+                    "WHP-018-P03-C01"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.4444,
+                    "Recall@10": 0.7778,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.672,
+                    "nDCG@10": 0.7401
+                },
+                "ranked_chunk_ids": [
+                    "WHP-003-P02-C01",
+                    "SHB-02-P02-C01",
+                    "SHB-02-P01-C01",
+                    "WHP-003-P04-C01",
+                    "SHB-02-P05-C01",
+                    "WHP-003-P05-C01",
+                    "SHB-02-P03-C01",
+                    "WHP-002-P02-C01",
+                    "SHB-02-P04-C01",
+                    "WHP-003-P01-C01",
+                    "WHP-007-P04-C01",
+                    "SHB-05-P02-C01",
+                    "WHP-003-P02-C02",
+                    "SHB-02-P02-C02",
+                    "WHP-003-P03-C01",
+                    "WHP-005-P02-C01",
+                    "WHP-016-P02-C01",
+                    "WHP-006-P02-C02",
+                    "SHB-08-P01-C01",
+                    "SHB-05-P02-C02"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": 0.0,
+                "Recall@10": 0.0,
+                "MRR": 0.0,
+                "nDCG@5": 0.0,
+                "nDCG@10": 0.0
+            }
+        },
+        {
+            "query_id": "Q003",
+            "query": "What should workers do during an emergency evacuation?",
+            "relevant_chunks": {
+                "WHP-009-P02-C01": 3,
+                "WHP-009-P02-C02": 3,
+                "WHP-009-P03-C01": 2,
+                "WHP-009-P03-C02": 3,
+                "WHP-009-P03-C03": 2,
+                "SHB-04-P02-C01": 3,
+                "SHB-04-P03-C01": 3,
+                "SHB-04-P03-C02": 3,
+                "SHB-04-P03-C03": 2,
+                "WHP-009-P04-C01": 2
+            },
+            "adaptive": {
+                "strategy": "STANDARD",
+                "query_variants": [],
+                "query_variant_count": 0,
+                "retrieval_source_count": 2,
+                "fusion_candidate_count": 20,
+                "latency_ms": 1036.54,
+                "metrics": {
+                    "Recall@5": 0.4,
+                    "Recall@10": 0.5,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.675,
+                    "nDCG@10": 0.5587
+                },
+                "ranked_chunk_ids": [
+                    "WHP-009-P04-C01",
+                    "SHB-04-P02-C01",
+                    "WHP-009-P02-C01",
+                    "SHB-04-P03-C02",
+                    "SHB-04-P05-C01",
+                    "WHP-009-P03-C01",
+                    "WHP-009-P05-C01",
+                    "SHB-04-P01-C01",
+                    "WHP-009-P01-C01",
+                    "WHP-008-P05-C02",
+                    "WHP-002-P03-C02",
+                    "WHP-008-P03-C03",
+                    "WHP-010-P04-C01",
+                    "SHB-07-P03-C03",
+                    "SHB-01-P03-C03",
+                    "SHB-10-P03-C01",
+                    "WHP-015-P03-C03",
+                    "SHB-06-P03-C03",
+                    "SHB-03-P03-C03",
+                    "SHB-06-P01-C01"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.4,
+                    "Recall@10": 0.5,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.675,
+                    "nDCG@10": 0.5587
+                },
+                "ranked_chunk_ids": [
+                    "WHP-009-P04-C01",
+                    "SHB-04-P02-C01",
+                    "WHP-009-P02-C01",
+                    "SHB-04-P03-C02",
+                    "SHB-04-P05-C01",
+                    "WHP-009-P03-C01",
+                    "WHP-009-P05-C01",
+                    "SHB-04-P01-C01",
+                    "WHP-009-P01-C01",
+                    "WHP-008-P05-C02",
+                    "WHP-002-P03-C02",
+                    "WHP-008-P03-C03",
+                    "WHP-010-P04-C01",
+                    "SHB-07-P03-C03",
+                    "SHB-01-P03-C03",
+                    "SHB-10-P03-C01",
+                    "WHP-015-P03-C03",
+                    "SHB-06-P03-C03",
+                    "SHB-03-P03-C03",
+                    "SHB-06-P01-C01"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": 0.0,
+                "Recall@10": 0.0,
+                "MRR": 0.0,
+                "nDCG@5": 0.0,
+                "nDCG@10": 0.0
+            }
+        },
+        {
+            "query_id": "Q004",
+            "query": "What precautions apply to electrical work and damaged equipment?",
+            "relevant_chunks": {
+                "WHP-015-P02-C01": 3,
+                "WHP-015-P03-C01": 3,
+                "WHP-015-P03-C02": 3,
+                "WHP-015-P03-C03": 2,
+                "WHP-015-P04-C01": 2,
+                "WHP-015-P02-C02": 2,
+                "WHP-015-P05-C02": 2,
+                "WHP-015-P05-C01": 2,
+                "WHP-014-P02-C02": 2,
+                "WHP-014-P03-C02": 3,
+                "SHB-08-P03-C03": 2
+            },
+            "adaptive": {
+                "strategy": "EXPANDED",
+                "query_variants": [
+                    "What precautions apply to electrical work and damaged equipment? electrical hazard control and equipment inspection",
+                    "What precautions apply to electrical work and damaged equipment? electrical isolation and lockout procedures"
+                ],
+                "query_variant_count": 2,
+                "retrieval_source_count": 6,
+                "fusion_candidate_count": 54,
+                "latency_ms": 2753.48,
+                "metrics": {
+                    "Recall@5": 0.3636,
+                    "Recall@10": 0.3636,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6845,
+                    "nDCG@10": 0.5473
+                },
+                "ranked_chunk_ids": [
+                    "WHP-015-P02-C01",
+                    "WHP-015-P04-C01",
+                    "SHB-06-P03-C03",
+                    "WHP-015-P03-C01",
+                    "WHP-015-P02-C02",
+                    "WHP-015-P01-C01",
+                    "WHP-003-P03-C04",
+                    "WHP-014-P05-C02",
+                    "WHP-003-P02-C02",
+                    "WHP-002-P03-C04",
+                    "WHP-011-P03-C04",
+                    "WHP-010-P03-C04",
+                    "WHP-008-P03-C04",
+                    "WHP-008-P03-C01",
+                    "WHP-015-P05-C02",
+                    "SHB-08-P03-C03",
+                    "WHP-018-P03-C04",
+                    "WHP-004-P02-C02",
+                    "WHP-016-P02-C01",
+                    "WHP-005-P03-C03"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.3636,
+                    "Recall@10": 0.5455,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6845,
+                    "nDCG@10": 0.6214
+                },
+                "ranked_chunk_ids": [
+                    "WHP-015-P02-C01",
+                    "WHP-015-P04-C01",
+                    "SHB-06-P03-C03",
+                    "WHP-015-P03-C01",
+                    "WHP-015-P02-C02",
+                    "WHP-015-P01-C01",
+                    "WHP-014-P05-C02",
+                    "WHP-008-P03-C01",
+                    "WHP-015-P05-C02",
+                    "SHB-08-P03-C03",
+                    "WHP-016-P02-C01",
+                    "SHB-07-P03-C03",
+                    "WHP-015-P05-C01",
+                    "WHP-014-P02-C02",
+                    "SHB-06-P03-C02",
+                    "WHP-014-P03-C02",
+                    "WHP-008-P02-C02",
+                    "SHB-07-P03-C02",
+                    "WHP-010-P03-C02",
+                    "SHB-10-P03-C01"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": 0.0,
+                "Recall@10": -0.1819,
+                "MRR": 0.0,
+                "nDCG@5": 0.0,
+                "nDCG@10": -0.0741
+            }
+        },
+        {
+            "query_id": "Q005",
+            "query": "How should workplace incidents and near misses be reported?",
+            "relevant_chunks": {
+                "WHP-019-P02-C01": 3,
+                "WHP-019-P02-C02": 2,
+                "WHP-019-P03-C01": 3,
+                "WHP-019-P03-C02": 2,
+                "WHP-019-P03-C03": 2,
+                "WHP-019-P04-C01": 2,
+                "SHB-10-P02-C01": 3
+            },
+            "adaptive": {
+                "strategy": "EXPANDED",
+                "query_variants": [
+                    "How should workplace incidents and near misses be reported? workplace accident reporting procedure",
+                    "How should workplace incidents and near misses be reported? incident investigation and corrective actions",
+                    "How should workplace incidents and near misses be reported? workplace incident reporting"
+                ],
+                "query_variant_count": 3,
+                "retrieval_source_count": 8,
+                "fusion_candidate_count": 68,
+                "latency_ms": 3616.43,
+                "metrics": {
+                    "Recall@5": 0.2857,
+                    "Recall@10": 0.4286,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.5766,
+                    "nDCG@10": 0.5667
+                },
+                "ranked_chunk_ids": [
+                    "SHB-10-P02-C01",
+                    "SHB-10-P04-C01",
+                    "WHP-002-P02-C02",
+                    "WHP-019-P02-C01",
+                    "SHB-10-P03-C02",
+                    "SHB-10-P05-C01",
+                    "WHP-019-P04-C01",
+                    "WHP-019-P05-C02",
+                    "SHB-10-P01-C01",
+                    "WHP-019-P05-C01",
+                    "WHP-019-P01-C01",
+                    "WHP-019-P03-C02",
+                    "WHP-019-P02-C02",
+                    "SHB-03-P03-C03",
+                    "WHP-002-P03-C03",
+                    "SHB-01-P02-C02",
+                    "WHP-002-P05-C01",
+                    "SHB-03-P03-C02",
+                    "SHB-01-P02-C01",
+                    "WHP-006-P03-C03"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.2857,
+                    "Recall@10": 0.2857,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6045,
+                    "nDCG@10": 0.5402
+                },
+                "ranked_chunk_ids": [
+                    "SHB-10-P02-C01",
+                    "WHP-002-P02-C02",
+                    "WHP-019-P02-C01",
+                    "SHB-10-P01-C01",
+                    "WHP-019-P01-C01",
+                    "SHB-03-P03-C03",
+                    "SHB-01-P02-C02",
+                    "SHB-03-P03-C02",
+                    "SHB-01-P02-C01",
+                    "WHP-006-P03-C03",
+                    "WHP-016-P02-C02",
+                    "WHP-002-P03-C04",
+                    "SHB-06-P03-C03",
+                    "WHP-018-P05-C02",
+                    "WHP-010-P03-C02",
+                    "SHB-01-P03-C03",
+                    "WHP-018-P03-C04",
+                    "WHP-003-P03-C04",
+                    "WHP-006-P03-C04",
+                    "WHP-014-P03-C02"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": 0.0,
+                "Recall@10": 0.1429,
+                "MRR": 0.0,
+                "nDCG@5": -0.0279,
+                "nDCG@10": 0.0265
+            }
+        },
+        {
+            "query_id": "Q006",
+            "query": "What precautions should workers follow when handling chemicals?",
+            "relevant_chunks": {
+                "SHB-05-P02-C01": 3,
+                "SHB-05-P03-C01": 2,
+                "SHB-05-P03-C02": 3,
+                "SHB-05-P03-C03": 2,
+                "SHB-05-P04-C01": 1,
+                "WHP-007-P02-C01": 3,
+                "WHP-007-P02-C02": 2,
+                "SHB-09-P02-C01": 1
+            },
+            "adaptive": {
+                "strategy": "EXPANDED",
+                "query_variants": [
+                    "What precautions should workers follow when handling chemicals? hazardous substance handling and storage",
+                    "What precautions should workers follow when handling chemicals? chemical safety precautions and spill response",
+                    "What precautions should workers follow when handling chemicals? chemical handling procedures and precautions"
+                ],
+                "query_variant_count": 3,
+                "retrieval_source_count": 8,
+                "fusion_candidate_count": 49,
+                "latency_ms": 2592.83,
+                "metrics": {
+                    "Recall@5": 0.375,
+                    "Recall@10": 0.5,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6285,
+                    "nDCG@10": 0.5894
+                },
+                "ranked_chunk_ids": [
+                    "WHP-007-P02-C02",
+                    "SHB-05-P02-C01",
+                    "WHP-007-P02-C01",
+                    "SHB-05-P05-C01",
+                    "WHP-007-P04-C01",
+                    "WHP-007-P05-C02",
+                    "SHB-09-P02-C01",
+                    "WHP-002-P02-C01",
+                    "SHB-05-P01-C01",
+                    "WHP-002-P04-C01",
+                    "WHP-016-P02-C01",
+                    "WHP-007-P05-C01",
+                    "WHP-002-P02-C02",
+                    "SHB-09-P04-C01",
+                    "WHP-019-P02-C01",
+                    "WHP-011-P02-C01",
+                    "WHP-010-P04-C01",
+                    "WHP-008-P02-C01",
+                    "WHP-015-P02-C01",
+                    "WHP-016-P04-C01"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.5,
+                    "Recall@10": 0.5,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.6533,
+                    "nDCG@10": 0.5945
+                },
+                "ranked_chunk_ids": [
+                    "WHP-007-P02-C02",
+                    "SHB-05-P02-C01",
+                    "WHP-007-P02-C01",
+                    "SHB-09-P02-C01",
+                    "WHP-002-P02-C01",
+                    "SHB-05-P01-C01",
+                    "WHP-002-P04-C01",
+                    "WHP-010-P04-C01",
+                    "WHP-008-P02-C01",
+                    "WHP-016-P04-C01",
+                    "WHP-005-P02-C01",
+                    "WHP-017-P02-C01",
+                    "WHP-001-P04-C01",
+                    "WHP-006-P02-C01",
+                    "WHP-012-P02-C01",
+                    "WHP-007-P01-C01",
+                    "WHP-013-P02-C01",
+                    "SHB-06-P01-C01",
+                    "SHB-09-P01-C01",
+                    "SHB-10-P03-C01"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": -0.125,
+                "Recall@10": 0.0,
+                "MRR": 0.0,
+                "nDCG@5": -0.0248,
+                "nDCG@10": -0.0051
+            }
+        },
+        {
+            "query_id": "Q007",
+            "query": "How should workers safely handle and move heavy materials?",
+            "relevant_chunks": {
+                "SHB-06-P02-C01": 3,
+                "SHB-06-P03-C01": 2,
+                "SHB-06-P03-C02": 3,
+                "SHB-06-P03-C03": 2
+            },
+            "adaptive": {
+                "strategy": "STANDARD",
+                "query_variants": [],
+                "query_variant_count": 0,
+                "retrieval_source_count": 2,
+                "fusion_candidate_count": 20,
+                "latency_ms": 979.99,
+                "metrics": {
+                    "Recall@5": 0.5,
+                    "Recall@10": 0.5,
+                    "MRR": 0.5,
+                    "nDCG@5": 0.5572,
+                    "nDCG@10": 0.5572
+                },
+                "ranked_chunk_ids": [
+                    "WHP-007-P02-C02",
+                    "SHB-06-P03-C02",
+                    "SHB-06-P02-C01",
+                    "WHP-007-P02-C01",
+                    "SHB-05-P02-C01",
+                    "SHB-06-P01-C01",
+                    "WHP-016-P02-C01",
+                    "WHP-002-P02-C01",
+                    "WHP-002-P02-C02",
+                    "WHP-007-P01-C01",
+                    "WHP-016-P03-C01",
+                    "SHB-03-P03-C03",
+                    "WHP-011-P02-C01",
+                    "SHB-07-P02-C01",
+                    "WHP-010-P04-C01",
+                    "WHP-015-P02-C01",
+                    "WHP-014-P02-C01",
+                    "WHP-017-P02-C01",
+                    "SHB-02-P01-C01",
+                    "SHB-08-P01-C01"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.5,
+                    "Recall@10": 0.5,
+                    "MRR": 0.5,
+                    "nDCG@5": 0.5572,
+                    "nDCG@10": 0.5572
+                },
+                "ranked_chunk_ids": [
+                    "WHP-007-P02-C02",
+                    "SHB-06-P03-C02",
+                    "SHB-06-P02-C01",
+                    "WHP-007-P02-C01",
+                    "SHB-05-P02-C01",
+                    "SHB-06-P01-C01",
+                    "WHP-016-P02-C01",
+                    "WHP-002-P02-C01",
+                    "WHP-002-P02-C02",
+                    "WHP-007-P01-C01",
+                    "WHP-016-P03-C01",
+                    "SHB-03-P03-C03",
+                    "WHP-011-P02-C01",
+                    "SHB-07-P02-C01",
+                    "WHP-010-P04-C01",
+                    "WHP-015-P02-C01",
+                    "WHP-014-P02-C01",
+                    "WHP-017-P02-C01",
+                    "SHB-02-P01-C01",
+                    "SHB-08-P01-C01"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": 0.0,
+                "Recall@10": 0.0,
+                "MRR": 0.0,
+                "nDCG@5": 0.0,
+                "nDCG@10": 0.0
+            }
+        },
+        {
+            "query_id": "Q008",
+            "query": "How should pedestrian routes be kept clear?",
+            "relevant_chunks": {
+                "WHP-004-P02-C01": 3,
+                "WHP-004-P02-C02": 2,
+                "WHP-004-P03-C01": 3,
+                "WHP-004-P03-C02": 2,
+                "WHP-004-P03-C03": 2,
+                "WHP-004-P04-C01": 2,
+                "WHP-016-P03-C01": 2,
+                "WHP-001-P02-C02": 2
+            },
+            "adaptive": {
+                "strategy": "STANDARD",
+                "query_variants": [],
+                "query_variant_count": 0,
+                "retrieval_source_count": 2,
+                "fusion_candidate_count": 20,
+                "latency_ms": 1253.77,
+                "metrics": {
+                    "Recall@5": 0.5,
+                    "Recall@10": 0.625,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.8524,
+                    "nDCG@10": 0.7617
+                },
+                "ranked_chunk_ids": [
+                    "WHP-004-P02-C01",
+                    "WHP-004-P02-C02",
+                    "WHP-004-P03-C02",
+                    "WHP-006-P02-C02",
+                    "WHP-004-P03-C01",
+                    "SHB-03-P02-C02",
+                    "SHB-03-P04-C01",
+                    "WHP-004-P01-C01",
+                    "WHP-016-P03-C01",
+                    "WHP-011-P02-C02",
+                    "SHB-03-P02-C01",
+                    "SHB-03-P03-C02",
+                    "SHB-01-P02-C01",
+                    "WHP-006-P03-C02",
+                    "WHP-001-P02-C02",
+                    "WHP-018-P02-C02",
+                    "WHP-008-P02-C01",
+                    "WHP-017-P02-C01",
+                    "SHB-09-P02-C02",
+                    "SHB-02-P01-C01"
+                ]
+            },
+            "baseline": {
+                "strategy": "HYBRID_RERANKED",
+                "metrics": {
+                    "Recall@5": 0.5,
+                    "Recall@10": 0.625,
+                    "MRR": 1.0,
+                    "nDCG@5": 0.8524,
+                    "nDCG@10": 0.7617
+                },
+                "ranked_chunk_ids": [
+                    "WHP-004-P02-C01",
+                    "WHP-004-P02-C02",
+                    "WHP-004-P03-C02",
+                    "WHP-006-P02-C02",
+                    "WHP-004-P03-C01",
+                    "SHB-03-P02-C02",
+                    "SHB-03-P04-C01",
+                    "WHP-004-P01-C01",
+                    "WHP-016-P03-C01",
+                    "WHP-011-P02-C02",
+                    "SHB-03-P02-C01",
+                    "SHB-03-P03-C02",
+                    "SHB-01-P02-C01",
+                    "WHP-006-P03-C02",
+                    "WHP-001-P02-C02",
+                    "WHP-018-P02-C02",
+                    "WHP-008-P02-C01",
+                    "WHP-017-P02-C01",
+                    "SHB-09-P02-C02",
+                    "SHB-02-P01-C01"
+                ]
+            },
+            "metric_delta": {
+                "Recall@5": 0.0,
+                "Recall@10": 0.0,
+                "MRR": 0.0,
+                "nDCG@5": 0.0,
+                "nDCG@10": 0.0
+            }
+        }
+    ]
+}

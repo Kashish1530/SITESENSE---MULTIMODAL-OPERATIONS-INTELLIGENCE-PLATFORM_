@@ -1,0 +1,104 @@
+{
+  "dataset_name": "sitesense_retrieval_evaluation",
+  "version": "2.0",
+  "description": "Manually labelled warehouse safety retrieval evaluation dataset based on synthetic internal training documents.",
+  "relevance_scale": {
+    "3": "Directly answers the query",
+    "2": "Provides important supporting information",
+    "1": "Related context",
+    "0": "Not relevant"
+  },
+  "queries": [
+    {
+      "query_id": "Q001",
+      "query": "What are the safety rules for forklift operators?",
+      "relevant_chunks": {
+        "SHB-03-P02-C01": 3,
+        "WHP-006-P02-C01": 3,
+        "WHP-006-P02-C02": 3,
+        "SHB-03-P03-C03": 2
+      }
+    },
+    {
+      "query_id": "Q002",
+      "query": "How should warehouse PPE be selected and maintained?",
+      "relevant_chunks": {
+        "WHP-003-P02-C01": 3,
+        "WHP-003-P02-C02": 3
+      }
+    },
+    {
+      "query_id": "Q003",
+      "query": "What should workers do during an emergency evacuation?",
+      "relevant_chunks": {
+        "WHP-009-P02-C01": 3,
+        "WHP-009-P02-C02": 3,
+        "WHP-009-P03-C01": 2,
+        "WHP-009-P03-C02": 3,
+        "WHP-009-P03-C03": 2
+      }
+    },
+    {
+      "query_id": "Q004",
+      "query": "What precautions apply to electrical work and damaged equipment?",
+      "relevant_chunks": {
+        "WHP-015-P02-C01": 3,
+        "WHP-015-P03-C01": 3,
+        "WHP-015-P03-C02": 3,
+        "WHP-015-P03-C03": 2,
+        "WHP-015-P04-C01": 2
+      }
+    },
+    {
+      "query_id": "Q005",
+      "query": "How should workplace incidents and near misses be reported?",
+      "relevant_chunks": {
+        "WHP-019-P02-C01": 3,
+        "WHP-019-P02-C02": 2,
+        "WHP-019-P03-C01": 3,
+        "WHP-019-P03-C02": 2,
+        "WHP-019-P03-C03": 2,
+        "WHP-019-P04-C01": 2,
+        "SHB-10-P02-C01": 3
+      }
+    },
+    {
+      "query_id": "Q006",
+      "query": "What precautions should workers follow when handling chemicals?",
+      "relevant_chunks": {
+        "SHB-05-P02-C01": 3,
+    	"SHB-05-P03-C01": 2,
+    	"SHB-05-P03-C02": 3,
+    	"SHB-05-P03-C03": 2,
+    	"SHB-05-P04-C01": 1,
+    	"WHP-007-P02-C01": 3,
+   	"WHP-007-P02-C02": 2,
+   	"SHB-09-P02-C01": 1
+      }
+    },
+    {
+      "query_id": "Q007",
+      "query": "How should workers safely handle and move heavy materials?",
+      "relevant_chunks": {
+        "SHB-06-P02-C01": 3,
+        "SHB-06-P03-C01": 2,
+        "SHB-06-P03-C02": 3,
+        "SHB-06-P03-C03": 2
+      }
+    },
+    {
+      "query_id": "Q008",
+      "query": "How should pedestrian routes be kept clear?",
+      "relevant_chunks": {
+        "WHP-004-P02-C01": 3,
+    	"WHP-004-P02-C02": 2,
+    	"WHP-004-P03-C01": 3,
+    	"WHP-004-P03-C02": 2,
+    	"WHP-004-P03-C03": 2,
+    	"WHP-004-P04-C01": 2,
+    	"WHP-016-P03-C01": 2,
+        "WHP-001-P02-C02": 2
+      }
+    }
+  ]
+}

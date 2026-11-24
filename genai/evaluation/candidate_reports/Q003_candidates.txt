@@ -1,0 +1,235 @@
+================================================================================
+Q003 - What should workers do during an emergency evacuation?
+================================================================================
+Total candidates: 33
+
+--------------------------------------------------------------------------------
+Chunk: WHP-008-P05-C02
+Semantic rank: 1
+BM25 rank: 8
+Content:
+Review this document after material process changes, relevant incidents or scheduled document review. 6. Related documents WHP-009 Emergency Response; WHP-016 Housekeeping; SHB-04 Fire and Emergency Handbook.. Escalation guidance: Only trained and authorised persons may attempt first-aid firefighting where the emergency plan permits and escape remains safe. Evacuation takes priority. 7. Escalation and SITESENSE evidence guidance For a digital inspection, preserve the document ID, version, status, section heading and page number. Link each finding to its source image or video timestamp, relevant policy clause, detection or extraction record, confidence and human-review status.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-010-P04-C01
+Semantic rank: None
+BM25 rank: 1
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Facilities: owns sign register and installation arrangements. EHS: advises on hazard meaning and suitability. Supervisors: check signage during inspections. Workers: report defects and do not remove or cover signs. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance. Training or authorisation records should identify the person, subject, date and assessor or approving role where applicable.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-07-P03-C03
+Semantic rank: 2
+BM25 rank: None
+Content:
+Step 5: Maintain communication and rescue readiness; inspect and store equipment after use. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-008-P03-C03
+Semantic rank: 3
+BM25 rank: None
+Content:
+Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Raise the alarm and follow the emergency plan if smoke, fire or an abnormal heat condition is discovered. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-06-P01-C01
+Semantic rank: None
+BM25 rank: 3
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Ergonomics and Manual Handling Handbook SAFETY HANDBOOK | DOCUMENT ID: SHB-06 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Help workers reduce strain during lifting, carrying, pushing, pulling and repetitive tasks. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-04-P01-C01
+Semantic rank: 11
+BM25 rank: 4
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Fire Prevention and Emergency Evacuation Handbook SAFETY HANDBOOK | DOCUMENT ID: SHB-04 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Explain routine fire prevention, alarm response, evacuation and accountability. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-009-P04-C01
+Semantic rank: 5
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Incident controller: coordinates response and authorises re-entry. Wardens: perform assigned evacuation duties within competence. Supervisors: account for teams and report missing persons. All occupants: follow alarms, routes and instructions. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-10-P03-C01
+Semantic rank: None
+BM25 rank: 5
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Notify the supervisor and emergency services where required by the site plan. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Record what happened, where and when, separating facts from assumptions. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-04-P03-C02
+Semantic rank: 6
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Assist others only within your training and the site emergency plan. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Report to the assembly point and take part in roll call. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Wait for formal instructions and do not re-enter independently.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-009-P01-C01
+Semantic rank: 7
+BM25 rank: 6
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 1 of 5 ABC COMPANY WAREHOUSE Emergency Response and Evacuation Policy COMPANY POLICY | DOCUMENT ID: WHP-009 Document owner Warehouse Operations and EHS Version / status Version 1.0 — Synthetic internal training draft Dataset date 18 November 2026 Applies to ABC Company Warehouse; relevant employees, contractors and authorised visitors Review cycle Annual review and after significant incident, process change or site-layout change Document purpose Set a consistent process for alarm response, evacuation, accountability and controlled re-entry. Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-015-P03-C03
+Semantic rank: 9
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Restore energy only after work completion, personnel clearance, inspection and formal authorisation. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-04-P05-C01
+Semantic rank: None
+BM25 rank: 9
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 5 of 5 4. Records, audit and continual improvement Maintain records sufficient to demonstrate that the process was planned, implemented, checked and improved. Apply the approved company retention schedule; this synthetic document does not set a legal retention period.  Emergency contact list; evacuation maps; drill attendance; roll-call; alarm tests; corrective actions. 5. Monitoring and review Review inspection trends, incidents, repeat defects, overdue actions and worker feedback. Assign an owner and due date to corrective actions and verify effectiveness before closure. Review this document after material process changes, relevant incidents or scheduled document review. 6.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-01-P03-C03
+Semantic rank: 10
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Record exceptions, leave the area orderly and hand over unresolved hazards. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-009-P05-C01
+Semantic rank: None
+BM25 rank: 10
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 5 of 5 4. Records, audit and continual improvement Maintain records sufficient to demonstrate that the process was planned, implemented, checked and improved. Apply the approved company retention schedule; this synthetic document does not set a legal retention period.  Emergency plan; contact list; evacuation maps; drill records; roll-call sheets; alarm tests; post-drill corrective actions. 5. Monitoring and review Review inspection trends, incidents, repeat defects, overdue actions and worker feedback. Assign an owner and due date to corrective actions and verify effectiveness before closure. Review this document after material process changes, relevant incidents or scheduled document review. 6.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-002-P03-C02
+Semantic rank: None
+BM25 rank: 11
+Content:
+Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Document controls, responsibilities, required competence and emergency arrangements. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Brief affected workers before work begins and confirm that controls are in place. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-03-P03-C03
+Semantic rank: 12
+BM25 rank: None
+Content:
+Step 5: Park safely, secure the truck and report incidents or near misses. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-04-P02-C01
+Semantic rank: None
+BM25 rank: 12
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 2 of 5 1. Policy requirements and control standards The following controls define the expected management approach. Supervisors should translate them into site-specific work instructions, risk assessments, inspection criteria and training after formal review.  Know the alarm signal, nearest safe exits and assigned assembly point.  Keep fire doors, exits, extinguishers and alarm points accessible.  Do not undertake hot work without required authorisation.  Raise the alarm immediately if smoke or fire is discovered.  Do not re-enter until the incident controller or emergency authority authorises it.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-06-P03-C03
+Semantic rank: 13
+BM25 rank: None
+Content:
+Step 5: Set down safely and report strain, damaged packaging or unsuitable equipment. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-004-P03-C01
+Semantic rank: None
+BM25 rank: 13
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Inspect pedestrian routes at shift start and during scheduled area checks. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Move misplaced items to an approved storage location without creating a second obstruction. Expected output: a recorded check, action, decision or handover entry appropriate to the step.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-05-P03-C03
+Semantic rank: 14
+BM25 rank: None
+Content:
+Step 5: Close and return the container; report leaks, exposure or release. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-015-P04-C01
+Semantic rank: None
+BM25 rank: 14
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 4 of 5 3. Roles, competence and communication Responsibilities must be assigned clearly. A person may hold more than one role in a small operation, but accountability and approval authority must remain explicit. Electrical authorised person: controls electrical work and isolation. Maintenance lead: coordinates repairs and records. Supervisor: secures area and prevents unauthorised access. All workers: report damage and do not interfere with electrical systems. Competence and briefing People performing the activity must receive task-appropriate instruction, understand relevant hazards and know when to stop and seek assistance.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-04-P03-C03
+Semantic rank: 15
+BM25 rank: None
+Content:
+Step 5: Wait for formal instructions and do not re-enter independently. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-04-P02-C02
+Semantic rank: None
+BM25 rank: 15
+Content:
+ Do not re-enter until the incident controller or emergency authority authorises it. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-07-P03-C02
+Semantic rank: 16
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Inspect equipment and establish the required exclusion zone. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Use the approved edge protection and fall controls. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Maintain communication and rescue readiness; inspect and store equipment after use.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-007-P02-C02
+Semantic rank: None
+BM25 rank: 16
+Content:
+ Only trained and authorised personnel handle substances for which training or authorisation is required.  Unknown, leaking or damaged containers and uncontrolled releases are isolated and escalated; workers must not identify substances by smell or appearance. Control verification A control is effective only when it is present, understood, maintained and appropriate to the current task and conditions. A document, sign or completed checklist is supporting evidence, not automatic proof that the physical control is working. Evidence quality Use identifiable records with date, time, location, responsible person and source. Photographs and AI detections may support an inspection but must be interpreted with site context and human review.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-04-P03-C01
+Semantic rank: 17
+BM25 rank: None
+Content:
+ABC Company Warehouse | Synthetic training document | Internal draft Page 3 of 5 2. Operating procedure Use this sequence as a controlled workflow template. Adapt role names, forms and approval points to the approved local procedure. Step 1: Stop work and raise or respond to the alarm. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 2: Move by the nearest safe designated route; follow instructions if a route is unsafe. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-001-P01-C02
+Semantic rank: None
+BM25 rank: 17
+Content:
+Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject. It is intended for training, synthetic data ingestion and SITESENSE demonstration. Local arrangements, actual equipment, site drawings, risk assessments and approved emergency plans take precedence after competent review. Important use limitation This is fictional, synthetic training content. It is not an approved ABC Company procedure, legal advice, certification or proof of compliance. A competent site owner must review and approve it before operational use. Do not treat illustrative wording as a site-specific numeric limit or legal requirement.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-017-P03-C03
+Semantic rank: 18
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Retain transfer records and report spills, unauthorised disposal or environmental concerns. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-002-P01-C02
+Semantic rank: None
+BM25 rank: 18
+Content:
+Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject. It is intended for training, synthetic data ingestion and SITESENSE demonstration. Local arrangements, actual equipment, site drawings, risk assessments and approved emergency plans take precedence after competent review. Important use limitation This is fictional, synthetic training content. It is not an approved ABC Company procedure, legal advice, certification or proof of compliance. A competent site owner must review and approve it before operational use. Do not treat illustrative wording as a site-specific numeric limit or legal requirement.
+
+--------------------------------------------------------------------------------
+Chunk: SHB-03-P03-C02
+Semantic rank: 19
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 3: Check load, route, floor condition and pedestrian activity. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 4: Travel defensively and follow crossings, warning and parking rules. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Park safely, secure the truck and report incidents or near misses.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-003-P01-C02
+Semantic rank: None
+BM25 rank: 19
+Content:
+Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject. It is intended for training, synthetic data ingestion and SITESENSE demonstration. Local arrangements, actual equipment, site drawings, risk assessments and approved emergency plans take precedence after competent review. Important use limitation This is fictional, synthetic training content. It is not an approved ABC Company procedure, legal advice, certification or proof of compliance. A competent site owner must review and approve it before operational use. Do not treat illustrative wording as a site-specific numeric limit or legal requirement.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-007-P03-C03
+Semantic rank: 20
+BM25 rank: None
+Content:
+If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Step 5: Close and return containers to approved storage; report exposure, leak or release immediately. Expected output: a recorded check, action, decision or handover entry appropriate to the step. If the required control is unavailable or the situation is unclear, pause and escalate rather than improvising. Exceptions and stop-work conditions Pause the affected activity when an immediate hazard is suspected, required equipment or authorisation is missing, a critical control has failed, or conditions differ materially from the approved assessment. Secure the area where safe, notify the supervisor and record the interim control.
+
+--------------------------------------------------------------------------------
+Chunk: WHP-004-P01-C02
+Semantic rank: None
+BM25 rank: 20
+Content:
+Scope and applicability This document applies to the ABC Company Warehouse activities and work areas relevant to its subject. It is intended for training, synthetic data ingestion and SITESENSE demonstration. Local arrangements, actual equipment, site drawings, risk assessments and approved emergency plans take precedence after competent review. Important use limitation This is fictional, synthetic training content. It is not an approved ABC Company procedure, legal advice, certification or proof of compliance. A competent site owner must review and approve it before operational use. Do not treat illustrative wording as a site-specific numeric limit or legal requirement.

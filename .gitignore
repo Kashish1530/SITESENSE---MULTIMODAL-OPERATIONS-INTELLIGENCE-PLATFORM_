@@ -20,12 +20,13 @@ runs/
 detection/outputs/
 detection_*/outputs/
 
-# Dataset images (keep directory structure and yaml configs)
-data/raw/images/
-data/processed/*/images/
 
 # OS / Editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+
+# Dataset images (keep directory structure and yaml configs)
+data/raw/images/
+

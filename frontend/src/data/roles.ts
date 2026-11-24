@@ -41,6 +41,7 @@ export const DEMO_ROLES: RoleConfig[] = [
             'Overview',
             'Search',
             'Inspections',
+            'Upload',
             'Review Queue',
             'Report Viewer',
             'Sites & Zones',

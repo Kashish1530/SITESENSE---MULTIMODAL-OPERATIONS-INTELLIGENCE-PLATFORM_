@@ -30,7 +30,7 @@ export default function AppLayout({
     const [mobileOpen, setMobileOpen] = useState(false)
 
     return (
-        <div className="min-h-screen bg-slate-50 lg:flex">
+        <div className="h-screen overflow-hidden bg-slate-50 lg:flex">
             <Sidebar
                 collapsed={collapsed}
                 onToggle={() => setCollapsed(!collapsed)}
@@ -41,9 +41,9 @@ export default function AppLayout({
                 currentUser={currentUser}
             />
 
-            <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+            <div className="flex h-screen min-w-0 flex-1 flex-col overflow-hidden">
                 {isPreviewMode && (
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200 bg-amber-50 px-4 py-3 sm:px-6">
+                    <div className="shrink-0 flex flex-wrap items-center justify-between gap-3 border-b border-amber-200 bg-amber-50 px-4 py-3 sm:px-6">
                         <div className="flex items-center gap-3">
                             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
                                 <Eye size={18} />
@@ -76,7 +76,7 @@ export default function AppLayout({
                     onLogout={onLogout}
                 />
 
-                <main className="flex-1 p-4 sm:p-6 lg:p-8">
+                <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                     <div className="mx-auto w-full max-w-[1600px]">
                         {children}
                     </div>

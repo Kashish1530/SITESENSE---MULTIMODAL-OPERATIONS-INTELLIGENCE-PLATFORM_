@@ -22,7 +22,8 @@ const DEMO_CITATIONS = [
 
 export async function* streamMockResponse(
     question: string,
-    hasImages: boolean,
+    hasAttachments: boolean,
+    attachmentTypes?: string[],
 ): AsyncGenerator<MockChatEvent> {
     yield {
         type: 'tool',
@@ -38,9 +39,15 @@ export async function* streamMockResponse(
 
     await wait(500)
 
-    const response = hasImages
-        ? 'I received your image attachment in this preview. Image analysis is not connected yet, so I cannot identify objects or verify conditions in the photograph. I can still help explain the inspection process or suggest what evidence an inspector should record.'
-        : `This is a simulated response to: "${question}".\n\nFor a workplace inspection, record the observation clearly, include the relevant location, attach supporting evidence and assign a corrective action when necessary.\n\nPlease verify any operational decision against your organization's actual policies. This preview does not access live SiteSense data.`
+    let response: string
+    if (hasAttachments) {
+        const typesStr = attachmentTypes && attachmentTypes.length > 0
+            ? attachmentTypes.join(', ')
+            : 'photo, video, PDF, or Excel spreadsheet'
+        response = `I received your attachment(s) (${typesStr}) in this preview. The SiteSense Multimodal Assistant supports images, video recordings, PDF documentation, and Excel spreadsheets (.xlsx, .xls, .csv). In a live inspection environment, these files are uploaded directly to MinIO and grounded against operational compliance policies and detection models.`
+    } else {
+        response = `This is a simulated response to: "${question}".\n\nFor a workplace inspection, record the observation clearly, include the relevant location, attach supporting evidence and assign a corrective action when necessary.\n\nPlease verify any operational decision against your organization's actual policies. This preview does not access live SiteSense data.`
+    }
 
     const words = response.split(/(\s+)/)
 

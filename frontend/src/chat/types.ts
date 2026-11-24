@@ -1,9 +1,15 @@
 export type ChatRole = 'user' | 'assistant'
 
+export type AttachmentType = 'image' | 'video' | 'pdf' | 'excel' | 'doc'
+
 export type ChatAttachment = {
     id: string
     name: string
     previewUrl: string
+    type?: AttachmentType
+    file?: File
+    size?: number
+    storagePath?: string
 }
 
 export type ChatCitation = {

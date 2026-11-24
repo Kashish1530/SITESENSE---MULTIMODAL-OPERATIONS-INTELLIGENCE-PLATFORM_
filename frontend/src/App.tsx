@@ -10,6 +10,7 @@ import EmployeeSearch from './components/search/EmployeeSearch'
 import InspectionDashboard from './components/inspections/InspectionDashboard'
 import MyTasks from './components/inspections/MyTasks'
 import TaskUpload from './components/inspections/TaskUpload'
+import UploadPage from './components/upload/UploadPage'
 import MyHistory from './components/inspections/MyHistory'
 import ReviewQueue from './components/inspections/ReviewQueue'
 import ChatPage from './components/chat/ChatPage'
@@ -38,6 +39,21 @@ import {
   mockTaskPhotoUpload,
   formatFileSize,
 } from './inspections/taskPhotoAdapter'
+
+import {
+  loginApi,
+  logoutApi,
+  getCurrentUserApi,
+  getInspectionsApi,
+  batchUploadMediaApi,
+  createAdminUserApi,
+  getAdminUsersApi,
+  updateAdminUserApi,
+  toFrontendRole,
+  getStoredAccessToken,
+  getStoredAuthUser,
+  clearStoredSession,
+} from './api/client'
 
 const SESSION_KEY = 'sitesense_demo_session'
 const ACTIVE_TASK_STATUSES = ['Draft', 'Scheduled', 'In Progress']
@@ -106,15 +122,10 @@ function AppContent() {
   const submittingTaskIds = useRef(new Set<string>())
   const evidencePreviewUrls = useRef<string[]>([])
 
+  const [apiUser, setApiUser] = useState<DemoUser | null>(getStoredAuthUser)
   const [currentUserId, setCurrentUserId] =
     useState<string | null>(getInitialUserId)
-
-  const currentUser = currentUserId
-    ? users.find(
-      user => user.id === currentUserId && user.isActive,
-    ) ?? null
-    : null
-
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
   const [previewUserId, setPreviewUserId] = useState<string | null>(null)
   const [loginError, setLoginError] = useState('')
   const [selectedPage, setSelectedPage] = useState('Overview')
@@ -124,6 +135,10 @@ function AppContent() {
       user => user.id === previewUserId && user.isActive,
     ) ?? null
     : null
+
+  const currentUser = currentUserId
+    ? users.find(user => user.id === currentUserId && user.isActive) ?? apiUser
+    : apiUser
 
   const effectiveUser = previewUser ?? currentUser
 
@@ -137,6 +152,103 @@ function AppContent() {
       : effectiveUser
         ? getDefaultPage(effectiveUser)
         : 'Overview'
+
+  // Attempt token verification & restore user on mount
+  useEffect(() => {
+    const token = getStoredAccessToken()
+    if (token && !apiUser) {
+      getCurrentUserApi()
+        .then(user => {
+          if (user) {
+            setApiUser(user)
+            setCurrentUserId(user.id)
+            setUsers(prev => {
+              const idx = prev.findIndex(u => u.id === user.id || u.email === user.email)
+              if (idx >= 0) {
+                const clone = [...prev]
+                clone[idx] = { ...clone[idx], ...user }
+                return clone
+              }
+              return [user, ...prev]
+            })
+          }
+        })
+        .catch(() => {
+          clearStoredSession()
+        })
+    }
+  }, [])
+
+  // Sync inspections from backend when logged in
+  useEffect(() => {
+    if (!effectiveUser || !getStoredAccessToken()) return
+    getInspectionsApi()
+      .then(remoteItems => {
+        if (!remoteItems || remoteItems.length === 0) return
+        const mapped: InspectionRecord[] = remoteItems.map(item => ({
+          id: item.id,
+          title: `Inspection ${item.id.slice(0, 8)}`,
+          description: 'Synchronized from backend database',
+          type: 'Safety',
+          templateId: 'TMPL-001',
+          siteId: item.site_id,
+          zone: 'Zone A',
+          status: (item.status === 'completed'
+            ? 'Completed'
+            : item.status === 'in_progress'
+              ? 'In Progress'
+              : 'Scheduled') as any,
+          assignedToUserId: item.user_id || effectiveUser.id,
+          assignedByUserId: effectiveUser.id,
+          createdAt: item.created_at || new Date().toISOString(),
+          scheduledAt: item.created_at || new Date().toISOString(),
+          dueDate: item.created_at ? item.created_at.slice(0, 10) : new Date().toISOString().slice(0, 10),
+          answers: [],
+          observations: [],
+          findingIds: [],
+          evidenceIds: [],
+          reviewStatus: (item.status === 'completed' ? 'Approved' : 'Pending') as any,
+        }))
+
+        setInspections(prev => {
+          const remoteIds = new Set(mapped.map(m => m.id))
+          return [...mapped, ...prev.filter(p => !remoteIds.has(p.id))]
+        })
+      })
+      .catch(err => {
+        console.warn('Could not fetch remote inspections:', err)
+      })
+  }, [effectiveUser?.id])
+
+  // Sync users from backend database when logged in as admin
+  useEffect(() => {
+    if (!effectiveUser || effectiveUser.role !== 'admin' || !getStoredAccessToken()) return
+    getAdminUsersApi()
+      .then(remoteUsers => {
+        if (!remoteUsers || remoteUsers.length === 0) return
+        const mappedUsers: DemoUser[] = remoteUsers.map(ru => ({
+          id: ru.id,
+          employeeId: `EMP-${ru.id.slice(0, 6).toUpperCase()}`,
+          name: ru.name,
+          email: ru.email,
+          password: 'SiteSense@2026',
+          role: toFrontendRole(ru.role),
+          siteId: ru.site_ids?.[0] || 'SITE-001',
+          supervisorId: null,
+          managerId: null,
+          isActive: ru.is_active ?? true,
+        }))
+
+        setUsers(prev => {
+          const remoteEmails = new Set(mappedUsers.map(u => u.email.toLowerCase()))
+          const filtered = prev.filter(p => !remoteEmails.has(p.email.toLowerCase()))
+          return [...filtered, ...mappedUsers]
+        })
+      })
+      .catch(err => {
+        console.warn('Could not sync users from backend database:', err)
+      })
+  }, [effectiveUser?.id, effectiveUser?.role])
 
   useEffect(() => {
     const previewUrls = evidencePreviewUrls.current
@@ -169,7 +281,8 @@ function AppContent() {
   function handleLogin(identifier: string, password: string) {
     const normalizedIdentifier = identifier.trim().toLowerCase()
 
-    const user = users.find(
+    // 1. Check local users first (for instant synchronous resolution in UI and testing)
+    const localUser = users.find(
       item =>
         item.isActive &&
         (
@@ -178,33 +291,61 @@ function AppContent() {
         ),
     )
 
-    if (!user || user.password !== password) {
+    if (localUser && localUser.password === password) {
+      try {
+        sessionStorage.setItem(SESSION_KEY, localUser.id)
+      } catch {}
+      setLoginError('')
+      setPreviewUserId(null)
+      setApiUser(localUser)
+      setCurrentUserId(localUser.id)
+      setSelectedPage(getDefaultPage(localUser))
+
+      // Trigger backend token acquisition in background if backend is online
+      loginApi(localUser.email, password).catch(() => {})
+      return
+    }
+
+    if (localUser && localUser.password !== password) {
       setLoginError('Invalid email, employee ID or password.')
       return
     }
 
-    try {
-      sessionStorage.setItem(SESSION_KEY, user.id)
-    } catch {
-      setLoginError(
-        'Unable to create a session. Please check browser settings.',
-      )
-      return
-    }
-
+    // 2. Try live REST API for backend users
+    setIsLoggingIn(true)
     setLoginError('')
-    setPreviewUserId(null)
-    setSelectedPage(getDefaultPage(user))
-    setCurrentUserId(user.id)
+    loginApi(identifier, password)
+      .then(({ user }) => {
+        setApiUser(user)
+        setCurrentUserId(user.id)
+        setPreviewUserId(null)
+        setSelectedPage(getDefaultPage(user))
+        setLoginError('')
+        setUsers(prev => {
+          const idx = prev.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase() || u.id === user.id)
+          if (idx >= 0) {
+            const clone = [...prev]
+            clone[idx] = { ...clone[idx], ...user }
+            return clone
+          }
+          return [user, ...prev]
+        })
+      })
+      .catch((apiErr: any) => {
+        setLoginError(apiErr.message || 'Invalid email, employee ID or password.')
+      })
+      .finally(() => {
+        setIsLoggingIn(false)
+      })
   }
 
   function handleLogout() {
+    logoutApi().catch(() => {})
     try {
       sessionStorage.removeItem(SESSION_KEY)
-    } catch {
-      // Return to login even if storage is unavailable.
-    }
-
+    } catch {}
+    clearStoredSession()
+    setApiUser(null)
     setCurrentUserId(null)
     setPreviewUserId(null)
     setLoginError('')
@@ -264,15 +405,24 @@ function AppContent() {
     submittingTaskIds.current.add(task.id)
 
     try {
-      const formData = createTaskPhotoFormData(task.id, files)
+      let uploadSuccessful = false
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(task.id)
 
-      const result = await mockTaskPhotoUpload(
-        formData,
-        onProgress,
-      )
+      if (isUuid && getStoredAccessToken()) {
+        try {
+          await batchUploadMediaApi(task.id, files, onProgress)
+          uploadSuccessful = true
+        } catch (uploadErr) {
+          console.warn('Backend media upload error, using local adapter:', uploadErr)
+        }
+      }
 
-      if (result.uploadedCount !== files.length) {
-        return false
+      if (!uploadSuccessful) {
+        const formData = createTaskPhotoFormData(task.id, files)
+        const result = await mockTaskPhotoUpload(formData, onProgress)
+        if (result.uploadedCount !== files.length) {
+          return false
+        }
       }
 
       const latestTask = inspectionsRef.current.find(
@@ -363,12 +513,14 @@ function AppContent() {
     const userNumber = getNextNumber(users, 'id', 'USER-')
     const employeeCode = String(employeeNumber).padStart(3, '0')
 
+    const initialPassword = `SiteSense@2026`
+
     const newEmployee: DemoUser = {
       id: `USER-${String(userNumber).padStart(3, '0')}`,
       employeeId: `EMP-${employeeCode}`,
       name: input.name.trim(),
       email: normalizedEmail,
-      password: `SiteDemo#EMP${employeeCode}`,
+      password: initialPassword,
       role: 'employee',
       siteId: manager.siteId,
       supervisorId: manager.supervisorId,
@@ -377,6 +529,31 @@ function AppContent() {
     }
 
     setUsers(previousUsers => [...previousUsers, newEmployee])
+
+    // Persist to backend Neon PostgreSQL database via POST /api/v1/admin/users
+    if (getStoredAccessToken()) {
+      createAdminUserApi({
+        name: newEmployee.name,
+        email: newEmployee.email,
+        password: initialPassword,
+        role: 'field', // employee ➔ field
+        site_id: manager.siteId,
+      })
+        .then(created => {
+          if (created?.id) {
+            setUsers(prev =>
+              prev.map(u =>
+                u.email.toLowerCase() === normalizedEmail
+                  ? { ...u, id: created.id }
+                  : u,
+              ),
+            )
+          }
+        })
+        .catch(err => {
+          console.warn('Could not store new employee in backend database:', err)
+        })
+    }
 
     return newEmployee
   }
@@ -407,6 +584,12 @@ function AppContent() {
           : user,
       ),
     )
+
+    if (getStoredAccessToken()) {
+      updateAdminUserApi(userId, { site_id: manager.siteId }).catch(err => {
+        console.warn('Backend reassign error:', err)
+      })
+    }
   }
 
   function handleDeactivateEmployee(userId: string) {
@@ -426,6 +609,12 @@ function AppContent() {
           : user,
       ),
     )
+
+    if (getStoredAccessToken()) {
+      updateAdminUserApi(userId, { is_active: false }).catch(err => {
+        console.warn('Backend deactivate error:', err)
+      })
+    }
   }
 
   function renderDashboard(user: DemoUser) {
@@ -465,12 +654,14 @@ function AppContent() {
       )
     }
 
-    if (activePage === 'Upload' && user.role === 'employee') {
+    if (activePage === 'Upload') {
       return (
-        <TaskUpload
+        <UploadPage
           currentUser={user}
           inspections={inspections}
           evidence={evidence}
+          onInspect={() => handleNavigate('Inspections')}
+          onNavigate={handleNavigate}
           onSubmitTaskPhotos={handleSubmitTaskPhotos}
         />
       )
@@ -587,6 +778,7 @@ function AppContent() {
       <Login
         onLogin={handleLogin}
         error={loginError}
+        isLoading={isLoggingIn}
       />
     )
   }

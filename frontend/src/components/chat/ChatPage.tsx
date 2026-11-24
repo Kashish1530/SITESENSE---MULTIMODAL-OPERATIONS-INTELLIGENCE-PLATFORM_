@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import {
     Bot,
     Camera,
+    FileSpreadsheet,
     FileText,
+    Film,
     ImagePlus,
     LoaderCircle,
     MessageSquare,
+    Paperclip,
     Plus,
     Send,
     Sparkles,
@@ -14,7 +17,14 @@ import {
 } from 'lucide-react'
 
 import { streamMockResponse } from '../../chat/mockChatAdapter'
+import {
+    createChatSessionApi,
+    sendChatMessageApi,
+    uploadChatAttachmentApi,
+    getStoredAccessToken,
+} from '../../api/client'
 import type {
+    AttachmentType,
     ChatAttachment,
     ChatCitation,
     ChatMessage,
@@ -25,13 +35,35 @@ function createId() {
         `${Date.now()}-${Math.random()}`
 }
 
+function detectFileType(file: File): AttachmentType {
+    const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
+    if (file.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp|tiff)$/i.test(ext)) {
+        return 'image'
+    }
+    if (file.type.startsWith('video/') || /\.(mp4|mov|avi|webm|mkv)$/i.test(ext)) {
+        return 'video'
+    }
+    if (file.type === 'application/pdf' || ext === '.pdf') {
+        return 'pdf'
+    }
+    if (
+        /\.(xlsx|xls|csv)$/i.test(ext) ||
+        file.type.includes('spreadsheet') ||
+        file.type.includes('excel') ||
+        file.type === 'text/csv'
+    ) {
+        return 'excel'
+    }
+    return 'doc'
+}
+
 function ChatPage() {
     const [messages, setMessages] = useState<ChatMessage[]>([
         {
             id: createId(),
             role: 'assistant',
             content:
-                'Hello! I am your SiteSense Intelligence Assistant preview. You can ask a question or attach a photo to explore the interface. AI analysis is simulated in this demo.',
+                'Hello! I am your SiteSense Intelligence Assistant preview. You can ask a question or attach photos, videos, PDFs, or Excel spreadsheets to explore the interface.',
             createdAt: new Date().toISOString(),
         },
     ])
@@ -45,10 +77,11 @@ function ChatPage() {
     const [isStreaming, setIsStreaming] = useState(false)
     const [attachmentError, setAttachmentError] = useState('')
 
-    const imageInputRef = useRef<HTMLInputElement>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const cameraInputRef = useRef<HTMLInputElement>(null)
     const bottomRef = useRef<HTMLDivElement>(null)
     const objectUrls = useRef(new Set<string>())
+    const backendSessionId = useRef<string | null>(null)
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -63,7 +96,7 @@ function ChatPage() {
         }
     }, [])
 
-    function addImages(fileList: FileList | null) {
+    function addFiles(fileList: FileList | null) {
         if (!fileList) return
 
         setAttachmentError('')
@@ -71,13 +104,25 @@ function ChatPage() {
         const files = Array.from(fileList)
 
         const validFiles = files.filter(file => {
-            if (!file.type.startsWith('image/')) {
-                setAttachmentError('Only image files are supported.')
+            const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
+            const isAllowed =
+                file.type.startsWith('image/') ||
+                file.type.startsWith('video/') ||
+                file.type === 'application/pdf' ||
+                file.type.includes('spreadsheet') ||
+                file.type.includes('excel') ||
+                file.type === 'text/csv' ||
+                /\.(jpe?g|png|webp|bmp|tiff|mp4|mov|avi|webm|mkv|pdf|xlsx|xls|csv)$/i.test(ext)
+
+            if (!isAllowed) {
+                setAttachmentError(
+                    'Unsupported file format. Please upload photos, videos, PDFs, or Excel sheets (.xlsx, .xls, .csv).'
+                )
                 return false
             }
 
-            if (file.size > 10 * 1024 * 1024) {
-                setAttachmentError('Each image must be 10 MB or smaller.')
+            if (file.size > 50 * 1024 * 1024) {
+                setAttachmentError('Each file must be 50 MB or smaller.')
                 return false
             }
 
@@ -88,17 +133,21 @@ function ChatPage() {
         const selectedFiles = validFiles.slice(0, remainingSlots)
 
         if (validFiles.length > remainingSlots) {
-            setAttachmentError('You can attach up to 4 images per message.')
+            setAttachmentError('You can attach up to 4 files per message.')
         }
 
         const newAttachments = selectedFiles.map(file => {
             const previewUrl = URL.createObjectURL(file)
             objectUrls.current.add(previewUrl)
+            const type = detectFileType(file)
 
             return {
                 id: createId(),
                 name: file.name,
                 previewUrl,
+                type,
+                file,
+                size: file.size,
             }
         })
 
@@ -126,7 +175,10 @@ function ChatPage() {
         }
 
         const sentAttachments = [...attachments]
-        const hasImages = sentAttachments.length > 0
+        const hasAttachments = sentAttachments.length > 0
+        const attachmentTypes = Array.from(
+            new Set(sentAttachments.map(a => a.type || 'file'))
+        )
 
         const userMessage: ChatMessage = {
             id: createId(),
@@ -160,43 +212,137 @@ function ChatPage() {
         setIsStreaming(true)
 
         try {
-            for await (const event of streamMockResponse(
-                question || 'Please review the attached image.',
-                hasImages,
-            )) {
-                if (event.type === 'tool') {
-                    setActivity(previous => [
-                        ...previous,
-                        event.label,
+            let handledByLiveBackend = false
+            const token = getStoredAccessToken()
+
+            if (token) {
+                try {
+                    if (!backendSessionId.current) {
+                        setActivity(['Initializing intelligence session...'])
+                        const session = await createChatSessionApi('Operations Assistant')
+                        backendSessionId.current = session.id
+                    }
+
+                    setActivity([
+                        'Dispatching query to multimodal intelligence engine...',
+                        'Evaluating operational rules & grounding policies...',
                     ])
-                }
 
-                if (event.type === 'token') {
-                    setMessages(previous =>
-                        previous.map(message =>
-                            message.id === assistantId
-                                ? {
-                                    ...message,
-                                    content: message.content + event.text,
-                                }
-                                : message,
-                        ),
+                    const uploadedAttachmentMetadata: Array<{
+                        id?: string
+                        name: string
+                        type: string
+                        size?: number
+                        preview_url?: string
+                        storage_path?: string
+                    }> = []
+
+                    for (const att of sentAttachments) {
+                        if (att.file) {
+                            try {
+                                const uploaded = await uploadChatAttachmentApi(
+                                    att.file,
+                                    backendSessionId.current || undefined
+                                )
+                                uploadedAttachmentMetadata.push({
+                                    id: uploaded.id,
+                                    name: uploaded.name,
+                                    type: uploaded.type,
+                                    size: uploaded.size,
+                                    preview_url: uploaded.download_url,
+                                    storage_path: uploaded.path,
+                                })
+                            } catch {
+                                uploadedAttachmentMetadata.push({
+                                    name: att.name,
+                                    type: att.type || 'doc',
+                                    size: att.size,
+                                })
+                            }
+                        } else {
+                            uploadedAttachmentMetadata.push({
+                                name: att.name,
+                                type: att.type || 'doc',
+                                size: att.size,
+                            })
+                        }
+                    }
+
+                    const result = await sendChatMessageApi(
+                        backendSessionId.current,
+                        question || 'Review attached media files',
+                        undefined,
+                        uploadedAttachmentMetadata,
                     )
+
+                    if (result?.assistant_message) {
+                        const rawCitations = result.citations || result.assistant_message.citations || []
+                        const mappedCitations: ChatCitation[] = rawCitations.map((c: any, idx: number) => ({
+                            id: `cite-${idx}`,
+                            title: c.clause ? `Policy Reference: ${c.clause}` : (c.title || 'Grounding Document'),
+                            source: c.source_file ? `${c.source_file}${c.page ? ` · p. ${c.page}` : ''}` : 'SiteSense Knowledge Base',
+                            excerpt: c.excerpt || '',
+                        }))
+
+                        setCitations(mappedCitations)
+                        setMessages(previous =>
+                            previous.map(message =>
+                                message.id === assistantId
+                                    ? {
+                                        ...message,
+                                        content: result.assistant_message.content,
+                                        citations: mappedCitations,
+                                    }
+                                    : message,
+                            ),
+                        )
+                        handledByLiveBackend = true
+                    }
+                } catch (apiErr) {
+                    console.warn('Live chat API call fallback:', apiErr)
                 }
+            }
 
-                if (event.type === 'citations') {
-                    setCitations(event.citations)
+            if (!handledByLiveBackend) {
+                for await (const event of streamMockResponse(
+                    question || 'Please review the attached media.',
+                    hasAttachments,
+                    attachmentTypes,
+                )) {
+                    if (event.type === 'tool') {
+                        setActivity(previous => [
+                            ...previous,
+                            event.label,
+                        ])
+                    }
 
-                    setMessages(previous =>
-                        previous.map(message =>
-                            message.id === assistantId
-                                ? {
-                                    ...message,
-                                    citations: event.citations,
-                                }
-                                : message,
-                        ),
-                    )
+                    if (event.type === 'token') {
+                        setMessages(previous =>
+                            previous.map(message =>
+                                message.id === assistantId
+                                    ? {
+                                        ...message,
+                                        content: message.content + event.text,
+                                    }
+                                    : message,
+                            ),
+                        )
+                    }
+
+                    if (event.type === 'citations') {
+                        setCitations(event.citations)
+
+                        setMessages(previous =>
+                            previous.map(message =>
+                                message.id === assistantId
+                                    ? {
+                                        ...message,
+                                        citations: event.citations,
+                                    }
+                                    : message,
+                            ),
+                        )
+                    }
                 }
             }
         } catch {
@@ -218,6 +364,8 @@ function ChatPage() {
 
     function startNewChat() {
         if (isStreaming) return
+
+        backendSessionId.current = null
 
         setMessages([
             {
@@ -355,14 +503,38 @@ function ChatPage() {
                                                     attachment => (
                                                         <div
                                                             key={attachment.id}
-                                                            className="overflow-hidden rounded-lg border border-white/30"
+                                                            className="overflow-hidden rounded-lg border border-white/30 bg-black/20"
                                                         >
-                                                            <img
-                                                                src={attachment.previewUrl}
-                                                                alt={attachment.name}
-                                                                className="h-28 w-full object-cover"
-                                                            />
-                                                            <p className="truncate bg-black/10 px-2 py-1 text-xs">
+                                                            {attachment.type === 'video' ? (
+                                                                <div className="relative flex h-28 w-full items-center justify-center bg-slate-900">
+                                                                    <video
+                                                                        src={attachment.previewUrl}
+                                                                        controls
+                                                                        className="h-full w-full object-cover"
+                                                                    />
+                                                                </div>
+                                                            ) : attachment.type === 'pdf' ? (
+                                                                <div className="flex h-28 w-full flex-col items-center justify-center bg-red-950/40 p-2 text-center">
+                                                                    <FileText size={32} className="text-red-400" />
+                                                                    <span className="mt-1 text-[11px] font-bold uppercase text-red-300">
+                                                                        PDF Document
+                                                                    </span>
+                                                                </div>
+                                                            ) : attachment.type === 'excel' ? (
+                                                                <div className="flex h-28 w-full flex-col items-center justify-center bg-emerald-950/40 p-2 text-center">
+                                                                    <FileSpreadsheet size={32} className="text-emerald-400" />
+                                                                    <span className="mt-1 text-[11px] font-bold uppercase text-emerald-300">
+                                                                        Excel Sheet
+                                                                    </span>
+                                                                </div>
+                                                            ) : (
+                                                                <img
+                                                                    src={attachment.previewUrl}
+                                                                    alt={attachment.name}
+                                                                    className="h-28 w-full object-cover"
+                                                                />
+                                                            )}
+                                                            <p className="truncate bg-black/40 px-2 py-1 text-xs text-white" title={attachment.name}>
                                                                 {attachment.name}
                                                             </p>
                                                         </div>
@@ -402,22 +574,47 @@ function ChatPage() {
                                 {attachments.map(attachment => (
                                     <div
                                         key={attachment.id}
-                                        className="relative h-20 w-20 overflow-hidden rounded-xl border border-slate-200"
+                                        className="relative h-20 w-24 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm"
                                     >
-                                        <img
-                                            src={attachment.previewUrl}
-                                            alt={attachment.name}
-                                            className="h-full w-full object-cover"
-                                        />
+                                        {attachment.type === 'video' ? (
+                                            <div className="relative flex h-full w-full items-center justify-center bg-slate-900">
+                                                <video
+                                                    src={attachment.previewUrl}
+                                                    className="h-full w-full object-cover opacity-75"
+                                                    muted
+                                                />
+                                                <span className="absolute bottom-1 left-1 flex items-center gap-0.5 rounded bg-black/75 px-1 py-0.5 text-[9px] font-semibold text-white">
+                                                    <Film size={10} /> Video
+                                                </span>
+                                            </div>
+                                        ) : attachment.type === 'pdf' ? (
+                                            <div className="flex h-full w-full flex-col items-center justify-center bg-red-50 p-1 text-center">
+                                                <FileText size={22} className="text-red-500" />
+                                                <span className="text-[9px] font-bold uppercase text-red-600">PDF</span>
+                                                <p className="w-full truncate text-[9px] text-slate-700">{attachment.name}</p>
+                                            </div>
+                                        ) : attachment.type === 'excel' ? (
+                                            <div className="flex h-full w-full flex-col items-center justify-center bg-emerald-50 p-1 text-center">
+                                                <FileSpreadsheet size={22} className="text-emerald-600" />
+                                                <span className="text-[9px] font-bold uppercase text-emerald-700">Excel</span>
+                                                <p className="w-full truncate text-[9px] text-slate-700">{attachment.name}</p>
+                                            </div>
+                                        ) : (
+                                            <img
+                                                src={attachment.previewUrl}
+                                                alt={attachment.name}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        )}
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 removeAttachment(attachment.id)
                                             }
                                             aria-label={`Remove ${attachment.name}`}
-                                            className="absolute right-1 top-1 rounded-full bg-slate-900/80 p-1 text-white hover:bg-slate-900"
+                                            className="absolute right-1 top-1 rounded-full bg-slate-900/80 p-1 text-white hover:bg-slate-900 transition"
                                         >
-                                            <X size={13} />
+                                            <X size={12} />
                                         </button>
                                     </div>
                                 ))}
@@ -451,14 +648,14 @@ function ChatPage() {
                         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                             <div className="flex flex-wrap gap-2">
                                 <input
-                                    ref={imageInputRef}
+                                    ref={fileInputRef}
                                     type="file"
-                                    accept="image/*"
+                                    accept="image/*,video/*,application/pdf,.xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"
                                     multiple
                                     className="hidden"
-                                    aria-label="Choose chat photos"
+                                    aria-label="Choose chat files (photo, video, PDF, Excel)"
                                     onChange={event => {
-                                        addImages(event.target.files)
+                                        addFiles(event.target.files)
                                         event.currentTarget.value = ''
                                     }}
                                 />
@@ -471,19 +668,20 @@ function ChatPage() {
                                     className="hidden"
                                     aria-label="Capture chat photo"
                                     onChange={event => {
-                                        addImages(event.target.files)
+                                        addFiles(event.target.files)
                                         event.currentTarget.value = ''
                                     }}
                                 />
 
                                 <button
                                     type="button"
-                                    onClick={() => imageInputRef.current?.click()}
+                                    onClick={() => fileInputRef.current?.click()}
                                     disabled={isStreaming || attachments.length >= 4}
-                                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+                                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
+                                    title="Attach photos, videos, PDFs, or Excel spreadsheets at a time"
                                 >
-                                    <ImagePlus size={16} />
-                                    Add Photo
+                                    <Paperclip size={16} className="text-blue-600" />
+                                    Add Media / File (Photo, Video, PDF, Excel)
                                 </button>
 
                                 <button
@@ -512,8 +710,7 @@ function ChatPage() {
                         </div>
 
                         <p className="mt-3 text-center text-[11px] text-slate-400">
-                            Up to 4 images · 10 MB each · Images remain in this
-                            browser preview
+                            Attach up to 4 files at a time (photos, videos, PDFs, Excel sheets) · Up to 50 MB each
                         </p>
                     </div>
                 </section>

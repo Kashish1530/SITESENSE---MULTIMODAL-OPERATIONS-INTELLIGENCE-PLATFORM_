@@ -110,7 +110,7 @@ export default function Sidebar({
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white transition-all duration-200 lg:static lg:z-auto ${collapsed ? 'lg:w-[76px]' : 'lg:w-64'
+                className={`fixed inset-y-0 left-0 z-50 flex h-full shrink-0 w-64 flex-col border-r border-slate-200 bg-white transition-all duration-200 lg:static lg:z-auto ${collapsed ? 'lg:w-[76px]' : 'lg:w-64'
                     } ${mobileOpen
                         ? 'translate-x-0'
                         : '-translate-x-full lg:translate-x-0'

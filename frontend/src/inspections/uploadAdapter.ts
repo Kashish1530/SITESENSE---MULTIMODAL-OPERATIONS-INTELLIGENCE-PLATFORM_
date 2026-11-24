@@ -9,6 +9,9 @@ export const ALLOWED_FILE_TYPES = [
     'video/mp4',
     'video/webm',
     'application/pdf',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+    'text/csv',
 ] as const
 
 export type UploadResult = {
@@ -33,9 +36,12 @@ export function validateInspectionFiles(files: File[]): string | null {
     let totalSize = 0
 
     for (const file of files) {
-        if (!ALLOWED_FILE_TYPES.includes(
+        const isAllowedType = ALLOWED_FILE_TYPES.includes(
             file.type as (typeof ALLOWED_FILE_TYPES)[number],
-        )) {
+        )
+        const isAllowedExt = /\.(jpe?g|png|webp|mp4|webm|pdf|xlsx|xls|csv)$/i.test(file.name)
+
+        if (!isAllowedType && !isAllowedExt) {
             return `Unsupported file type: ${file.name}`
         }
 

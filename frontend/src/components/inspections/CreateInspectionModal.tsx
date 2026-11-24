@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { X, ArrowLeft, ArrowRight, ClipboardCheck } from 'lucide-react'
 
-import { DEMO_SITES, type DemoUser } from '../../data/users'
+import { DEMO_SITES, type DemoUser, type DemoSite } from '../../data/users'
 import { INSPECTION_TEMPLATES } from '../../data/inspectionData'
 import type { InspectionRecord, InspectionType } from '../../inspections/types'
 import InspectionEvidenceUploader from './InspectionEvidenceUploader'
@@ -19,6 +19,7 @@ type Props = {
     onClose: () => void
     onCreate: (inspection: InspectionRecord, files: File[]) => void
     uploadAdapter?: UploadAdapter
+    sites?: DemoSite[]
 }
 
 type FormData = {
@@ -46,6 +47,7 @@ function CreateInspectionModal({
     onClose,
     onCreate,
     uploadAdapter = mockUploadAdapter,
+    sites,
 }: Props) {
     const [step, setStep] = useState(1)
     const [error, setError] = useState('')
@@ -69,17 +71,21 @@ function CreateInspectionModal({
     const isManager = currentUser.role === 'manager'
 
     const availableSites = useMemo(() => {
-        if (isAdmin) return DEMO_SITES
+        const baseSites = sites && sites.length > 0 ? sites : DEMO_SITES
+        if (isAdmin) return baseSites
 
-        return DEMO_SITES.filter(
+        return baseSites.filter(
             site => site.id === currentUser.siteId
         )
-    }, [isAdmin, currentUser.siteId])
+    }, [isAdmin, currentUser.siteId, sites])
 
     const availableAssignees = useMemo(() => {
         return users.filter(user => {
             if (!user.isActive || user.role === 'admin') return false
-            if (user.siteId !== form.siteId) return false
+            if (form.siteId) {
+                const isUuidSite = /^[0-9a-f]{8}-/i.test(form.siteId)
+                if (!isUuidSite && user.siteId !== form.siteId) return false
+            }
 
             if (isAdmin || isSupervisor) {
                 return user.role === 'manager' || user.role === 'employee'

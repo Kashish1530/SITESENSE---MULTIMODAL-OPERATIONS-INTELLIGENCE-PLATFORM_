@@ -15,6 +15,7 @@ import {
     requestInspectionChanges,
     startInspectionReview,
 } from '../../inspections/reviewUtils'
+import { submitReviewDecisionApi } from '../../api/client'
 import InspectionDetail from './InspectionDetail'
 
 type Props = {
@@ -104,6 +105,14 @@ function ReviewQueue({
     function handleApprove() {
         if (!selectedInspection) return
 
+        const inspectionId = selectedInspection.id
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(inspectionId)
+        if (isUuid) {
+            submitReviewDecisionApi(inspectionId, 'accepted', notes).catch(err => {
+                console.warn('Backend review API call note:', err)
+            })
+        }
+
         setInspections(previous =>
             previous.map(item =>
                 item.id === selectedInspection.id
@@ -123,6 +132,14 @@ function ReviewQueue({
         if (!notes.trim()) {
             setError('Please provide review notes before requesting changes.')
             return
+        }
+
+        const inspectionId = selectedInspection.id
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(inspectionId)
+        if (isUuid) {
+            submitReviewDecisionApi(inspectionId, 'rejected', notes).catch(err => {
+                console.warn('Backend review API call note:', err)
+            })
         }
 
         setInspections(previous =>

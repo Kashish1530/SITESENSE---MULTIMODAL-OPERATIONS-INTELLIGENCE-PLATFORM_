@@ -132,7 +132,7 @@ export default function InspectionEvidenceUploader({
                     Drag and drop evidence files here
                 </p>
                 <p className="mt-1 text-sm text-gray-500">
-                    JPEG, PNG, WebP, MP4, WebM and PDF
+                    JPEG, PNG, WebP, MP4, WebM, PDF, XLSX and CSV
                 </p>
 
                 <div className="mt-4 flex flex-wrap justify-center gap-3">
@@ -142,7 +142,7 @@ export default function InspectionEvidenceUploader({
                         <input
                             type="file"
                             multiple
-                            accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,application/pdf"
+                            accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,application/pdf,.xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"
                             disabled={disabled}
                             onChange={handleInputChange}
                             className="sr-only"

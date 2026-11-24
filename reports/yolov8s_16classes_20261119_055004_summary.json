@@ -1,0 +1,205 @@
+{
+    "training_configuration": {
+        "model": "yolov8s.pt",
+        "epochs": 100,
+        "image_size": 640,
+        "batch_size": 8,
+        "patience": 20,
+        "workers": 2,
+        "seed": 42,
+        "device": "0",
+        "classes": {
+            "0": "person",
+            "1": "safety_helmet",
+            "2": "safety_vest",
+            "3": "fire_extinguisher",
+            "4": "fire_hose",
+            "5": "pallet",
+            "6": "fire",
+            "7": "spill",
+            "8": "safety_signage",
+            "9": "exit_sign",
+            "10": "empty_shelf",
+            "11": "forklift",
+            "12": "vehicle",
+            "13": "obstacle",
+            "14": "machinery",
+            "15": "safety_cone"
+        },
+        "number_of_classes": 16,
+        "dataset_yaml": "/content/drive/MyDrive/sitesense/datasets/processed/data.yaml",
+        "run_name": "yolov8s_16classes_20261119_055004"
+    },
+    "evaluation_results": {
+        "experiment": "yolov8s_16classes_20261119_055004",
+        "model_path": "C:\\Users\\Vaishali\\Gargi\\sitesense\\runs\\baseline_yolo8\\yolov8s_16classes_20261119_055004\\weights\\best.pt",
+        "dataset": "C:\\Users\\Vaishali\\Gargi\\sitesense\\data\\processed\\data.yaml",
+        "split": "test",
+        "imgsz": 640,
+        "conf_threshold": 0.25,
+        "iou_threshold": 0.6,
+        "precision": 0.9083,
+        "recall": 0.7929,
+        "f1": 0.8467,
+        "mAP50": 0.8034,
+        "mAP75": 0.6817,
+        "mAP50_95": 0.6224,
+        "speed_ms": {
+            "preprocess": 1.97,
+            "inference": 107.93,
+            "postprocess": 1.95,
+            "total": 111.85,
+            "fps": 8.9
+        },
+        "per_class_metrics": [
+            {
+                "class_id": 0,
+                "class_name": "person",
+                "precision": 0.9488,
+                "recall": 0.7843,
+                "f1": 0.8587,
+                "AP50": 0.7922,
+                "AP50_95": 0.5735
+            },
+            {
+                "class_id": 1,
+                "class_name": "safety_helmet",
+                "precision": 0.9387,
+                "recall": 0.4941,
+                "f1": 0.6474,
+                "AP50": 0.5707,
+                "AP50_95": 0.3234
+            },
+            {
+                "class_id": 2,
+                "class_name": "safety_vest",
+                "precision": 0.9262,
+                "recall": 0.8874,
+                "f1": 0.9064,
+                "AP50": 0.9179,
+                "AP50_95": 0.597
+            },
+            {
+                "class_id": 3,
+                "class_name": "fire_extinguisher",
+                "precision": 1.0,
+                "recall": 0.5893,
+                "f1": 0.7416,
+                "AP50": 0.585,
+                "AP50_95": 0.5669
+            },
+            {
+                "class_id": 4,
+                "class_name": "fire_hose",
+                "precision": 0.4822,
+                "recall": 1.0,
+                "f1": 0.6506,
+                "AP50": 0.8315,
+                "AP50_95": 0.7926
+            },
+            {
+                "class_id": 5,
+                "class_name": "pallet",
+                "precision": 0.8986,
+                "recall": 0.8429,
+                "f1": 0.8699,
+                "AP50": 0.8868,
+                "AP50_95": 0.6614
+            },
+            {
+                "class_id": 6,
+                "class_name": "fire",
+                "precision": 1.0,
+                "recall": 0.75,
+                "f1": 0.8571,
+                "AP50": 0.745,
+                "AP50_95": 0.745
+            },
+            {
+                "class_id": 7,
+                "class_name": "spill",
+                "precision": 0.9625,
+                "recall": 0.8843,
+                "f1": 0.9217,
+                "AP50": 0.8835,
+                "AP50_95": 0.6383
+            },
+            {
+                "class_id": 8,
+                "class_name": "safety_signage",
+                "precision": 0.8397,
+                "recall": 1.0,
+                "f1": 0.9128,
+                "AP50": 0.995,
+                "AP50_95": 0.9824
+            },
+            {
+                "class_id": 9,
+                "class_name": "exit_sign",
+                "precision": 0.9391,
+                "recall": 0.4444,
+                "f1": 0.6034,
+                "AP50": 0.445,
+                "AP50_95": 0.3187
+            },
+            {
+                "class_id": 10,
+                "class_name": "empty_shelf",
+                "precision": 0.8095,
+                "recall": 0.6429,
+                "f1": 0.7166,
+                "AP50": 0.7197,
+                "AP50_95": 0.44
+            },
+            {
+                "class_id": 11,
+                "class_name": "forklift",
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "AP50": 0.995,
+                "AP50_95": 0.7003
+            },
+            {
+                "class_id": 12,
+                "class_name": "vehicle",
+                "precision": 0.8856,
+                "recall": 0.774,
+                "f1": 0.826,
+                "AP50": 0.8598,
+                "AP50_95": 0.6321
+            },
+            {
+                "class_id": 13,
+                "class_name": "obstacle",
+                "precision": 1.0,
+                "recall": 0.9286,
+                "f1": 0.963,
+                "AP50": 0.925,
+                "AP50_95": 0.7025
+            },
+            {
+                "class_id": 14,
+                "class_name": "machinery",
+                "precision": 0.9025,
+                "recall": 0.7771,
+                "f1": 0.8351,
+                "AP50": 0.8074,
+                "AP50_95": 0.6679
+            },
+            {
+                "class_id": 15,
+                "class_name": "safety_cone",
+                "precision": 1.0,
+                "recall": 0.8867,
+                "f1": 0.94,
+                "AP50": 0.895,
+                "AP50_95": 0.6164
+            }
+        ]
+    },
+    "evaluation_plots_dir": "C:\\Users\\Vaishali\\Gargi\\sitesense\\runs\\baseline_yolo8\\yolov8s_16classes_20261119_055004\\evaluation\\test",
+    "best_model": "C:\\Users\\Vaishali\\Gargi\\sitesense\\runs\\baseline_yolo8\\yolov8s_16classes_20261119_055004\\weights\\best.pt",
+    "evaluation_json": "C:\\Users\\Vaishali\\Gargi\\sitesense\\reports\\yolov8s_16classes_20261119_055004_evaluation.json",
+    "evaluation_txt": "C:\\Users\\Vaishali\\Gargi\\sitesense\\reports\\yolov8s_16classes_20261119_055004_evaluation.txt"
+}

@@ -1,0 +1,18 @@
+# SiteSense — Python Dependencies
+
+# Dataset & config scripts (audit, validation, splitting, stats)
+PyYAML>=6.0
+pillow>=10.0.0
+
+# Object detection (YOLO) & computer vision
+ultralytics>=8.3.0
+opencv-python>=4.9.0
+numpy>=1.26.0
+
+# Visualization & utilities
+matplotlib>=3.8.0
+pandas>=2.0.0
+tqdm>=4.66.0
+
+# Note: torch & torchvision are installed automatically by ultralytics.
+# For GPU (CUDA) support, install PyTorch from https://pytorch.org/get-started/locally/

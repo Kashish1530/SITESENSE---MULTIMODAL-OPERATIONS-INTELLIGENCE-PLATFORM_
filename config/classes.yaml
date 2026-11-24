@@ -1,0 +1,145 @@
+# SiteSense Class Configuration
+# Canonical class definitions for construction site and warehouse detection (16 classes).
+# See docs/annotation_guidelines.md for detailed labeling rules.
+
+nc: 16
+
+names:
+  0: person
+  1: safety_helmet
+  2: safety_vest
+  3: fire_extinguisher
+  4: fire_hose
+  5: pallet
+  6: fire
+  7: spill
+  8: safety_signage
+  9: exit_sign
+  10: empty_shelf
+  11: forklift
+  12: vehicle
+  13: obstacle
+  14: machinery
+  15: safety_cone
+
+categories:
+  people_and_ppe:
+    - person
+    - safety_helmet
+    - safety_vest
+  fire_and_emergency:
+    - fire_extinguisher
+    - fire_hose
+  hazards:
+    - fire
+    - spill
+    - obstacle
+  warehouse_and_storage:
+    - pallet
+    - empty_shelf
+  signage_and_traffic:
+    - safety_signage
+    - exit_sign
+    - safety_cone
+  vehicles_and_equipment:
+    - forklift
+    - vehicle
+    - machinery
+
+classes:
+  0:
+    name: person
+    category: people_and_ppe
+    color: [0, 128, 255]
+    conf_threshold: 0.40
+    description: Any visible human (worker, operator, supervisor, or visitor).
+  1:
+    name: safety_helmet
+    category: people_and_ppe
+    color: [255, 215, 0]
+    conf_threshold: 0.40
+    description: Industrial hard hat or protective safety helmet.
+  2:
+    name: safety_vest
+    category: people_and_ppe
+    color: [50, 205, 50]
+    conf_threshold: 0.40
+    description: High-visibility reflective safety vest or jacket.
+  3:
+    name: fire_extinguisher
+    category: fire_and_emergency
+    color: [220, 20, 60]
+    conf_threshold: 0.45
+    description: Portable, wheeled, or wall-mounted fire extinguisher.
+  4:
+    name: fire_hose
+    category: fire_and_emergency
+    color: [178, 34, 34]
+    conf_threshold: 0.45
+    description: Coiled, reel-mounted, or deployed fire hose.
+  5:
+    name: pallet
+    category: warehouse_and_storage
+    color: [160, 82, 45]
+    conf_threshold: 0.35
+    description: Wooden or plastic shipping pallet (empty or loaded).
+  6:
+    name: fire
+    category: hazards
+    color: [255, 69, 0]
+    conf_threshold: 0.45
+    description: Active visible flames.
+  7:
+    name: spill
+    category: hazards
+    color: [0, 191, 255]
+    conf_threshold: 0.40
+    description: Liquid, oil, water, or chemical spill on floor or ground.
+  8:
+    name: safety_signage
+    category: signage_and_traffic
+    color: [255, 165, 0]
+    conf_threshold: 0.40
+    description: Safety, danger, warning, caution, or PPE requirement signage.
+  9:
+    name: exit_sign
+    category: signage_and_traffic
+    color: [0, 200, 83]
+    conf_threshold: 0.45
+    description: Emergency or directional EXIT signage.
+  10:
+    name: empty_shelf
+    category: warehouse_and_storage
+    color: [147, 112, 219]
+    conf_threshold: 0.40
+    description: Unoccupied warehouse storage rack bay or shelf slot.
+  11:
+    name: forklift
+    category: vehicles_and_equipment
+    color: [255, 140, 0]
+    conf_threshold: 0.45
+    description: Warehouse or site forklift.
+  12:
+    name: vehicle
+    category: vehicles_and_equipment
+    color: [70, 130, 180]
+    conf_threshold: 0.45
+    description: Road or transport vehicle (dump truck, pickup, van, flatbed, mixer truck).
+  13:
+    name: obstacle
+    category: hazards
+    color: [255, 0, 127]
+    conf_threshold: 0.40
+    description: Unplanned boxes, debris, or objects obstructing aisles or walkways.
+  14:
+    name: machinery
+    category: vehicles_and_equipment
+    color: [218, 165, 32]
+    conf_threshold: 0.45
+    description: Heavy construction or industrial machinery (excavator, crane, loader, lift).
+  15:
+    name: safety_cone
+    category: signage_and_traffic
+    color: [255, 99, 71]
+    conf_threshold: 0.40
+    description: High-visibility orange or reflective safety/traffic cone.

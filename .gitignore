@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Training runs & checkpoints (large files > 100MB rejected by GitHub)
+runs/
+*.pt
+*.cache
+
+# Detection output videos & images
+detection/outputs/
+detection_*/outputs/
+
+# Dataset images (keep directory structure and yaml configs)
+data/raw/images/
+data/processed/*/images/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

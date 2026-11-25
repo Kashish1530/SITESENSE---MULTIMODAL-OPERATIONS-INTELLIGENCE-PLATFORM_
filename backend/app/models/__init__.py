@@ -58,6 +58,15 @@ from app.models.system import (
     Report,
 )
 
+# Group G: Site Text Intelligence (OCR + Intelligence)
+from app.models.site_text_intelligence import (
+    SiteTextComplianceCheck,
+    SiteTextEntity,
+    SiteTextGenAIContext,
+    SiteTextReport,
+    SiteTextReviewQueue,
+)
+
 __all__ = [
     "Base",
     "UUIDMixin",
@@ -92,4 +101,10 @@ __all__ = [
     "Report",
     "Notification",
     "AuditLog",
+    # Group G: Site Text Intelligence
+    "SiteTextReport",
+    "SiteTextEntity",
+    "SiteTextReviewQueue",
+    "SiteTextComplianceCheck",
+    "SiteTextGenAIContext",
 ]

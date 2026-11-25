@@ -1,0 +1,12 @@
+{
+  "report_id": "01393775-b5ef-4fb0-81b6-b9fc62eab83e",
+  "inspection_id": "cdd47540-1a34-4b9f-b4aa-2cbaa1ee0c95",
+  "site_id": "2461163d-ef13-4ca4-9af7-52f5d872b918",
+  "status": "completed",
+  "pass_rate": null,
+  "summary": "Full warehouse compliance inspection completed successfully.",
+  "findings_count": 2,
+  "passed_count": 2,
+  "failed_count": 0,
+  "generated_by": "266e35f7-cbb4-4f8a-98d6-40641a824b75"
+}

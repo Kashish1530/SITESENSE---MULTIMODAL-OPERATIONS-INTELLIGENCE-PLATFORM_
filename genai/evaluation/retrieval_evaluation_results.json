@@ -1,0 +1,1096 @@
+{
+    "dataset_name": "sitesense_retrieval_evaluation",
+    "dataset_version": "2.0",
+    "total_queries": 8,
+    "top_k": 20,
+    "results": [
+        {
+            "query_id": "Q001",
+            "query": "What are the safety rules for forklift operators?",
+            "relevant_chunks": {
+                "SHB-03-P02-C01": 3,
+                "WHP-006-P02-C01": 3,
+                "WHP-006-P02-C02": 3,
+                "SHB-03-P03-C03": 2
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.25,
+                        "Recall@10": 0.5,
+                        "MRR": 0.25,
+                        "nDCG@5": 0.0797,
+                        "nDCG@10": 0.2097
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-014-P05-C02",
+                        "WHP-005-P05-C02",
+                        "SHB-07-P02-C01",
+                        "SHB-03-P03-C03",
+                        "SHB-06-P03-C03",
+                        "WHP-011-P04-C01",
+                        "SHB-06-P03-C02",
+                        "SHB-03-P01-C01",
+                        "WHP-006-P02-C01",
+                        "SHB-08-P02-C01",
+                        "SHB-07-P03-C02",
+                        "WHP-006-P01-C01",
+                        "WHP-011-P05-C02",
+                        "SHB-03-P02-C01",
+                        "WHP-005-P04-C02",
+                        "WHP-006-P04-C02",
+                        "WHP-007-P04-C02",
+                        "WHP-001-P04-C02",
+                        "WHP-013-P04-C02",
+                        "WHP-004-P04-C02"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 0.5,
+                        "Recall@10": 0.5,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.4884,
+                        "nDCG@10": 0.4884
+                    },
+                    "ranked_chunk_ids": [
+                        "SHB-03-P01-C01",
+                        "WHP-006-P02-C01",
+                        "SHB-03-P02-C01",
+                        "WHP-014-P05-C02",
+                        "WHP-005-P05-C02",
+                        "WHP-001-P02-C01",
+                        "WHP-018-P02-C01",
+                        "WHP-011-P05-C02",
+                        "WHP-018-P02-C02",
+                        "WHP-008-P02-C01",
+                        "WHP-006-P02-C02",
+                        "SHB-10-P03-C01",
+                        "WHP-007-P02-C01",
+                        "WHP-019-P05-C02",
+                        "WHP-006-P01-C01",
+                        "WHP-010-P01-C01",
+                        "WHP-003-P05-C02",
+                        "WHP-006-P03-C02",
+                        "WHP-011-P02-C02",
+                        "SHB-03-P03-C02"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 0.5,
+                        "Recall@10": 0.75,
+                        "MRR": 0.25,
+                        "nDCG@5": 0.3531,
+                        "nDCG@10": 0.4088
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-014-P05-C02",
+                        "WHP-005-P05-C02",
+                        "SHB-03-P01-C01",
+                        "WHP-006-P02-C01",
+                        "SHB-03-P02-C01",
+                        "WHP-011-P05-C02",
+                        "WHP-006-P01-C01",
+                        "SHB-07-P02-C01",
+                        "SHB-03-P03-C03",
+                        "SHB-06-P03-C03",
+                        "WHP-011-P04-C01",
+                        "WHP-001-P02-C01",
+                        "SHB-06-P03-C02",
+                        "WHP-018-P02-C01",
+                        "WHP-018-P02-C02",
+                        "SHB-08-P02-C01",
+                        "WHP-008-P02-C01",
+                        "SHB-07-P03-C02",
+                        "WHP-006-P02-C02",
+                        "SHB-10-P03-C01"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 1.0,
+                        "Recall@10": 1.0,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.746,
+                        "nDCG@10": 0.746
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-011-P04-C01",
+                        "SHB-03-P02-C01",
+                        "WHP-006-P02-C02",
+                        "WHP-006-P02-C01",
+                        "SHB-03-P03-C03",
+                        "WHP-011-P05-C02",
+                        "WHP-014-P05-C02",
+                        "SHB-03-P01-C01",
+                        "WHP-005-P05-C02",
+                        "WHP-006-P01-C01",
+                        "WHP-018-P02-C02",
+                        "WHP-018-P02-C01",
+                        "SHB-06-P03-C03",
+                        "SHB-07-P03-C02",
+                        "SHB-08-P02-C01",
+                        "SHB-07-P02-C01",
+                        "SHB-06-P03-C02",
+                        "WHP-008-P02-C01",
+                        "WHP-001-P02-C01",
+                        "SHB-10-P03-C01"
+                    ]
+                }
+            }
+        },
+        {
+            "query_id": "Q002",
+            "query": "How should warehouse PPE be selected and maintained?",
+            "relevant_chunks": {
+                "WHP-003-P02-C01": 3,
+                "WHP-003-P02-C02": 3
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.5,
+                        "Recall@10": 0.5,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.3869,
+                        "nDCG@10": 0.3869
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-003-P04-C01",
+                        "WHP-003-P02-C01",
+                        "SHB-02-P02-C01",
+                        "WHP-003-P03-C01",
+                        "WHP-005-P02-C01",
+                        "SHB-02-P03-C01",
+                        "SHB-02-P04-C01",
+                        "WHP-003-P01-C01",
+                        "WHP-003-P05-C01",
+                        "WHP-016-P02-C01",
+                        "SHB-02-P05-C01",
+                        "SHB-02-P01-C01",
+                        "WHP-017-P04-C01",
+                        "WHP-007-P04-C01",
+                        "WHP-012-P02-C01",
+                        "WHP-005-P01-C01",
+                        "WHP-017-P02-C01",
+                        "WHP-004-P02-C01",
+                        "WHP-018-P03-C01",
+                        "SHB-05-P04-C01"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 1.0,
+                        "Recall@10": 1.0,
+                        "MRR": 1.0,
+                        "nDCG@5": 0.8503,
+                        "nDCG@10": 0.8503
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-003-P02-C01",
+                        "WHP-002-P02-C01",
+                        "SHB-02-P01-C01",
+                        "SHB-02-P02-C02",
+                        "WHP-003-P02-C02",
+                        "SHB-05-P02-C01",
+                        "SHB-02-P02-C01",
+                        "SHB-02-P04-C01",
+                        "WHP-006-P02-C02",
+                        "WHP-003-P04-C01",
+                        "SHB-08-P01-C01",
+                        "SHB-05-P02-C02",
+                        "WHP-007-P04-C01",
+                        "SHB-08-P02-C02",
+                        "WHP-017-P02-C02",
+                        "SHB-01-P02-C02",
+                        "SHB-09-P02-C02",
+                        "SHB-10-P02-C02",
+                        "SHB-07-P02-C02",
+                        "SHB-03-P02-C02"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 0.5,
+                        "Recall@10": 0.5,
+                        "MRR": 1.0,
+                        "nDCG@5": 0.6131,
+                        "nDCG@10": 0.6131
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-003-P02-C01",
+                        "SHB-02-P02-C01",
+                        "WHP-003-P04-C01",
+                        "SHB-02-P01-C01",
+                        "SHB-02-P04-C01",
+                        "WHP-007-P04-C01",
+                        "WHP-002-P02-C01",
+                        "WHP-003-P03-C01",
+                        "SHB-02-P02-C02",
+                        "WHP-005-P02-C01",
+                        "WHP-003-P02-C02",
+                        "SHB-02-P03-C01",
+                        "SHB-05-P02-C01",
+                        "WHP-003-P01-C01",
+                        "WHP-003-P05-C01",
+                        "WHP-006-P02-C02",
+                        "WHP-016-P02-C01",
+                        "SHB-02-P05-C01",
+                        "SHB-08-P01-C01",
+                        "SHB-05-P02-C02"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 0.5,
+                        "Recall@10": 0.5,
+                        "MRR": 1.0,
+                        "nDCG@5": 0.6131,
+                        "nDCG@10": 0.6131
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-003-P02-C01",
+                        "SHB-02-P02-C01",
+                        "SHB-02-P01-C01",
+                        "WHP-003-P04-C01",
+                        "SHB-05-P02-C01",
+                        "WHP-007-P04-C01",
+                        "SHB-02-P05-C01",
+                        "WHP-003-P05-C01",
+                        "SHB-02-P04-C01",
+                        "SHB-02-P03-C01",
+                        "WHP-002-P02-C01",
+                        "WHP-003-P02-C02",
+                        "SHB-02-P02-C02",
+                        "WHP-003-P03-C01",
+                        "WHP-003-P01-C01",
+                        "WHP-005-P02-C01",
+                        "WHP-016-P02-C01",
+                        "WHP-006-P02-C02",
+                        "SHB-08-P01-C01",
+                        "SHB-05-P02-C02"
+                    ]
+                }
+            }
+        },
+        {
+            "query_id": "Q003",
+            "query": "What should workers do during an emergency evacuation?",
+            "relevant_chunks": {
+                "WHP-009-P02-C01": 3,
+                "WHP-009-P02-C02": 3,
+                "WHP-009-P03-C01": 2,
+                "WHP-009-P03-C02": 3,
+                "WHP-009-P03-C03": 2
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.2,
+                        "Recall@10": 0.4,
+                        "MRR": 0.25,
+                        "nDCG@5": 0.0744,
+                        "nDCG@10": 0.2015
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-008-P05-C02",
+                        "SHB-07-P03-C03",
+                        "WHP-008-P03-C03",
+                        "WHP-009-P03-C01",
+                        "WHP-009-P04-C01",
+                        "SHB-04-P03-C02",
+                        "WHP-009-P01-C01",
+                        "WHP-009-P02-C01",
+                        "WHP-015-P03-C03",
+                        "SHB-01-P03-C03",
+                        "SHB-04-P01-C01",
+                        "SHB-03-P03-C03",
+                        "SHB-06-P03-C03",
+                        "SHB-05-P03-C03",
+                        "SHB-04-P03-C03",
+                        "SHB-07-P03-C02",
+                        "SHB-04-P03-C01",
+                        "WHP-017-P03-C03",
+                        "SHB-03-P03-C02",
+                        "WHP-007-P03-C03"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 0.2,
+                        "Recall@10": 0.4,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.2543,
+                        "nDCG@10": 0.3118
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-010-P04-C01",
+                        "WHP-009-P02-C01",
+                        "SHB-06-P01-C01",
+                        "SHB-04-P01-C01",
+                        "SHB-10-P03-C01",
+                        "WHP-009-P01-C01",
+                        "WHP-009-P03-C01",
+                        "WHP-008-P05-C02",
+                        "SHB-04-P05-C01",
+                        "WHP-009-P05-C01",
+                        "WHP-002-P03-C02",
+                        "SHB-04-P02-C01",
+                        "WHP-004-P03-C01",
+                        "WHP-015-P04-C01",
+                        "SHB-04-P02-C02",
+                        "WHP-007-P02-C02",
+                        "WHP-001-P01-C02",
+                        "WHP-002-P01-C02",
+                        "WHP-003-P01-C02",
+                        "WHP-004-P01-C02"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 0.4,
+                        "Recall@10": 0.4,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.3406,
+                        "nDCG@10": 0.3406
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-008-P05-C02",
+                        "WHP-009-P02-C01",
+                        "WHP-009-P03-C01",
+                        "WHP-009-P01-C01",
+                        "SHB-04-P01-C01",
+                        "WHP-010-P04-C01",
+                        "SHB-07-P03-C03",
+                        "WHP-008-P03-C03",
+                        "SHB-06-P01-C01",
+                        "WHP-009-P04-C01",
+                        "SHB-10-P03-C01",
+                        "SHB-04-P03-C02",
+                        "WHP-015-P03-C03",
+                        "SHB-04-P05-C01",
+                        "SHB-01-P03-C03",
+                        "WHP-009-P05-C01",
+                        "WHP-002-P03-C02",
+                        "SHB-03-P03-C03",
+                        "SHB-04-P02-C01",
+                        "SHB-06-P03-C03"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 0.2,
+                        "Recall@10": 0.4,
+                        "MRR": 0.3333,
+                        "nDCG@5": 0.2015,
+                        "nDCG@10": 0.263
+                    },
+                    "ranked_chunk_ids": [
+                        "SHB-04-P02-C01",
+                        "WHP-009-P04-C01",
+                        "WHP-009-P02-C01",
+                        "SHB-04-P05-C01",
+                        "SHB-04-P03-C02",
+                        "WHP-009-P03-C01",
+                        "WHP-009-P05-C01",
+                        "SHB-04-P01-C01",
+                        "WHP-009-P01-C01",
+                        "WHP-008-P05-C02",
+                        "WHP-002-P03-C02",
+                        "WHP-008-P03-C03",
+                        "SHB-07-P03-C03",
+                        "WHP-010-P04-C01",
+                        "SHB-01-P03-C03",
+                        "SHB-10-P03-C01",
+                        "SHB-06-P03-C03",
+                        "WHP-015-P03-C03",
+                        "SHB-03-P03-C03",
+                        "SHB-06-P01-C01"
+                    ]
+                }
+            }
+        },
+        {
+            "query_id": "Q004",
+            "query": "What precautions apply to electrical work and damaged equipment?",
+            "relevant_chunks": {
+                "WHP-015-P02-C01": 3,
+                "WHP-015-P03-C01": 3,
+                "WHP-015-P03-C02": 3,
+                "WHP-015-P03-C03": 2,
+                "WHP-015-P04-C01": 2
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 0.2,
+                        "MRR": 0.125,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.1271
+                    },
+                    "ranked_chunk_ids": [
+                        "SHB-06-P03-C03",
+                        "WHP-015-P02-C02",
+                        "WHP-015-P05-C02",
+                        "SHB-08-P03-C03",
+                        "WHP-014-P05-C02",
+                        "WHP-014-P02-C02",
+                        "SHB-07-P03-C03",
+                        "WHP-015-P02-C01",
+                        "WHP-014-P03-C02",
+                        "SHB-07-P03-C02",
+                        "WHP-008-P02-C02",
+                        "SHB-06-P03-C02",
+                        "WHP-001-P05-C02",
+                        "SHB-03-P03-C03",
+                        "WHP-008-P03-C04",
+                        "WHP-010-P03-C04",
+                        "WHP-001-P03-C04",
+                        "WHP-005-P03-C04",
+                        "WHP-009-P03-C04",
+                        "WHP-004-P03-C04"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 0.4,
+                        "Recall@10": 0.6,
+                        "MRR": 1.0,
+                        "nDCG@5": 0.512,
+                        "nDCG@10": 0.6463
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-015-P02-C01",
+                        "WHP-015-P04-C01",
+                        "WHP-015-P05-C01",
+                        "WHP-015-P01-C01",
+                        "SHB-10-P03-C01",
+                        "WHP-010-P03-C02",
+                        "WHP-015-P03-C01",
+                        "WHP-016-P02-C01",
+                        "WHP-015-P02-C02",
+                        "WHP-014-P05-C02",
+                        "WHP-008-P03-C01",
+                        "WHP-015-P05-C02",
+                        "SHB-06-P03-C03",
+                        "WHP-005-P03-C02",
+                        "SHB-06-P03-C02",
+                        "WHP-005-P03-C03",
+                        "WHP-004-P02-C02",
+                        "WHP-003-P02-C02",
+                        "WHP-004-P04-C01",
+                        "SHB-01-P02-C01"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 0.2,
+                        "Recall@10": 0.4,
+                        "MRR": 1.0,
+                        "nDCG@5": 0.403,
+                        "nDCG@10": 0.4606
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-015-P02-C01",
+                        "WHP-015-P02-C02",
+                        "SHB-06-P03-C03",
+                        "WHP-015-P05-C02",
+                        "WHP-014-P05-C02",
+                        "SHB-06-P03-C02",
+                        "WHP-015-P04-C01",
+                        "WHP-015-P05-C01",
+                        "SHB-08-P03-C03",
+                        "WHP-015-P01-C01",
+                        "SHB-10-P03-C01",
+                        "WHP-014-P02-C02",
+                        "WHP-010-P03-C02",
+                        "SHB-07-P03-C03",
+                        "WHP-015-P03-C01",
+                        "WHP-016-P02-C01",
+                        "WHP-014-P03-C02",
+                        "SHB-07-P03-C02",
+                        "WHP-008-P02-C02",
+                        "WHP-008-P03-C01"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 0.6,
+                        "Recall@10": 0.6,
+                        "MRR": 1.0,
+                        "nDCG@5": 0.6679,
+                        "nDCG@10": 0.6679
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-015-P02-C01",
+                        "WHP-015-P04-C01",
+                        "SHB-06-P03-C03",
+                        "WHP-015-P02-C02",
+                        "WHP-015-P03-C01",
+                        "WHP-014-P05-C02",
+                        "WHP-015-P05-C02",
+                        "WHP-008-P03-C01",
+                        "WHP-015-P01-C01",
+                        "SHB-08-P03-C03",
+                        "WHP-016-P02-C01",
+                        "SHB-07-P03-C03",
+                        "WHP-014-P03-C02",
+                        "WHP-014-P02-C02",
+                        "SHB-06-P03-C02",
+                        "WHP-015-P05-C01",
+                        "SHB-07-P03-C02",
+                        "WHP-008-P02-C02",
+                        "WHP-010-P03-C02",
+                        "SHB-10-P03-C01"
+                    ]
+                }
+            }
+        },
+        {
+            "query_id": "Q005",
+            "query": "How should workplace incidents and near misses be reported?",
+            "relevant_chunks": {
+                "WHP-019-P02-C01": 3,
+                "WHP-019-P02-C02": 2,
+                "WHP-019-P03-C01": 3,
+                "WHP-019-P03-C02": 2,
+                "WHP-019-P03-C03": 2,
+                "WHP-019-P04-C01": 2
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 0.0,
+                        "MRR": 0.0,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.0
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-002-P02-C02",
+                        "SHB-10-P01-C01",
+                        "WHP-019-P01-C01",
+                        "SHB-06-P03-C03",
+                        "WHP-014-P03-C02",
+                        "SHB-01-P03-C03",
+                        "WHP-010-P03-C02",
+                        "WHP-006-P03-C04",
+                        "WHP-002-P03-C04",
+                        "WHP-004-P03-C04",
+                        "WHP-018-P03-C04",
+                        "WHP-003-P03-C04",
+                        "WHP-011-P03-C04",
+                        "WHP-009-P03-C04",
+                        "WHP-001-P03-C04",
+                        "WHP-005-P03-C04",
+                        "WHP-010-P03-C04",
+                        "WHP-008-P03-C04",
+                        "WHP-002-P03-C03",
+                        "WHP-018-P05-C02"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 0.1667,
+                        "MRR": 0.1429,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.1419
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-019-P01-C01",
+                        "WHP-002-P02-C02",
+                        "SHB-10-P01-C01",
+                        "SHB-01-P02-C02",
+                        "SHB-10-P02-C01",
+                        "SHB-03-P03-C03",
+                        "WHP-019-P02-C01",
+                        "SHB-01-P02-C01",
+                        "SHB-03-P03-C02",
+                        "WHP-006-P03-C03",
+                        "WHP-016-P02-C02",
+                        "WHP-016-P02-C01",
+                        "WHP-015-P02-C01",
+                        "WHP-003-P05-C02",
+                        "WHP-001-P05-C02",
+                        "WHP-019-P05-C02",
+                        "WHP-018-P05-C02",
+                        "SHB-03-P05-C01",
+                        "WHP-006-P05-C01",
+                        "WHP-019-P05-C01"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 0.0,
+                        "MRR": 0.0833,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.0
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-002-P02-C02",
+                        "WHP-019-P01-C01",
+                        "SHB-10-P01-C01",
+                        "WHP-018-P05-C02",
+                        "SHB-06-P03-C03",
+                        "SHB-01-P02-C02",
+                        "WHP-014-P03-C02",
+                        "SHB-10-P02-C01",
+                        "SHB-01-P03-C03",
+                        "SHB-03-P03-C03",
+                        "WHP-010-P03-C02",
+                        "WHP-019-P02-C01",
+                        "WHP-006-P03-C04",
+                        "SHB-01-P02-C01",
+                        "WHP-002-P03-C04",
+                        "SHB-03-P03-C02",
+                        "WHP-004-P03-C04",
+                        "WHP-006-P03-C03",
+                        "WHP-018-P03-C04",
+                        "WHP-016-P02-C02"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 0.1667,
+                        "Recall@10": 0.1667,
+                        "MRR": 0.3333,
+                        "nDCG@5": 0.2277,
+                        "nDCG@10": 0.2129
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-002-P02-C02",
+                        "SHB-10-P02-C01",
+                        "WHP-019-P02-C01",
+                        "SHB-10-P01-C01",
+                        "WHP-019-P01-C01",
+                        "SHB-03-P03-C03",
+                        "SHB-01-P02-C02",
+                        "SHB-03-P03-C02",
+                        "SHB-01-P02-C01",
+                        "WHP-006-P03-C03",
+                        "WHP-002-P03-C04",
+                        "WHP-016-P02-C02",
+                        "SHB-06-P03-C03",
+                        "WHP-018-P03-C04",
+                        "WHP-010-P03-C02",
+                        "WHP-018-P05-C02",
+                        "WHP-004-P03-C04",
+                        "SHB-01-P03-C03",
+                        "WHP-006-P03-C04",
+                        "WHP-014-P03-C02"
+                    ]
+                }
+            }
+        },
+        {
+            "query_id": "Q006",
+            "query": "What precautions should workers follow when handling chemicals?",
+            "relevant_chunks": {
+                "SHB-05-P02-C01": 3,
+                "SHB-05-P03-C01": 2,
+                "SHB-05-P03-C02": 3,
+                "SHB-05-P03-C03": 2,
+                "SHB-05-P04-C01": 1
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 0.2,
+                        "MRR": 0.1667,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.1708
+                    },
+                    "ranked_chunk_ids": [
+                        "SHB-09-P02-C01",
+                        "WHP-007-P02-C01",
+                        "WHP-007-P02-C02",
+                        "SHB-05-P01-C01",
+                        "WHP-008-P02-C01",
+                        "SHB-05-P02-C01",
+                        "WHP-002-P02-C01",
+                        "SHB-09-P01-C01",
+                        "WHP-017-P02-C01",
+                        "WHP-007-P01-C01",
+                        "WHP-016-P02-C01",
+                        "WHP-002-P02-C02",
+                        "WHP-015-P02-C01",
+                        "WHP-016-P04-C01",
+                        "SHB-04-P02-C01",
+                        "SHB-07-P02-C01",
+                        "WHP-007-P05-C02",
+                        "SHB-08-P02-C01",
+                        "SHB-10-P02-C01",
+                        "WHP-019-P02-C01"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 0.0,
+                        "MRR": 0.0,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.0
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-002-P04-C01",
+                        "WHP-001-P04-C01",
+                        "SHB-06-P01-C01",
+                        "SHB-10-P03-C01",
+                        "WHP-012-P02-C01",
+                        "SHB-05-P01-C01",
+                        "WHP-010-P04-C01",
+                        "WHP-005-P02-C01",
+                        "WHP-006-P02-C01",
+                        "WHP-013-P02-C01",
+                        "WHP-011-P02-C01",
+                        "WHP-001-P02-C01",
+                        "WHP-007-P02-C01",
+                        "WHP-007-P04-C01",
+                        "WHP-017-P04-C01",
+                        "WHP-004-P04-C01",
+                        "WHP-008-P04-C01",
+                        "WHP-016-P04-C01",
+                        "WHP-015-P04-C01",
+                        "WHP-007-P02-C02"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 0.0,
+                        "MRR": 0.0833,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.0
+                    },
+                    "ranked_chunk_ids": [
+                        "SHB-05-P01-C01",
+                        "WHP-007-P02-C01",
+                        "WHP-007-P02-C02",
+                        "WHP-016-P04-C01",
+                        "SHB-09-P02-C01",
+                        "WHP-002-P04-C01",
+                        "WHP-001-P04-C01",
+                        "SHB-06-P01-C01",
+                        "SHB-10-P03-C01",
+                        "WHP-008-P02-C01",
+                        "WHP-012-P02-C01",
+                        "SHB-05-P02-C01",
+                        "WHP-002-P02-C01",
+                        "WHP-010-P04-C01",
+                        "SHB-09-P01-C01",
+                        "WHP-005-P02-C01",
+                        "WHP-017-P02-C01",
+                        "WHP-006-P02-C01",
+                        "WHP-007-P01-C01",
+                        "WHP-013-P02-C01"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 0.2,
+                        "Recall@10": 0.2,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.3026,
+                        "nDCG@10": 0.3026
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-007-P02-C02",
+                        "SHB-05-P02-C01",
+                        "WHP-007-P02-C01",
+                        "WHP-002-P02-C01",
+                        "SHB-09-P02-C01",
+                        "SHB-05-P01-C01",
+                        "WHP-002-P04-C01",
+                        "WHP-016-P04-C01",
+                        "WHP-008-P02-C01",
+                        "WHP-012-P02-C01",
+                        "WHP-017-P02-C01",
+                        "WHP-010-P04-C01",
+                        "WHP-005-P02-C01",
+                        "WHP-007-P01-C01",
+                        "WHP-001-P04-C01",
+                        "WHP-006-P02-C01",
+                        "WHP-013-P02-C01",
+                        "SHB-06-P01-C01",
+                        "SHB-09-P01-C01",
+                        "SHB-10-P03-C01"
+                    ]
+                }
+            }
+        },
+        {
+            "query_id": "Q007",
+            "query": "How should workers safely handle and move heavy materials?",
+            "relevant_chunks": {
+                "SHB-06-P02-C01": 3,
+                "SHB-06-P03-C01": 2,
+                "SHB-06-P03-C02": 3,
+                "SHB-06-P03-C03": 2
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.25,
+                        "Recall@10": 0.5,
+                        "MRR": 0.2,
+                        "nDCG@5": 0.1906,
+                        "nDCG@10": 0.333
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-016-P02-C01",
+                        "SHB-07-P02-C01",
+                        "SHB-06-P01-C01",
+                        "WHP-002-P02-C02",
+                        "SHB-06-P02-C01",
+                        "WHP-011-P02-C01",
+                        "WHP-015-P02-C01",
+                        "WHP-014-P02-C01",
+                        "WHP-002-P02-C01",
+                        "SHB-06-P03-C02",
+                        "WHP-017-P02-C01",
+                        "WHP-007-P01-C01",
+                        "WHP-005-P02-C02",
+                        "WHP-004-P04-C01",
+                        "SHB-09-P02-C01",
+                        "SHB-05-P02-C01",
+                        "WHP-011-P01-C01",
+                        "SHB-10-P02-C01",
+                        "SHB-01-P02-C01",
+                        "WHP-014-P05-C02"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 0.5,
+                        "Recall@10": 0.5,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.5014,
+                        "nDCG@10": 0.5014
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-007-P02-C01",
+                        "SHB-06-P03-C02",
+                        "WHP-007-P02-C02",
+                        "WHP-016-P03-C01",
+                        "SHB-06-P02-C01",
+                        "WHP-016-P02-C01",
+                        "SHB-08-P01-C01",
+                        "SHB-02-P01-C01",
+                        "SHB-05-P02-C01",
+                        "WHP-010-P04-C01",
+                        "SHB-03-P03-C03",
+                        "SHB-06-P03-C03",
+                        "SHB-03-P03-C02",
+                        "SHB-05-P03-C02",
+                        "WHP-013-P03-C02",
+                        "WHP-018-P02-C02",
+                        "WHP-017-P04-C01",
+                        "WHP-004-P03-C01",
+                        "WHP-015-P04-C01",
+                        "WHP-008-P04-C01"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 0.5,
+                        "Recall@10": 0.5,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.5572,
+                        "nDCG@10": 0.5572
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-016-P02-C01",
+                        "SHB-06-P02-C01",
+                        "SHB-06-P03-C02",
+                        "SHB-05-P02-C01",
+                        "WHP-007-P02-C01",
+                        "SHB-07-P02-C01",
+                        "SHB-06-P01-C01",
+                        "WHP-007-P02-C02",
+                        "WHP-002-P02-C02",
+                        "WHP-016-P03-C01",
+                        "WHP-011-P02-C01",
+                        "WHP-015-P02-C01",
+                        "SHB-08-P01-C01",
+                        "WHP-014-P02-C01",
+                        "SHB-02-P01-C01",
+                        "WHP-002-P02-C01",
+                        "WHP-010-P04-C01",
+                        "WHP-017-P02-C01",
+                        "SHB-03-P03-C03",
+                        "WHP-007-P01-C01"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 0.25,
+                        "Recall@10": 0.5,
+                        "MRR": 0.3333,
+                        "nDCG@5": 0.2463,
+                        "nDCG@10": 0.4106
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-007-P02-C02",
+                        "WHP-007-P02-C01",
+                        "SHB-06-P03-C02",
+                        "WHP-016-P02-C01",
+                        "WHP-002-P02-C01",
+                        "SHB-05-P02-C01",
+                        "SHB-06-P02-C01",
+                        "WHP-002-P02-C02",
+                        "SHB-06-P01-C01",
+                        "SHB-03-P03-C03",
+                        "WHP-016-P03-C01",
+                        "SHB-07-P02-C01",
+                        "WHP-010-P04-C01",
+                        "WHP-015-P02-C01",
+                        "WHP-011-P02-C01",
+                        "WHP-007-P01-C01",
+                        "WHP-017-P02-C01",
+                        "WHP-014-P02-C01",
+                        "SHB-08-P01-C01",
+                        "SHB-02-P01-C01"
+                    ]
+                }
+            }
+        },
+        {
+            "query_id": "Q008",
+            "query": "How should pedestrian routes be kept clear?",
+            "relevant_chunks": {
+                "WHP-004-P02-C01": 3
+            },
+            "methods": {
+                "Semantic": {
+                    "metrics": {
+                        "Recall@5": 0.0,
+                        "Recall@10": 1.0,
+                        "MRR": 0.1,
+                        "nDCG@5": 0.0,
+                        "nDCG@10": 0.2891
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-006-P02-C02",
+                        "SHB-03-P02-C02",
+                        "WHP-011-P02-C02",
+                        "SHB-03-P03-C02",
+                        "WHP-006-P03-C02",
+                        "WHP-018-P02-C02",
+                        "WHP-004-P02-C02",
+                        "WHP-004-P01-C01",
+                        "WHP-004-P03-C01",
+                        "WHP-004-P02-C01",
+                        "SHB-09-P02-C02",
+                        "SHB-03-P02-C01",
+                        "WHP-004-P03-C02",
+                        "SHB-03-P03-C03",
+                        "WHP-004-P03-C03",
+                        "WHP-016-P03-C01",
+                        "WHP-009-P02-C02",
+                        "WHP-009-P03-C02",
+                        "WHP-016-P03-C02",
+                        "SHB-03-P04-C01"
+                    ]
+                },
+                "BM25": {
+                    "metrics": {
+                        "Recall@5": 1.0,
+                        "Recall@10": 1.0,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.6309,
+                        "nDCG@10": 0.6309
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-006-P02-C02",
+                        "WHP-004-P02-C01",
+                        "SHB-03-P04-C01",
+                        "SHB-01-P02-C01",
+                        "WHP-001-P02-C02",
+                        "WHP-004-P01-C01",
+                        "WHP-016-P03-C01",
+                        "WHP-006-P03-C02",
+                        "WHP-004-P03-C01",
+                        "WHP-017-P02-C01",
+                        "WHP-008-P02-C01",
+                        "SHB-03-P02-C01",
+                        "SHB-02-P01-C01",
+                        "SHB-08-P01-C01",
+                        "SHB-03-P02-C02",
+                        "WHP-006-P02-C01",
+                        "WHP-004-P04-C01",
+                        "WHP-009-P04-C01",
+                        "WHP-006-P04-C01",
+                        "WHP-001-P02-C01"
+                    ]
+                },
+                "Hybrid_RRF": {
+                    "metrics": {
+                        "Recall@5": 1.0,
+                        "Recall@10": 1.0,
+                        "MRR": 0.5,
+                        "nDCG@5": 0.6309,
+                        "nDCG@10": 0.6309
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-006-P02-C02",
+                        "WHP-004-P02-C01",
+                        "WHP-006-P03-C02",
+                        "WHP-004-P01-C01",
+                        "SHB-03-P02-C02",
+                        "WHP-004-P03-C01",
+                        "SHB-03-P04-C01",
+                        "WHP-016-P03-C01",
+                        "SHB-03-P02-C01",
+                        "WHP-011-P02-C02",
+                        "SHB-03-P03-C02",
+                        "SHB-01-P02-C01",
+                        "WHP-001-P02-C02",
+                        "WHP-018-P02-C02",
+                        "WHP-004-P02-C02",
+                        "WHP-017-P02-C01",
+                        "SHB-09-P02-C02",
+                        "WHP-008-P02-C01",
+                        "WHP-004-P03-C02",
+                        "SHB-02-P01-C01"
+                    ]
+                },
+                "Hybrid_Reranked": {
+                    "metrics": {
+                        "Recall@5": 1.0,
+                        "Recall@10": 1.0,
+                        "MRR": 1.0,
+                        "nDCG@5": 1.0,
+                        "nDCG@10": 1.0
+                    },
+                    "ranked_chunk_ids": [
+                        "WHP-004-P02-C01",
+                        "WHP-004-P02-C02",
+                        "WHP-004-P03-C02",
+                        "WHP-006-P02-C02",
+                        "WHP-004-P03-C01",
+                        "WHP-004-P01-C01",
+                        "SHB-03-P02-C02",
+                        "SHB-03-P04-C01",
+                        "WHP-016-P03-C01",
+                        "SHB-03-P02-C01",
+                        "SHB-01-P02-C01",
+                        "SHB-03-P03-C02",
+                        "WHP-011-P02-C02",
+                        "WHP-006-P03-C02",
+                        "WHP-001-P02-C02",
+                        "WHP-018-P02-C02",
+                        "WHP-008-P02-C01",
+                        "WHP-017-P02-C01",
+                        "SHB-09-P02-C02",
+                        "SHB-02-P01-C01"
+                    ]
+                }
+            }
+        }
+    ]
+}

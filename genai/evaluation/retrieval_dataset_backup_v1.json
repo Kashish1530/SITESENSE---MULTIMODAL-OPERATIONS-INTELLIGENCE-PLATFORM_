@@ -1,0 +1,18 @@
+
+{
+  "dataset_name": "sitesense_retrieval_evaluation",
+  "version": "1.0",
+  "description": "Initial manually labelled retrieval evaluation dataset for warehouse safety documents.",
+  "queries": [
+    {
+      "query_id": "Q001",
+      "query": "What are the safety rules for forklift operators?",
+      "relevant_chunks": {
+        "SHB-03-P02-C01": 3,
+        "WHP-006-P02-C01": 3,
+        "WHP-006-P02-C02": 3,
+        "SHB-03-P03-C03": 2
+      }
+    }
+  ]
+}

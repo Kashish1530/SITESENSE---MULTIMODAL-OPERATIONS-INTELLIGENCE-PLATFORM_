@@ -1,4 +1,4 @@
-﻿import type { InspectionRecord } from '../inspections/types'
+import type { InspectionRecord } from '../inspections/types'
 import { getReviewStatus } from '../inspections/reviewUtils'
 
 

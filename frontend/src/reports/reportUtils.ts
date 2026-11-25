@@ -1,4 +1,4 @@
-﻿import { DEMO_SITES, type DemoUser } from '../data/users'
+import { DEMO_SITES, type DemoUser } from '../data/users'
 import { INSPECTION_TEMPLATES } from '../data/inspectionData'
 import type {
     CorrectiveAction,

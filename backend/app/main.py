@@ -167,10 +167,10 @@ The backend serves as the **central integration and orchestration layer** connec
     # Mount Built Frontend SPA if available, otherwise return welcome text
     from pathlib import Path
     from fastapi.staticfiles import StaticFiles
-    from fastapi.responses import FileResponse
+    from fastapi.responses import FileResponse, JSONResponse
 
     dist_dir = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
-    if dist_dir.is_dir() and (dist_dir / "index.html").is_file():
+    if settings.ENVIRONMENT != "test" and dist_dir.is_dir() and (dist_dir / "index.html").is_file():
         assets_dir = dist_dir / "assets"
         if assets_dir.is_dir():
             app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
@@ -181,8 +181,19 @@ The backend serves as the **central integration and orchestration layer** connec
 
         @app.get("/{full_path:path}", include_in_schema=False)
         async def serve_frontend_fallback(request: Request, full_path: str):
-            # Do not intercept API or documentation routes
-            if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi.json"):
+            # Return standardized JSON 404 for unmapped API endpoints
+            if full_path.startswith("api/"):
+                return JSONResponse(
+                    status_code=404,
+                    content={
+                        "error": {
+                            "code": "NOT_FOUND",
+                            "message": f"Endpoint /{full_path} not found",
+                            "detail": f"The requested API route /{full_path} does not exist on this server",
+                        }
+                    },
+                )
+            if full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi.json"):
                 return PlainTextResponse("Not Found", status_code=404)
             file_path = dist_dir / full_path
             if file_path.is_file():

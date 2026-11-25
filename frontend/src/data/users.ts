@@ -44,6 +44,57 @@ export const DEMO_SITES: DemoSite[] = [
     },
 ]
 
+export const DATABASE_USERS: DemoUser[] = [
+    {
+        id: '54361c29-10d9-4f26-a7e1-503ba89f0c49',
+        employeeId: 'ADM-001',
+        name: 'Admin User',
+        email: 'admin@sitesense.io',
+        password: 'SiteSense@2026',
+        role: 'admin',
+        siteId: null,
+        supervisorId: null,
+        managerId: null,
+        isActive: true,
+    },
+    {
+        id: 'fd52f202-36ac-4c06-8690-0c8040e88f2c',
+        employeeId: 'MGR-001',
+        name: 'Operations Manager',
+        email: 'manager@sitesense.io',
+        password: 'SiteSense@2026',
+        role: 'manager',
+        siteId: '3591c762-1cb9-4fd4-9be0-f15ca5514c64',
+        supervisorId: 'e699200e-8730-4531-b5c9-e2f8f45db05b',
+        managerId: null,
+        isActive: true,
+    },
+    {
+        id: 'e699200e-8730-4531-b5c9-e2f8f45db05b',
+        employeeId: 'SUP-001',
+        name: 'Compliance Reviewer 1',
+        email: 'reviewer1@sitesense.io',
+        password: 'SiteSense@2026',
+        role: 'supervisor',
+        siteId: '3591c762-1cb9-4fd4-9be0-f15ca5514c64',
+        supervisorId: null,
+        managerId: null,
+        isActive: true,
+    },
+    {
+        id: '9aaa6833-f612-4c50-a181-e6a5801c1037',
+        employeeId: 'EMP-001',
+        name: 'Field Supervisor 1',
+        email: 'field1@sitesense.io',
+        password: 'SiteSense@2026',
+        role: 'employee',
+        siteId: '3591c762-1cb9-4fd4-9be0-f15ca5514c64',
+        supervisorId: 'e699200e-8730-4531-b5c9-e2f8f45db05b',
+        managerId: 'fd52f202-36ac-4c06-8690-0c8040e88f2c',
+        isActive: true,
+    },
+]
+
 export const DEMO_USERS: DemoUser[] = [
     // ADMIN
     {

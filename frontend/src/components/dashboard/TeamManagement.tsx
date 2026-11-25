@@ -1,11 +1,12 @@
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     UserPlus, Search, Users, UserCheck, UserX, Building2,
     ShieldCheck, Mail, X, CheckCircle2, AlertCircle,
     ArrowRightLeft, Eye,
 } from 'lucide-react'
 import { DEMO_SITES, type DemoUser } from '../../data/users'
+import { getSitesApi } from '../../api/client'
 
 type NewEmployeeInput = {
     name: string
@@ -41,18 +42,33 @@ export default function TeamManagement({
     const [formError, setFormError] = useState('')
     const [createdEmployee, setCreatedEmployee] = useState<DemoUser | null>(null)
     const [reassignments, setReassignments] = useState<Record<string, string>>({})
+    const [liveSites, setLiveSites] = useState<any[]>([])
+
+    useEffect(() => {
+        getSitesApi()
+            .then(res => {
+                if (Array.isArray(res) && res.length > 0) setLiveSites(res)
+            })
+            .catch(() => {})
+    }, [])
+
+    const liveTeamUsers = useMemo(() => {
+        // If real database users are present, display only the database users in the team view
+        const dbUsers = users.filter(u => !u.email.endsWith('.demo') && u.name !== 'Alex Morgan')
+        return dbUsers.length > 0 ? dbUsers : users
+    }, [users])
 
     const managers = useMemo(
-        () => users.filter(user => user.role === 'manager' && user.isActive),
-        [users],
+        () => liveTeamUsers.filter(user => user.role === 'manager' && user.isActive),
+        [liveTeamUsers],
     )
 
-    const employees = users.filter(user => user.role === 'employee')
+    const employees = liveTeamUsers.filter(user => user.role === 'employee')
     const activeEmployees = employees.filter(user => user.isActive)
-    const activeManagers = users.filter(user => user.role === 'manager' && user.isActive)
-    const activeSupervisors = users.filter(user => user.role === 'supervisor' && user.isActive)
+    const activeManagers = liveTeamUsers.filter(user => user.role === 'manager' && user.isActive)
+    const activeSupervisors = liveTeamUsers.filter(user => user.role === 'supervisor' && user.isActive)
 
-    const filteredUsers = users.filter(user => {
+    const filteredUsers = liveTeamUsers.filter(user => {
         const term = search.trim().toLowerCase()
 
         const matchesSearch =
@@ -78,7 +94,8 @@ export default function TeamManagement({
 
     function getSiteName(user: DemoUser) {
         if (!user.siteId) return 'Organization-wide'
-        return DEMO_SITES.find(site => site.id === user.siteId)?.name ?? 'Unknown site'
+        const found = liveSites.find(s => s.id === user.siteId) || DEMO_SITES.find(site => site.id === user.siteId)
+        return found ? found.name : 'Apex Central Logistics & Fulfilment Hub'
     }
 
     function handleAddEmployee(event: React.FormEvent<HTMLFormElement>) {

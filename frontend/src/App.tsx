@@ -45,6 +45,7 @@ import {
   batchUploadMediaApi,
   createAdminUserApi,
   getAdminUsersApi,
+  getUsersDirectoryApi,
   updateAdminUserApi,
   toFrontendRole,
   getStoredAccessToken,
@@ -217,32 +218,36 @@ function AppContent() {
       })
   }, [effectiveUser?.id])
 
-  // Sync users from backend database when logged in as admin
+  // Sync users from backend database
   useEffect(() => {
-    if (!effectiveUser || effectiveUser.role !== 'admin' || !getStoredAccessToken()) return
-    getAdminUsersApi()
-      .then(remoteUsers => {
+    if (!effectiveUser || !getStoredAccessToken()) return
+    const fetchUsers = effectiveUser.role === 'admin' ? getAdminUsersApi : getUsersDirectoryApi
+    fetchUsers()
+      .then((remoteUsers: any[]) => {
         if (!remoteUsers || remoteUsers.length === 0) return
-        const mappedUsers: DemoUser[] = remoteUsers.map(ru => ({
-          id: ru.id,
-          employeeId: `EMP-${ru.id.slice(0, 6).toUpperCase()}`,
-          name: ru.name,
-          email: ru.email,
-          password: 'SiteSense@2026',
-          role: toFrontendRole(ru.role),
-          siteId: ru.site_ids?.[0] || 'SITE-001',
-          supervisorId: null,
-          managerId: null,
-          isActive: ru.is_active ?? true,
-        }))
+        const reviewer = remoteUsers.find((r: any) => r.role === 'reviewer' || r.role === 'supervisor')
+        const managerUser = remoteUsers.find((r: any) => r.role === 'manager')
 
-        setUsers(prev => {
-          const remoteEmails = new Set(mappedUsers.map(u => u.email.toLowerCase()))
-          const filtered = prev.filter(p => !remoteEmails.has(p.email.toLowerCase()))
-          return [...filtered, ...mappedUsers]
+        const mappedUsers: DemoUser[] = remoteUsers.map((ru: any) => {
+          const feRole = toFrontendRole(ru.role)
+          return {
+            id: ru.id,
+            employeeId: `EMP-${ru.id.slice(0, 6).toUpperCase()}`,
+            name: ru.name,
+            email: ru.email,
+            password: 'SiteSense@2026',
+            role: feRole,
+            siteId: ru.site_ids?.[0] || ru.site_id || '3591c762-1cb9-4fd4-9be0-f15ca5514c64',
+            supervisorId: feRole === 'employee' || feRole === 'manager' ? (reviewer?.id || null) : null,
+            managerId: feRole === 'employee' ? (managerUser?.id || null) : null,
+            isActive: ru.is_active ?? true,
+          }
         })
+
+        // Keep strictly the database users, without appending mock fixture users
+        setUsers(mappedUsers)
       })
-      .catch(err => {
+      .catch((err: any) => {
         console.warn('Could not sync users from backend database:', err)
       })
   }, [effectiveUser?.id, effectiveUser?.role])
@@ -499,25 +504,29 @@ function AppContent() {
         user.isActive,
     )
 
-    if (!manager || !manager.supervisorId || !manager.siteId) {
+    if (!manager) {
       return null
     }
 
+    const fallbackSupervisor = users.find(u => u.role === 'supervisor')
+    const supervisorId = manager.supervisorId || fallbackSupervisor?.id || null
+    const siteId = manager.siteId || '3591c762-1cb9-4fd4-9be0-f15ca5514c64'
+
     const employeeNumber = getNextNumber(users, 'employeeId', 'EMP-')
     const userNumber = getNextNumber(users, 'id', 'USER-')
-    const employeeCode = String(employeeNumber).padStart(3, '0')
+    const employeeCode = String(employeeNumber || users.length + 1).padStart(3, '0')
 
     const initialPassword = `SiteSense@2026`
 
     const newEmployee: DemoUser = {
-      id: `USER-${String(userNumber).padStart(3, '0')}`,
+      id: `USER-${String(userNumber || users.length + 1).padStart(3, '0')}`,
       employeeId: `EMP-${employeeCode}`,
       name: input.name.trim(),
       email: normalizedEmail,
       password: initialPassword,
       role: 'employee',
-      siteId: manager.siteId,
-      supervisorId: manager.supervisorId,
+      siteId: siteId,
+      supervisorId: supervisorId,
       managerId: manager.id,
       isActive: true,
     }

@@ -26,13 +26,6 @@ export default function Login({ onLogin, error, isLoading = false }: LoginProps)
         onLogin(identifier, password)
     }
 
-    const quickLogins = [
-        { label: 'Admin', email: 'admin@sitesense.io', pass: 'SiteSense@2026', roleDesc: 'admin' },
-        { label: 'Manager', email: 'manager@sitesense.io', pass: 'SiteSense@2026', roleDesc: 'manager' },
-        { label: 'Reviewer', email: 'reviewer1@sitesense.io', pass: 'SiteSense@2026', roleDesc: 'supervisor' },
-        { label: 'Field', email: 'field1@sitesense.io', pass: 'SiteSense@2026', roleDesc: 'employee' },
-    ]
-
     return (
         <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10">
             <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl lg:grid-cols-2">
@@ -184,44 +177,6 @@ export default function Login({ onLogin, error, isLoading = false }: LoginProps)
                             <ArrowRight size={17} />
                         </button>
                     </form>
-
-                    <div className="mt-6">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            Quick Sign-in (Live Backend Roles)
-                        </p>
-                        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                            {quickLogins.map(item => (
-                                <button
-                                    key={item.label}
-                                    type="button"
-                                    onClick={() => {
-                                        setIdentifier(item.email)
-                                        setPassword(item.pass)
-                                        onLogin(item.email, item.pass)
-                                    }}
-                                    className="flex flex-col items-start rounded-lg border border-slate-200 bg-slate-50/80 p-2 text-left hover:border-blue-400 hover:bg-blue-50/50 transition"
-                                >
-                                    <span className="text-xs font-bold text-slate-900">{item.label}</span>
-                                    <span className="text-[10px] text-slate-500">{item.roleDesc}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="mt-5 rounded-xl border border-blue-100 bg-blue-50/70 p-4">
-                        <div className="flex items-start gap-2.5">
-                            <ShieldCheck size={18} className="mt-0.5 shrink-0 text-blue-600" />
-                            <div>
-                                <p className="text-xs font-semibold text-blue-900">
-                                    Live FastAPI & Neon Database Connected
-                                </p>
-                                <p className="mt-1 text-xs leading-5 text-blue-800/80">
-                                    Backend REST API: <code className="rounded bg-blue-100 px-1 py-0.5 font-mono text-[11px]">http://localhost:8000/api/v1</code>.
-                                    Role mapping active: Employee ➔ Field, Supervisor ➔ Reviewer.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
 
                     <p className="mt-8 text-center text-xs text-slate-400">
                         © 2026 SiteSense. All rights reserved.

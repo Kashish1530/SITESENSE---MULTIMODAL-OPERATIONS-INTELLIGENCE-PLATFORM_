@@ -128,7 +128,13 @@ class ChatService:
             for att in attachments_meta:
                 att_path = att.get("storage_path") or att.get("path")
                 att_type = (att.get("type") or "").lower()
-                if att_path and att_type in ["image", "photo", "jpg", "jpeg", "png", "webp"]:
+                att_name = att.get("name") or "media"
+                ext = (os.path.splitext(att_path)[1] if att_path else "").lower()
+
+                is_image = att_type in ["image", "photo", "jpg", "jpeg", "png", "webp"] or ext in [".jpg", ".jpeg", ".png", ".webp", ".bmp"]
+                is_video = att_type in ["video", "mp4", "mov", "avi", "webm", "mkv"] or ext in [".mp4", ".mov", ".avi", ".webm", ".mkv"]
+
+                if att_path and is_image:
                     try:
                         local_path = storage.resolve_safe_path(att_path)
                         if local_path.exists():
@@ -171,14 +177,112 @@ class ChatService:
                                     else ("PPE VIOLATIONS DETECTED (FAIL)" if persons else "NO PERSONS DETECTED")
                                 )
                                 det_summary_items.append(
-                                    f"Visual Evidence Analysis for '{att.get('name', 'image')}':\n"
+                                    f"Visual Evidence Analysis for '{att_name}':\n"
                                     f"Detected Count: {len(persons)} person(s), {len(helmets)} safety helmet(s), {len(vests)} safety vest(s).\n"
                                     f"Spatial PPE Verification:\n" +
                                     "\n".join(worker_details) + "\n"
                                     f"Spatial Ground Truth: {overall_status}."
                                 )
                     except Exception as det_err:
-                        logger.warning(f"Error running CV inference on chat attachment: {det_err}")
+                        logger.warning(f"Error running CV inference on chat image attachment: {det_err}")
+
+                elif att_path and is_video:
+                    try:
+                        local_path = storage.resolve_safe_path(att_path)
+                        if local_path.exists():
+                            import cv2
+                            import tempfile
+                            from pathlib import Path
+                            from app.services.detection_service import DetectionService
+
+                            cap = cv2.VideoCapture(str(local_path))
+                            fps = cap.get(cv2.CAP_PROP_FPS) or 24.0
+                            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                            duration = total_frames / fps if fps else 0.0
+
+                            num_samples = min(8, max(4, int(duration // 2))) if duration > 0 else 4
+                            sample_indices = [int(i * total_frames / num_samples) for i in range(num_samples)]
+
+                            timeline_findings = []
+                            all_classes = set()
+                            total_missing_helmets = 0
+                            total_missing_vests = 0
+                            peak_workers = 0
+
+                            for f_idx in sample_indices:
+                                cap.set(cv2.CAP_PROP_POS_FRAMES, f_idx)
+                                ret, frame = cap.read()
+                                if not ret:
+                                    continue
+                                t_sec = f_idx / fps
+                                with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp:
+                                    tmp_name = tmp.name
+                                cv2.imwrite(tmp_name, frame)
+                                dets, _ = DetectionService.run_inference_on_file(tmp_name, conf_threshold=0.25)
+                                Path(tmp_name).unlink(missing_ok=True)
+
+                                for d in dets:
+                                    all_classes.add(d.get("class_name", "object"))
+
+                                persons = [d for d in dets if d.get("class_name") == "person"]
+                                helmets = [d for d in dets if d.get("class_name") == "safety_helmet"]
+                                vests = [d for d in dets if d.get("class_name") == "safety_vest"]
+                                forklifts = [d for d in dets if d.get("class_name") == "forklift"]
+                                pallets = [d for d in dets if d.get("class_name") == "pallet"]
+
+                                peak_workers = max(peak_workers, len(persons))
+                                missing_h = 0
+                                missing_v = 0
+                                for p in persons:
+                                    px1, py1, px2, py2 = p.get("bbox", [0, 0, 0, 0])
+                                    pw, ph = px2 - px1, py2 - py1
+                                    head_top, head_bottom = py1 - 0.1 * ph, py1 + 0.35 * ph
+                                    has_h = any(hx1 < px2 and hx2 > px1 and hy2 >= head_top and hy1 <= head_bottom for h in helmets for hx1, hy1, hx2, hy2 in [h.get("bbox", [0,0,0,0])])
+                                    torso_top, torso_bottom = py1 + 0.15 * ph, py1 + 0.70 * ph
+                                    has_v = any(vx1 < px2 and vx2 > px1 and vy2 >= torso_top and vy1 <= torso_bottom for v in vests for vx1, vy1, vx2, vy2 in [v.get("bbox", [0,0,0,0])])
+                                    if not has_h: missing_h += 1
+                                    if not has_v: missing_v += 1
+
+                                total_missing_helmets += missing_h
+                                total_missing_vests += missing_v
+
+                                issues = []
+                                if missing_h > 0:
+                                    issues.append(f"{missing_h}/{len(persons)} workers missing safety helmet")
+                                if missing_v > 0:
+                                    issues.append(f"{missing_v}/{len(persons)} workers missing safety vest")
+                                if forklifts and persons:
+                                    issues.append("forklift operating near pedestrians")
+                                if pallets:
+                                    issues.append(f"{len(pallets)} pallet(s) on aisle floor")
+
+                                status_text = "; ".join(issues) if issues else "All observed workers compliant"
+                                timeline_findings.append(f"| {t_sec:.1f}s | {len(persons)} | {'VIOLATION: ' + status_text if issues else 'PASS (Compliant)'} |")
+
+                            cap.release()
+
+                            has_violations = total_missing_helmets > 0 or total_missing_vests > 0
+                            overall_status = "CRITICAL PPE VIOLATIONS DETECTED (FAIL)" if has_violations else "ALL OBSERVED WORKERS COMPLIANT (PASS)"
+
+                            timeline_table = (
+                                "| Timestamp | Workers in Frame | Observed Status |\n"
+                                "| :--- | :---: | :--- |\n" +
+                                "\n".join(timeline_findings)
+                            )
+                            classes_str = ", ".join(sorted(all_classes)) if all_classes else "No distinct classes identified"
+                            det_summary_items.append(
+                                f"Video Temporal Visual Analysis for '{att_name}':\n"
+                                f"- Duration: {duration:.1f} seconds (sampled across {len(sample_indices)} keyframes).\n"
+                                f"- Detected Classes in Video: {classes_str}.\n"
+                                f"- Peak Workers in Frame: {peak_workers} personnel.\n"
+                                f"- Total Head Protection (Helmet) Violations: {total_missing_helmets} observed incidents.\n"
+                                f"- Total High-Visibility Vest Violations: {total_missing_vests} observed incidents.\n"
+                                f"- Temporal Compliance Timeline:\n"
+                                f"{timeline_table}\n"
+                                f"- Video Ground Truth: {overall_status}."
+                            )
+                    except Exception as vid_err:
+                        logger.warning(f"Error running CV inference on chat video attachment: {vid_err}")
 
             cv_evidence_text = "\n\n".join(det_summary_items) if det_summary_items else "No explicit visual detections recorded."
             user_query = payload.content.strip() if payload.content else "Inspect the attached media for any compliance or safety violations."
@@ -186,9 +290,11 @@ class ChatService:
                 f"User Question: '{user_query}'\n\n"
                 f"{cv_evidence_text}\n\n"
                 f"Instructions:\n"
-                f"1. Base your compliance evaluation strictly on the spatial PPE verification findings above.\n"
-                f"2. If every worker is verified wearing their safety helmet on their head and safety vest on their torso, state clearly that Compliance Status is PASS (No Violations Detected).\n"
-                f"3. Structure your response with clean Markdown headers on separate lines:\n\n"
+                f"1. Base your compliance evaluation strictly on the visual evidence analysis above.\n"
+                f"2. Explicitly list the detected object classes found in the footage.\n"
+                f"3. If any worker is missing a safety helmet or vest, or if vehicles/pallets present hazards, state clearly that Compliance Status is FAIL with the specific violations found.\n"
+                f"4. If every worker is verified compliant with no hazards, state Compliance Status is PASS.\n"
+                f"5. Structure your response with clean Markdown headers on separate lines:\n\n"
                 f"### Executive Summary\n\n"
                 f"### Evidence Analysis\n\n"
                 f"### Policy Citations\n\n"

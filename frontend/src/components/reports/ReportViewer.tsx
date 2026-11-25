@@ -135,11 +135,6 @@ export default function ReportViewer({
                 </button>
             </div>
 
-            <div className="report-controls rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                Demo report: information is generated from local in-memory
-                inspection data. No backend or database verification is performed.
-            </div>
-
             <div className="report-controls rounded-xl border border-slate-200 bg-white p-5">
                 <label
                     htmlFor="report-inspection"
@@ -467,7 +462,7 @@ export default function ReportViewer({
                     </Section>
 
                     <footer className="border-t border-slate-200 pt-4 text-xs text-slate-400">
-                        Generated from SiteSense local demo data · Inspection ID: {report.inspection.id}
+                        Generated from SiteSense Operations Intelligence Platform · Inspection ID: {report.inspection.id}
                     </footer>
                 </article>
             )}

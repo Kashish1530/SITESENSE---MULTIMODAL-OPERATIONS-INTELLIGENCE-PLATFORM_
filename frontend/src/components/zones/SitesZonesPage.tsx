@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     Building2,
     Camera,
@@ -11,7 +11,8 @@ import {
     ShieldCheck,
 } from 'lucide-react'
 
-import { DEMO_SITES, type DemoUser } from '../../data/users'
+import { DEMO_SITES, type DemoSite, type DemoUser } from '../../data/users'
+import { getSitesApi } from '../../api/client'
 import BackgroundAssetEditor from './BackgroundAssetEditor'
 import ZoneDrawingEditor from './ZoneDrawingEditor'
 import {
@@ -34,7 +35,7 @@ type Props = {
     currentUser: DemoUser
 }
 
-type DemoCamera = {
+export type DemoCamera = {
     id: string
     siteId: string
     name: string
@@ -42,42 +43,37 @@ type DemoCamera = {
     status: 'online' | 'offline'
 }
 
-const DEMO_CAMERAS: DemoCamera[] = DEMO_SITES.flatMap((site, index) => [
-    {
-        id: `${site.id}-CAM-01`,
-        siteId: site.id,
-        name: `${site.name} — Camera 01`,
-        location: 'Main entrance',
-        status: 'online' as const,
-    },
-    {
-        id: `${site.id}-CAM-02`,
-        siteId: site.id,
-        name: `${site.name} — Camera 02`,
-        location: 'Storage area',
-        status: index === 1 ? 'offline' as const : 'online' as const,
-    },
-])
-
-function createDemoConfigurations(): ZoneConfiguration[] {
-    return DEMO_CAMERAS.map(camera => {
-        const site = DEMO_SITES.find(item => item.id === camera.siteId)!
-
-        return {
-            id: `CONFIG-${camera.id}`,
+function createConfigurationsForSites(sites: DemoSite[]): ZoneConfiguration[] {
+    return sites.flatMap(site => [
+        {
+            id: `CONFIG-${site.id}-CAM-01`,
             siteId: site.id,
             siteName: site.name,
-            cameraId: camera.id,
-            cameraName: camera.name,
+            cameraId: `${site.id}-CAM-01`,
+            cameraName: `${site.name} — Camera 01`,
             modelVersion: 'demo-model-v1',
             background: null,
             zones: [],
             countingLines: [],
             detectionClasses: [],
-            createdAt: '2026-11-23T09:00:00.000Z',
-            updatedAt: '2026-11-23T09:00:00.000Z',
-        }
-    })
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            id: `CONFIG-${site.id}-CAM-02`,
+            siteId: site.id,
+            siteName: site.name,
+            cameraId: `${site.id}-CAM-02`,
+            cameraName: `${site.name} — Camera 02`,
+            modelVersion: 'demo-model-v1',
+            background: null,
+            zones: [],
+            countingLines: [],
+            detectionClasses: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+    ])
 }
 
 function formatDate(value: string): string {
@@ -89,37 +85,80 @@ function formatDate(value: string): string {
 }
 
 export default function SitesZonesPage({ currentUser }: Props) {
-    const isAdmin = currentUser.role === 'admin'
+    const isAdmin = currentUser?.role === 'admin'
     const canEdit = isAdmin
 
+    const [loadedSites, setLoadedSites] = useState<DemoSite[]>([])
+
+    useEffect(() => {
+        getSitesApi()
+            .then(sites => {
+                if (Array.isArray(sites) && sites.length > 0) {
+                    setLoadedSites(sites.map((s: any) => ({
+                        id: s.id,
+                        name: s.name,
+                        region: s.region || 'Default Region',
+                        type: s.type,
+                        location: s.location,
+                        active: s.active !== false,
+                    })))
+                }
+            })
+            .catch(() => {})
+    }, [])
+
     const availableSites = useMemo(() => {
-        if (isAdmin) return DEMO_SITES
+        const sites = loadedSites.length > 0 ? loadedSites : DEMO_SITES
+        if (isAdmin) return sites
+        return sites.filter(site => site.id === currentUser?.siteId)
+    }, [isAdmin, currentUser?.siteId, loadedSites])
 
-        return DEMO_SITES.filter(
-            site => site.id === currentUser.siteId,
-        )
-    }, [isAdmin, currentUser.siteId])
+    const initialSiteId = isAdmin
+        ? (DEMO_SITES[0]?.id ?? '')
+        : (currentUser?.siteId || (DEMO_SITES[0]?.id ?? ''))
 
-    const [configurations, setConfigurations] = useState(
-        createDemoConfigurations,
+    const [configurations, setConfigurations] = useState<ZoneConfiguration[]>(() =>
+        createConfigurationsForSites(DEMO_SITES)
     )
 
-    const [selectedSiteId, setSelectedSiteId] = useState(
-        availableSites[0]?.id ?? '',
+    const [selectedSiteId, setSelectedSiteId] = useState<string>(initialSiteId)
+
+    useEffect(() => {
+        if (availableSites.length > 0 && (!selectedSiteId || !availableSites.some(s => s.id === selectedSiteId))) {
+            setSelectedSiteId(availableSites[0].id)
+        }
+    }, [availableSites, selectedSiteId])
+
+    const cameras = useMemo(() => {
+        const currentSite = availableSites.find(s => s.id === selectedSiteId)
+        if (!currentSite) return []
+        return [
+            {
+                id: `${currentSite.id}-CAM-01`,
+                siteId: currentSite.id,
+                name: `${currentSite.name} — Camera 01`,
+                location: 'Main entrance',
+                status: 'online' as const,
+            },
+            {
+                id: `${currentSite.id}-CAM-02`,
+                siteId: currentSite.id,
+                name: `${currentSite.name} — Camera 02`,
+                location: 'Storage area',
+                status: 'online' as const,
+            },
+        ]
+    }, [availableSites, selectedSiteId])
+
+    const [selectedCameraId, setSelectedCameraId] = useState<string>(() =>
+        `${initialSiteId}-CAM-01`
     )
 
-    const cameras = useMemo(
-        () => DEMO_CAMERAS.filter(
-            camera => camera.siteId === selectedSiteId,
-        ),
-        [selectedSiteId],
-    )
-
-    const [selectedCameraId, setSelectedCameraId] = useState(
-        () => DEMO_CAMERAS.find(
-            camera => camera.siteId === availableSites[0]?.id,
-        )?.id ?? '',
-    )
+    useEffect(() => {
+        if (cameras.length > 0 && (!selectedCameraId || !cameras.some(c => c.id === selectedCameraId))) {
+            setSelectedCameraId(cameras[0].id)
+        }
+    }, [cameras, selectedCameraId])
 
     const selectedConfiguration = configurations.find(
         item => item.cameraId === selectedCameraId,
@@ -159,7 +198,7 @@ export default function SitesZonesPage({ currentUser }: Props) {
         if (siteId === selectedSiteId) return
         if (!confirmLeavingEditor()) return
 
-        const firstCamera = DEMO_CAMERAS.find(
+        const firstCamera = cameras.find(
             camera => camera.siteId === siteId,
         )
 
@@ -312,12 +351,6 @@ export default function SitesZonesPage({ currentUser }: Props) {
                     <ShieldCheck className="h-4 w-4" />
                     {canEdit ? 'Admin · Edit access' : 'Supervisor · View only'}
                 </span>
-            </div>
-
-            <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-                Demo configuration: camera records, model compatibility and
-                saved changes are held in frontend memory only. No camera
-                connection or backend persistence is active.
             </div>
 
             <section className="grid gap-4 rounded-xl border border-slate-200 bg-white p-5 md:grid-cols-2">

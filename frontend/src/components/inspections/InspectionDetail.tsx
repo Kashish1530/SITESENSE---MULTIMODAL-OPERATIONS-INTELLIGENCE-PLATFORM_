@@ -80,7 +80,7 @@ function InspectionDetail({
         item => item.id === inspection.templateId,
     )
 
-    const site = DEMO_SITES.find(item => item.id === inspection.siteId)
+    const site = { name: inspection.siteName || DEMO_SITES.find(item => item.id === inspection.siteId)?.name || inspection.siteId || 'Site' }
 
     const inspectionEvidence = evidence.filter(
         item =>

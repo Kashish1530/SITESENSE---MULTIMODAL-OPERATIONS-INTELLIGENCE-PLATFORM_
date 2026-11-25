@@ -5,7 +5,13 @@ export type DemoSite = {
     id: string
     name: string
     region: string
+    type?: string
+    location?: string
+    active?: boolean
 }
+
+export type SiteRecord = DemoSite
+export type UserRecord = DemoUser
 
 export type DemoUser = {
     id: string
@@ -368,8 +374,9 @@ export function getDemoSite(siteId: string | null): DemoSite | undefined {
     return DEMO_SITES.find((site) => site.id === siteId)
 }
 
-export function getDirectReports(userId: string): DemoUser[] {
-    return DEMO_USERS.filter(
+export function getDirectReports(userId: string, users: DemoUser[] = DEMO_USERS): DemoUser[] {
+    const list = users && users.length > 0 ? users : DEMO_USERS
+    return list.filter(
         (user) =>
             user.supervisorId === userId ||
             user.managerId === userId,

@@ -2,7 +2,7 @@ from typing import Optional
 import uuid
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
-from app.api.deps import get_db, require_admin, require_manager
+from app.api.deps import get_current_user, get_db, require_admin
 from app.schemas.common import PaginatedResponse
 from app.schemas.rules import RuleCreate, RuleResponse, RuleUpdate
 from app.services.rule_service import RuleService
@@ -20,7 +20,7 @@ def list_rules(
     is_active: Optional[bool] = Query(None, description="Filter by active status"),
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
-    _user=Depends(require_manager),
+    _user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> PaginatedResponse[RuleResponse]:
     """List compliance rules."""
@@ -36,7 +36,7 @@ def list_rules(
 )
 def get_rule(
     rule_id: uuid.UUID,
-    _user=Depends(require_manager),
+    _user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> RuleResponse:
     """Retrieve single compliance rule by ID."""

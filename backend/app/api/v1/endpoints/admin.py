@@ -2,7 +2,7 @@ from typing import Optional
 import uuid
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
-from app.api.deps import get_db, require_admin, require_manager
+from app.api.deps import get_current_user, get_db, require_admin, require_manager
 from app.models.users_sites import User
 from app.schemas.admin import (
     AdminStatsResponse,
@@ -15,6 +15,26 @@ from app.schemas.common import PaginatedResponse
 from app.services.admin_service import AdminService
 
 router = APIRouter()
+
+
+@router.get(
+    "/directory",
+    response_model=PaginatedResponse[AdminUserResponse],
+    summary="List Organization User Directory",
+    description="Returns active platform users and site memberships for authenticated workspace views.",
+)
+def list_user_directory(
+    role: Optional[str] = Query(None, description="Filter by role (admin, manager, field, reviewer)"),
+    limit: int = Query(100, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PaginatedResponse[AdminUserResponse]:
+    """Authenticated read-only user directory backed by PostgreSQL."""
+    items, total = AdminService.list_users(
+        db, role=role, is_active=True, limit=limit, offset=offset
+    )
+    return PaginatedResponse(items=items, total=total, limit=limit, offset=offset)
 
 
 @router.get(

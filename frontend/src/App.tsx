@@ -34,8 +34,6 @@ import type {
 } from './inspections/types'
 
 import {
-  createTaskPhotoFormData,
-  mockTaskPhotoUpload,
   formatFileSize,
 } from './inspections/taskPhotoAdapter'
 
@@ -418,11 +416,7 @@ function AppContent() {
       }
 
       if (!uploadSuccessful) {
-        const formData = createTaskPhotoFormData(task.id, files)
-        const result = await mockTaskPhotoUpload(formData, onProgress)
-        if (result.uploadedCount !== files.length) {
-          return false
-        }
+        onProgress(100)
       }
 
       const latestTask = inspectionsRef.current.find(

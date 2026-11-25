@@ -2,7 +2,7 @@ from typing import Optional
 import uuid
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
-from app.api.deps import get_db, require_manager
+from app.api.deps import get_current_user, get_db, require_manager
 from app.models.users_sites import User
 from app.schemas.common import PaginatedResponse
 from app.schemas.tickets import TicketApproveRequest, TicketCreate, TicketResponse
@@ -23,7 +23,7 @@ def list_tickets(
     status: Optional[str] = Query(None, description="Filter by status (proposed, approved, rejected, resolved)"),
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
-    _user: User = Depends(require_manager),
+    _user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> PaginatedResponse[TicketResponse]:
     """List tickets with pagination."""

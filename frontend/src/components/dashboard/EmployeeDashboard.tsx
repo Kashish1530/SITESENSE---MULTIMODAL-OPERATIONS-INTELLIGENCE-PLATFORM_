@@ -11,7 +11,6 @@ import {
 import type { DemoUser } from '../../data/users'
 import type { InspectionRecord } from '../../inspections/types'
 import { getActiveTasks, getCompletedTasks, getEmployeeTasks } from '../../inspections/taskUtils'
-import { sitePerformance } from '../../data/mockData'
 
 type Props = {
     currentUser: DemoUser
@@ -105,9 +104,7 @@ export default function EmployeeDashboard({
                 ) : (
                     <div className="divide-y divide-slate-100">
                         {activeTasks.slice(0, 4).map(task => {
-                            const site = sitePerformance.find(
-                                item => item.id === task.siteId,
-                            )
+                            const site = { name: task.siteName || task.siteId || 'Site' }
 
                             return (
                                 <div key={task.id} className="p-5">

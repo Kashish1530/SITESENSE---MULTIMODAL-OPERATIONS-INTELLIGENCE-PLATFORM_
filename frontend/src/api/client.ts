@@ -337,8 +337,31 @@ export async function getSitesApi(): Promise<DemoSite[]> {
   return list.map(s => ({
     id: s.id,
     name: s.name,
-    region: s.location || 'Central Region',
+    region: s.location || '',
+    type: s.type,
+    location: s.location,
+    active: s.active,
   }))
+}
+
+export async function createSiteApi(payload: {
+  name: string
+  type: string
+  location: string
+  active?: boolean
+}): Promise<DemoSite> {
+  const s = await apiFetch<ApiSite>('/sites', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+  return {
+    id: s.id,
+    name: s.name,
+    region: s.location || '',
+    type: s.type,
+    location: s.location,
+    active: s.active,
+  }
 }
 
 // ==========================================
@@ -587,6 +610,90 @@ export async function createAdminUserApi(input: CreateAdminUserInput): Promise<a
 
 export async function getAdminUsersApi(): Promise<any[]> {
   const data = await apiFetch<any>('/admin/users')
+  return Array.isArray(data) ? data : (data?.items || [])
+}
+
+export async function getUsersDirectoryApi(): Promise<any[]> {
+  const data = await apiFetch<any>('/admin/directory')
+  return Array.isArray(data) ? data : (data?.items || [])
+}
+
+export async function getAdminStatsApi(): Promise<{
+  total_users: number
+  total_sites: number
+  total_inspections: number
+  total_findings: number
+  total_tickets: number
+  pass_rate: number
+}> {
+  return await apiFetch<any>('/admin/stats')
+}
+
+export async function getFindingsApi(inspectionId?: string): Promise<any[]> {
+  const query = inspectionId ? `?inspection_id=${inspectionId}` : ''
+  const data = await apiFetch<any>(`/findings${query}`)
+  return Array.isArray(data) ? data : (data?.items || [])
+}
+
+export async function getTicketsApi(inspectionId?: string): Promise<any[]> {
+  const query = inspectionId ? `?inspection_id=${inspectionId}` : ''
+  const data = await apiFetch<any>(`/tickets${query}`)
+  return Array.isArray(data) ? data : (data?.items || [])
+}
+
+export async function getReportsApi(inspectionId?: string): Promise<any[]> {
+  const query = inspectionId ? `?inspection_id=${inspectionId}` : ''
+  const data = await apiFetch<any>(`/reports${query}`)
+  return Array.isArray(data) ? data : (data?.items || [])
+}
+
+export async function getPoliciesApi(q?: string): Promise<any[]> {
+  const query = q ? `?q=${encodeURIComponent(q)}` : ''
+  const data = await apiFetch<any>(`/policies${query}`)
+  return Array.isArray(data) ? data : (data?.items || [])
+}
+
+export async function getRulesApi(): Promise<any[]> {
+  const data = await apiFetch<any>('/rules')
+  return Array.isArray(data) ? data : (data?.items || [])
+}
+
+export async function getZonesApi(siteId: string): Promise<{
+  site_id: string
+  zones: any[]
+  lines: any[]
+}> {
+  return await apiFetch<any>(`/zones?site_id=${encodeURIComponent(siteId)}`)
+}
+
+export async function saveZoneApi(payload: {
+  site_id: string
+  camera_id?: string
+  name: string
+  zone_type: 'polygon' | 'counting_line'
+  coordinates: number[][]
+  applicable_classes?: string[]
+  rules_config?: Record<string, any>
+  is_active?: boolean
+}): Promise<any> {
+  return await apiFetch<any>('/zones', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export async function runInspectionDetectionApi(
+  inspectionId: string,
+  confidenceThreshold = 0.25,
+): Promise<any> {
+  return await apiFetch<any>(`/inspections/${inspectionId}/detect`, {
+    method: 'POST',
+    body: JSON.stringify({ confidence_threshold: confidenceThreshold }),
+  })
+}
+
+export async function getReviewHistoryApi(): Promise<any[]> {
+  const data = await apiFetch<any>('/reviews/history')
   return Array.isArray(data) ? data : (data?.items || [])
 }
 

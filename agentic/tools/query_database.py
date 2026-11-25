@@ -16,13 +16,14 @@ from agentic.tools.registry import registry
 
 
 def get_db_url() -> str:
-    """Reads the DATABASE_URL connection string from .env or environment."""
-    env_path = Path(__file__).resolve().parent.parent.parent / ".env"
-    if env_path.exists():
-        with open(env_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if line.strip().startswith("DATABASE_URL="):
-                    return line.strip().split("DATABASE_URL=", 1)[1].strip('"').strip("'")
+    """Reads the DATABASE_URL connection string from .env, backend/.env, or environment."""
+    root_dir = Path(__file__).resolve().parent.parent.parent
+    for env_path in (root_dir / ".env", root_dir / "backend" / ".env"):
+        if env_path.exists():
+            with open(env_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.strip().startswith("DATABASE_URL="):
+                        return line.strip().split("DATABASE_URL=", 1)[1].strip('"').strip("'")
     return os.getenv("DATABASE_URL", "")
 
 

@@ -4,7 +4,7 @@ import type { DemoUser } from '../../data/users'
 import type { InspectionRecord } from '../../inspections/types'
 import { getActiveTasks } from '../../inspections/taskUtils'
 import TaskPhotoSubmission from './TaskPhotoSubmission'
-import { sitePerformance } from '../../data/mockData'
+
 
 type Props = {
     currentUser: DemoUser
@@ -74,9 +74,7 @@ export default function MyTasks({
             ) : (
                 <div className="space-y-4">
                     {tasks.map(task => {
-                        const site = sitePerformance.find(
-                            item => item.id === task.siteId,
-                        )
+                        const site = { name: task.siteName || task.siteId || 'Site' }
 
                         return (
                             <article

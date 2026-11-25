@@ -1,8 +1,8 @@
-
-export type DemoRole = 'admin' | 'supervisor' | 'manager' | 'employee'
+export type UserRole = 'admin' | 'supervisor' | 'manager' | 'employee'
+export type DemoRole = UserRole
 
 export type RoleConfig = {
-    id: DemoRole
+    id: UserRole
     name: string
     title: string
     initials: string
@@ -10,10 +10,10 @@ export type RoleConfig = {
     navigation: string[]
 }
 
-export const DEMO_ROLES: RoleConfig[] = [
+export const ROLE_CONFIGS: RoleConfig[] = [
     {
         id: 'admin',
-        name: 'Demo Admin',
+        name: 'Admin',
         title: 'Administrator',
         initials: 'AD',
         description: 'Organization-wide access and management.',
@@ -33,7 +33,7 @@ export const DEMO_ROLES: RoleConfig[] = [
     },
     {
         id: 'supervisor',
-        name: 'Demo Supervisor',
+        name: 'Supervisor',
         title: 'Supervisor',
         initials: 'SV',
         description: 'Oversee assigned sites, managers and teams.',
@@ -50,7 +50,7 @@ export const DEMO_ROLES: RoleConfig[] = [
     },
     {
         id: 'manager',
-        name: 'Demo Manager',
+        name: 'Manager',
         title: 'Manager',
         initials: 'MG',
         description: 'Manage assigned employees and operations.',
@@ -66,7 +66,7 @@ export const DEMO_ROLES: RoleConfig[] = [
     },
     {
         id: 'employee',
-        name: 'Demo Employee',
+        name: 'Employee',
         title: 'Employee',
         initials: 'EM',
         description: 'Manage assigned tasks and field inspections.',
@@ -81,6 +81,8 @@ export const DEMO_ROLES: RoleConfig[] = [
     },
 ]
 
-export function getRoleConfig(role: DemoRole): RoleConfig {
-    return DEMO_ROLES.find((item) => item.id === role) ?? DEMO_ROLES[0]
+export function getRoleConfig(role: UserRole): RoleConfig {
+    return ROLE_CONFIGS.find((item) => item.id === role) ?? ROLE_CONFIGS[0]
 }
+
+export const DEMO_ROLES = ROLE_CONFIGS

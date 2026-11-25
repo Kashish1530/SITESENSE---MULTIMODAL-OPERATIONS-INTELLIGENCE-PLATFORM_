@@ -119,6 +119,7 @@ export type InspectionRecord = {
     type: InspectionType
     templateId?: string
     siteId: string
+    siteName?: string
     zone: string
     status: InspectionStatus
     assignedToUserId: string

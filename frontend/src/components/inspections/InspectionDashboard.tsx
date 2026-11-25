@@ -273,16 +273,19 @@ function InspectionDashboard({
         completed: week.completed,
     }))
 
+    const [remoteSites, setRemoteSites] = useState<DemoSite[]>([])
+
     const performanceChart = useMemo(() => {
         const completedInspections = visibleInspections.filter(
             inspection => inspection.status === 'Completed',
         )
 
         if (currentUser.role === 'admin') {
+            const sitesList = remoteSites.length > 0 ? remoteSites : KNOWN_SITES
             return {
                 title: 'Site Performance',
                 description: 'Completed inspections per site',
-                data: DEMO_SITES.map(site => ({
+                data: sitesList.map(site => ({
                     id: site.id,
                     label: site.name,
                     value: completedInspections.filter(
@@ -359,8 +362,6 @@ function InspectionDashboard({
 
     const canManage = currentUser.role !== 'employee'
 
-    const [remoteSites, setRemoteSites] = useState<DemoSite[]>([])
-
     useEffect(() => {
         if (!getStoredAccessToken()) return
         let mounted = true
@@ -381,8 +382,8 @@ function InspectionDashboard({
         const found =
             remoteSites.find(s => s.id === siteId) ||
             KNOWN_SITES.find(s => s.id === siteId) ||
-            DEMO_SITES.find(s => s.id === siteId)
-        return found ? found.name : 'Unknown site'
+            inspections.find(i => i.siteId === siteId)
+        return found ? (found as any).name || (found as any).siteName : 'Unknown site'
     }
 
     const siteName = resolveSiteName(currentUser.siteId)

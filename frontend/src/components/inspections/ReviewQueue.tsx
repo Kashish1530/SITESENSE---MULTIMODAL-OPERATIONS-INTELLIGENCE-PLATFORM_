@@ -343,9 +343,7 @@ function ReviewQueue({
                             const employee = users.find(
                                 user => user.id === inspection.assignedToUserId,
                             )
-                            const site = DEMO_SITES.find(
-                                item => item.id === inspection.siteId,
-                            )
+                            const site = { name: inspection.siteName || DEMO_SITES.find(item => item.id === inspection.siteId)?.name || inspection.siteId || 'Site' }
                             const priority = getPriority(inspection.dueDate)
                             const status = getReviewStatus(inspection)
 

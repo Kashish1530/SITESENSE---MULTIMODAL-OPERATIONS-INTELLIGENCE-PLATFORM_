@@ -21,6 +21,7 @@ export function getReviewStatus(
 export function getReviewQueue(
     inspections: InspectionRecord[],
     reviewer: DemoUser,
+    users: DemoUser[] = [],
 ): InspectionRecord[] {
     if (
         reviewer.role !== 'admin' &&
@@ -32,9 +33,9 @@ export function getReviewQueue(
 
     const directReportIds = reviewer.role === 'manager'
         ? new Set(
-            getDirectReports(reviewer.id)
-                .filter(user => user.role === 'employee')
-                .map(user => user.id),
+            getDirectReports(reviewer.id, users)
+                .filter((user: DemoUser) => user.role === 'employee')
+                .map((user: DemoUser) => user.id),
         )
         : null
 

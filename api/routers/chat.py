@@ -16,7 +16,9 @@ from dotenv import load_dotenv
 
 from agentic.core import SiteSenseAgent
 
-load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
+_ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(_ROOT_DIR / "backend" / ".env")
+load_dotenv(_ROOT_DIR / ".env")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 router = APIRouter(tags=["Agent Chat"])

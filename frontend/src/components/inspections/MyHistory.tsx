@@ -1,7 +1,6 @@
 
 import { CalendarCheck, ClipboardList, MapPin } from 'lucide-react'
 import type { DemoUser } from '../../data/users'
-import { sitePerformance } from '../../data/mockData'
 import type {
     InspectionEvidence,
     InspectionRecord,
@@ -77,9 +76,7 @@ export default function MyHistory({
             ) : (
                 <div className="space-y-4">
                     {completedTasks.map(task => {
-                        const site = sitePerformance.find(
-                            item => item.id === task.siteId,
-                        )
+                        const site = { name: task.siteName || task.siteId || 'Site' }
 
                         const taskEvidence = evidence.filter(
                             item =>

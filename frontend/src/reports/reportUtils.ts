@@ -37,6 +37,7 @@ export function getVisibleReportInspections(
     users: DemoUser[],
     inspections: InspectionRecord[],
 ): ReportInspection[] {
+    if (!currentUser) return []
     if (currentUser.role === 'admin') {
         return inspections
     }

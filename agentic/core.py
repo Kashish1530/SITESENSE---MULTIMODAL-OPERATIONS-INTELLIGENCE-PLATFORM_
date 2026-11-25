@@ -16,8 +16,10 @@ from dotenv import load_dotenv
 from groq import Groq
 import psycopg2
 
-# Load environment configuration
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+# Load environment configuration (root .env and backend/.env)
+_ROOT_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(_ROOT_DIR / "backend" / ".env")
+load_dotenv(_ROOT_DIR / ".env")
 
 from agentic.tools import registry
 from agentic.router import route_query

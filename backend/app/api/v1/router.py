@@ -9,6 +9,7 @@ from app.api.v1.endpoints import (
     jobs,
     media,
     modules,
+    policies,
     reports,
     reviews,
     rules,
@@ -32,6 +33,7 @@ api_router.include_router(media.router, prefix="/media", tags=["Media & File Upl
 api_router.include_router(jobs.router, prefix="/jobs", tags=["Job Status & Processing"])
 api_router.include_router(inspections.router, prefix="/inspections", tags=["Inspections & Evidence"])
 api_router.include_router(findings.router, prefix="/findings", tags=["Compliance Findings"])
+api_router.include_router(policies.router, prefix="/policies", tags=["Knowledge & Policies"])
 api_router.include_router(chat.router, prefix="/chat", tags=["Intelligence Chat"])
 api_router.include_router(reviews.router, prefix="/reviews", tags=["Human Review Queue"])
 api_router.include_router(reports.router, prefix="/reports", tags=["Inspection Reports"])

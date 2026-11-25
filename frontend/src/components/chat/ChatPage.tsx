@@ -18,7 +18,6 @@ import {
     X,
 } from 'lucide-react'
 
-import { streamMockResponse } from '../../chat/mockChatAdapter'
 import {
     createChatSessionApi,
     sendChatMessageApi,
@@ -546,10 +545,6 @@ function ChatPage() {
         }
 
         const sentAttachments = [...attachments]
-        const hasAttachments = sentAttachments.length > 0
-        const attachmentTypes = Array.from(
-            new Set(sentAttachments.map(a => a.type || 'file'))
-        )
 
         const userMessage: ChatMessage = {
             id: createId(),
@@ -700,46 +695,16 @@ function ChatPage() {
             }
 
             if (!handledByLiveBackend) {
-                for await (const event of streamMockResponse(
-                    question || 'Please review the attached media.',
-                    hasAttachments,
-                    attachmentTypes,
-                )) {
-                    if (event.type === 'tool') {
-                        setActivity(previous => [
-                            ...previous,
-                            event.label,
-                        ])
-                    }
-
-                    if (event.type === 'token') {
-                        setMessages(previous =>
-                            previous.map(message =>
-                                message.id === assistantId
-                                    ? {
-                                        ...message,
-                                        content: message.content + event.text,
-                                    }
-                                    : message,
-                            ),
-                        )
-                    }
-
-                    if (event.type === 'citations') {
-                        setCitations(event.citations)
-
-                        setMessages(previous =>
-                            previous.map(message =>
-                                message.id === assistantId
-                                    ? {
-                                        ...message,
-                                        citations: event.citations,
-                                    }
-                                    : message,
-                            ),
-                        )
-                    }
-                }
+                setMessages(previous =>
+                    previous.map(message =>
+                        message.id === assistantId
+                            ? {
+                                ...message,
+                                content: 'Unable to reach the live SiteSense Intelligence backend. Please ensure the backend server and PostgreSQL database are running.',
+                            }
+                            : message,
+                    ),
+                )
             }
         } catch {
             setMessages(previous =>
@@ -748,7 +713,7 @@ function ChatPage() {
                         ? {
                             ...message,
                             content:
-                                'The simulated response failed. Please try again.',
+                                'The request could not be processed. Please check your backend connection and try again.',
                         }
                         : message,
                 ),

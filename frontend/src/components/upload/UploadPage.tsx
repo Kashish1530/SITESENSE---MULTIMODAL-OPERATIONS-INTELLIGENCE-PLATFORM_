@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
     AlertCircle,
     Building2,
@@ -23,7 +23,7 @@ import {
     X,
 } from 'lucide-react'
 
-import { DEMO_SITES, type DemoUser } from '../../data/users'
+import { DEMO_SITES, type DemoSite, type DemoUser } from '../../data/users'
 import type {
     InspectionEvidence,
     InspectionRecord,
@@ -31,6 +31,7 @@ import type {
 import {
     batchUploadMediaApi,
     generateReportApi,
+    getSitesApi,
     getStoredAccessToken,
 } from '../../api/client'
 
@@ -194,9 +195,51 @@ export default function UploadPage({
     // -------------------------------------------------------------------------
     // Form & Upload State
     // -------------------------------------------------------------------------
-    const [selectedSiteId, setSelectedSiteId] = useState<string>(
-        DEMO_SITES[0]?.id || 'SITE-001'
-    )
+    const [liveSites, setLiveSites] = useState<DemoSite[]>([])
+
+    useEffect(() => {
+        getSitesApi()
+            .then(sites => {
+                if (Array.isArray(sites) && sites.length > 0) {
+                    setLiveSites(sites.map((s: any) => ({
+                        id: s.id,
+                        name: s.name,
+                        region: s.region || 'Default Region',
+                        type: s.type,
+                        location: s.location,
+                        active: s.active !== false,
+                    })))
+                }
+            })
+            .catch(console.error)
+    }, [])
+
+    const activeSites = useMemo(() => {
+        if (liveSites.length > 0) return liveSites
+        const map = new Map<string, string>()
+        inspections.forEach(item => {
+            if (item.siteId) {
+                map.set(item.siteId, item.siteName || item.siteId)
+            }
+        })
+        if (map.size > 0) {
+            return Array.from(map.entries()).map(([id, name]) => ({
+                id,
+                name,
+                region: 'Default',
+                active: true,
+            }))
+        }
+        return DEMO_SITES
+    }, [liveSites, inspections])
+
+    const [selectedSiteId, setSelectedSiteId] = useState<string>('')
+
+    useEffect(() => {
+        if (activeSites.length > 0 && (!selectedSiteId || !activeSites.some(s => s.id === selectedSiteId))) {
+            setSelectedSiteId(activeSites[0].id)
+        }
+    }, [activeSites, selectedSiteId])
     const availableZones = useMemo(() => {
         return ZONES_BY_SITE[selectedSiteId] || ZONES_BY_SITE.default
     }, [selectedSiteId])
@@ -254,7 +297,7 @@ export default function UploadPage({
     const [recentUploads, setRecentUploads] = useState<UploadRecordItem[]>(() => {
         return inspections.slice(0, 10).map((insp, idx) => {
             const inspEvidence = evidence.filter(e => e.inspectionId === insp.id)
-            const site = DEMO_SITES.find(s => s.id === insp.siteId) || { name: 'North Warehouse' }
+            const site = { name: insp.siteName || (activeSites.find(s => s.id === insp.siteId)?.name) || 'Main Facility' }
             const types = Array.from(new Set(inspEvidence.map(e => e.type || 'Photo')))
 
             return {
@@ -357,8 +400,8 @@ export default function UploadPage({
         setPipelineStage('streaming')
 
         const filesToUpload = selectedFiles.map(item => item.file)
-        const site = DEMO_SITES.find(s => s.id === selectedSiteId) || DEMO_SITES[0]
-        const targetInspectionId = inspections[0]?.id || globalThis.crypto?.randomUUID?.() || 'demo-inspection-id'
+        const site = activeSites.find(s => s.id === selectedSiteId) || activeSites[0] || { name: 'Main Facility' }
+        const targetInspectionId = inspections[0]?.id || globalThis.crypto?.randomUUID?.() || 'inspection-id'
 
         try {
             // Stage 1: Upload to MinIO & Backend
@@ -659,7 +702,7 @@ export default function UploadPage({
                                     }}
                                     className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                                 >
-                                    {DEMO_SITES.map(site => (
+                                    {activeSites.map(site => (
                                         <option key={site.id} value={site.id}>
                                             {site.name} ({site.region})
                                         </option>
@@ -1046,7 +1089,7 @@ export default function UploadPage({
                                 className="bg-transparent font-medium focus:outline-none"
                             >
                                 <option value="all">All Sites</option>
-                                {DEMO_SITES.map(s => (
+                                {activeSites.map(s => (
                                     <option key={s.id} value={s.name}>{s.name}</option>
                                 ))}
                             </select>
@@ -1307,7 +1350,7 @@ export default function UploadPage({
                         >
                             <option value="current">Current Upload Session ({selectedFiles.length > 0 ? `${selectedFiles.length} files selected` : `${recentUploads[0]?.inspectionName}`})</option>
                             <option value="all_filtered">All Filtered Recent Uploads ({filteredUploads.length} inspections)</option>
-                            <option value="site_aggregate">Site Aggregation ({DEMO_SITES.find(s => s.id === selectedSiteId)?.name})</option>
+                            <option value="site_aggregate">Site Aggregation ({activeSites.find(s => s.id === selectedSiteId)?.name || 'All Sites'})</option>
                         </select>
                         <p className="mt-1.5 text-[11px] text-slate-400">
                             Aggregates pass rates, defect counts, and photographic evidence.

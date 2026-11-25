@@ -1,6 +1,6 @@
 ﻿import type { InspectionRecord } from '../inspections/types'
 import { getReviewStatus } from '../inspections/reviewUtils'
-import { DEMO_SITES } from '../data/users'
+
 
 export type DashboardFilters = {
   siteId: string
@@ -168,10 +168,12 @@ export function calculateManagementDashboard(
     }))
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
 
-  const siteRisks = DEMO_SITES
-    .filter(site => filters.siteId === 'all' || site.id === filters.siteId)
-    .map(site => {
-      const records = filtered.filter(item => item.siteId === site.id)
+  const uniqueSiteIds = Array.from(new Set(filtered.map(item => item.siteId).filter(Boolean)))
+  const siteRisks: SiteRisk[] = uniqueSiteIds
+    .filter((sId: string) => filters.siteId === 'all' || sId === filters.siteId)
+    .map((sId: string) => {
+      const records = filtered.filter(item => item.siteId === sId)
+      const siteName = records[0]?.siteName || sId
       const failedInspections = records.filter(
         item => classifyCompleted(item) === 'Failed',
       ).length
@@ -179,15 +181,15 @@ export function calculateManagementDashboard(
       const sitePendingReviews = records.filter(isPendingReview).length
 
       return {
-        siteId: site.id,
-        siteName: site.name,
+        siteId: sId,
+        siteName,
         failedInspections,
         overdueInspections,
         pendingReviews: sitePendingReviews,
         score: failedInspections * 3 + overdueInspections * 2 + sitePendingReviews,
       }
     })
-    .sort((a, b) => b.score - a.score || a.siteName.localeCompare(b.siteName))
+    .sort((a: SiteRisk, b: SiteRisk) => b.score - a.score || a.siteName.localeCompare(b.siteName))
 
   const trendMap = new Map<string, { label: string; created: number; completed: number }>()
   filtered.forEach(inspection => {

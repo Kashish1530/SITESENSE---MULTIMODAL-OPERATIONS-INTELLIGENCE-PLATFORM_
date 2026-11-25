@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     AlertTriangle,
     CheckCircle2,
@@ -9,7 +9,8 @@ import {
     TrendingUp,
 } from 'lucide-react'
 import type { InspectionRecord } from '../../inspections/types'
-import { DEMO_SITES } from '../../data/users'
+import { DEMO_SITES, type DemoSite } from '../../data/users'
+import { getSitesApi } from '../../api/client'
 import { getReviewStatus } from '../../inspections/reviewUtils'
 import {
     calculateManagementDashboard,
@@ -58,6 +59,40 @@ export default function Overview({ inspections }: OverviewProps) {
     const [siteId, setSiteId] = useState('all')
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
+    const [loadedSites, setLoadedSites] = useState<DemoSite[]>([])
+
+    useEffect(() => {
+        getSitesApi()
+            .then(sites => {
+                if (Array.isArray(sites) && sites.length > 0) {
+                    setLoadedSites(sites.map((s: any) => ({
+                        id: s.id,
+                        name: s.name,
+                        region: s.region || 'Default Region',
+                        type: s.type,
+                        location: s.location,
+                        active: s.active !== false,
+                    })))
+                }
+            })
+            .catch(console.error)
+    }, [])
+
+    const availableSites = useMemo(() => {
+        if (loadedSites.length > 0) return loadedSites
+        const map = new Map<string, string>()
+        inspections.forEach(item => {
+            if (item.siteId) {
+                map.set(item.siteId, item.siteName || item.siteId)
+            }
+        })
+        return Array.from(map.entries()).map(([id, name]) => ({
+            id,
+            name,
+            region: 'Default',
+            active: true,
+        }))
+    }, [loadedSites, inspections])
 
     const filters = useMemo(
         () => ({ siteId, startDate, endDate }),
@@ -124,15 +159,6 @@ export default function Overview({ inspections }: OverviewProps) {
                         Cross-site inspection performance and operational risk
                     </p>
                 </div>
-                <span className="inline-flex w-fit items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800">
-                    Demo data · In-memory
-                </span>
-            </div>
-
-            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-                These figures are calculated from the current frontend inspection
-                records. They are demonstration metrics, not live database figures,
-                and reset when the demo state is refreshed.
             </div>
 
             <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -156,7 +182,7 @@ export default function Overview({ inspections }: OverviewProps) {
                             className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
                         >
                             <option value="all">All sites</option>
-                            {DEMO_SITES.map(site => (
+                            {availableSites.map(site => (
                                 <option key={site.id} value={site.id}>
                                     {site.name}
                                 </option>
@@ -355,7 +381,7 @@ export default function Overview({ inspections }: OverviewProps) {
                 )}
 
                 <p className="mt-5 border-t border-slate-100 pt-3 text-xs text-slate-500">
-                    Demo formula: failed inspections × 3 + overdue active inspections × 2
+                    Risk formula: failed inspections × 3 + overdue active inspections × 2
                     + pending reviews × 1.
                 </p>
             </section>

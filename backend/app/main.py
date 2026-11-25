@@ -164,10 +164,34 @@ The backend serves as the **central integration and orchestration layer** connec
     except Exception as e:
         logger.warning(f"Could not mount agent chat/visualizer extensions: {e}")
 
-    # Home API page — Default opening page
-    @app.get("/", response_class=PlainTextResponse, include_in_schema=False)
-    def home_page():
-        return "welcome to sitesense"
+    # Mount Built Frontend SPA if available, otherwise return welcome text
+    from pathlib import Path
+    from fastapi.staticfiles import StaticFiles
+    from fastapi.responses import FileResponse
+
+    dist_dir = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+    if dist_dir.is_dir() and (dist_dir / "index.html").is_file():
+        assets_dir = dist_dir / "assets"
+        if assets_dir.is_dir():
+            app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+        @app.get("/", include_in_schema=False)
+        async def serve_frontend_root():
+            return FileResponse(str(dist_dir / "index.html"))
+
+        @app.get("/{full_path:path}", include_in_schema=False)
+        async def serve_frontend_fallback(request: Request, full_path: str):
+            # Do not intercept API or documentation routes
+            if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi.json"):
+                return PlainTextResponse("Not Found", status_code=404)
+            file_path = dist_dir / full_path
+            if file_path.is_file():
+                return FileResponse(str(file_path))
+            return FileResponse(str(dist_dir / "index.html"))
+    else:
+        @app.get("/", response_class=PlainTextResponse, include_in_schema=False)
+        def home_page():
+            return "welcome to sitesense"
 
     return app
 

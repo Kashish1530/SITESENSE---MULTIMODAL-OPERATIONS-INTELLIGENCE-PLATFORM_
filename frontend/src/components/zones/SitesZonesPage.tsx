@@ -104,7 +104,7 @@ export default function SitesZonesPage({ currentUser }: Props) {
                     })))
                 }
             })
-            .catch(() => {})
+            .catch(() => { })
     }, [])
 
     const availableSites = useMemo(() => {

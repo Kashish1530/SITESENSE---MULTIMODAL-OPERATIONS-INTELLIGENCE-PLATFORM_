@@ -225,11 +225,19 @@ function AppContent() {
     fetchUsers()
       .then((remoteUsers: any[]) => {
         if (!remoteUsers || remoteUsers.length === 0) return
-        const reviewer = remoteUsers.find((r: any) => r.role === 'reviewer' || r.role === 'supervisor')
-        const managerUser = remoteUsers.find((r: any) => r.role === 'manager')
+        const globalReviewer = remoteUsers.find((r: any) => r.role === 'reviewer' || r.role === 'supervisor')
+        const globalManager = remoteUsers.find((r: any) => r.role === 'manager')
 
         const mappedUsers: DemoUser[] = remoteUsers.map((ru: any) => {
           const feRole = toFrontendRole(ru.role)
+          const assignedSiteId = ru.site_ids?.[0] || ru.site_id || null
+          const siteReviewer = remoteUsers.find(
+            (r: any) => (r.role === 'reviewer' || r.role === 'supervisor') && (r.site_ids?.[0] === assignedSiteId || r.site_id === assignedSiteId)
+          ) || globalReviewer
+          const siteManager = remoteUsers.find(
+            (r: any) => r.role === 'manager' && (r.site_ids?.[0] === assignedSiteId || r.site_id === assignedSiteId)
+          ) || globalManager
+
           return {
             id: ru.id,
             employeeId: `EMP-${ru.id.slice(0, 6).toUpperCase()}`,
@@ -237,9 +245,9 @@ function AppContent() {
             email: ru.email,
             password: 'SiteSense@2026',
             role: feRole,
-            siteId: ru.site_ids?.[0] || ru.site_id || '3591c762-1cb9-4fd4-9be0-f15ca5514c64',
-            supervisorId: feRole === 'employee' || feRole === 'manager' ? (reviewer?.id || null) : null,
-            managerId: feRole === 'employee' ? (managerUser?.id || null) : null,
+            siteId: assignedSiteId,
+            supervisorId: feRole === 'employee' || feRole === 'manager' ? (siteReviewer?.id || null) : null,
+            managerId: feRole === 'employee' ? (siteManager?.id || null) : null,
             isActive: ru.is_active ?? true,
           }
         })

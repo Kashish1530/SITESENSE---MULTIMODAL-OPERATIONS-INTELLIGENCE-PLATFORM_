@@ -40,6 +40,8 @@ def route_query(question: str, has_image: bool = False, groq_api_key: Optional[s
     Determines query route and confidence score.
     Uses fast-path heuristics for images and greetings, and calls Groq for semantic classification.
     """
+    q = (question or "").lower().strip()
+
     # If an image was attached by user or query asks about image, immediately route to multimodal
     if has_image or any(w in q for w in ["in this image", "in this photo", "in this picture", "attached image", "attached media", "visual inspection"]):
         return {
@@ -47,8 +49,6 @@ def route_query(question: str, has_image: bool = False, groq_api_key: Optional[s
             "confidence": 0.99,
             "reasoning": "Query references attached image/media; requires multimodal visual analysis."
         }
-
-    q = question.lower().strip()
 
     # Short greeting shortcut - saves an LLM roundtrip
     greetings = ["hi", "hello", "hey", "good morning", "good afternoon", "thanks", "thank you"]

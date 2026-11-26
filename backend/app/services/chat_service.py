@@ -123,6 +123,8 @@ class ChatService:
                 types_found.add("image")
 
             det_summary_items = []
+            user_pdf_findings = []
+            user_pdf_citations = []
             storage = StorageService()
 
             for att in attachments_meta:
@@ -133,6 +135,7 @@ class ChatService:
 
                 is_image = att_type in ["image", "photo", "jpg", "jpeg", "png", "webp"] or ext in [".jpg", ".jpeg", ".png", ".webp", ".bmp"]
                 is_video = att_type in ["video", "mp4", "mov", "avi", "webm", "mkv"] or ext in [".mp4", ".mov", ".avi", ".webm", ".mkv"]
+                is_pdf = att_type in ["pdf", "doc", "document"] or ext in [".pdf", ".doc", ".docx", ".txt"]
 
                 if att_path and is_image:
                     try:
@@ -284,24 +287,105 @@ class ChatService:
                     except Exception as vid_err:
                         logger.warning(f"Error running CV inference on chat video attachment: {vid_err}")
 
+                elif att_path and is_pdf:
+                    try:
+                        local_pdf = storage.resolve_safe_path(att_path)
+                        if local_pdf.exists():
+                            import fitz
+                            doc = fitz.open(str(local_pdf))
+                            extracted_chunks = []
+                            for p_num in range(len(doc)):
+                                page_text = doc[p_num].get_text()
+                                if not page_text or not page_text.strip():
+                                    continue
+                                paragraphs = [p.strip() for p in page_text.split("\n\n") if len(p.strip()) > 30]
+                                if not paragraphs:
+                                    paragraphs = [p.strip() for p in page_text.split("\n") if len(p.strip()) > 30]
+                                for p_txt in paragraphs:
+                                    extracted_chunks.append({
+                                        "source_file": att_name,
+                                        "page": p_num + 1,
+                                        "text": p_txt
+                                    })
+                            doc.close()
+
+                            # Semantic keyword matching across user-attached document chunks
+                            keywords = ["ppe", "helmet", "vest", "hard hat", "forklift", "clearance", "walkway", "hazard", "speed", "safety", "pedestrian", "zone", "mandat", "rule", "standard", "require"]
+                            if payload.content:
+                                keywords.extend([w.lower() for w in payload.content.split() if len(w) > 3])
+
+                            scored = []
+                            for c in extracted_chunks:
+                                txt_l = c["text"].lower()
+                                sc = sum(1 for kw in keywords if kw in txt_l)
+                                if sc > 0:
+                                    scored.append((sc, c))
+                            scored.sort(key=lambda x: x[0], reverse=True)
+                            relevant_pdf_clauses = [c for _, c in scored[:5]] if scored else extracted_chunks[:3]
+
+                            if relevant_pdf_clauses:
+                                user_pdf_rules_summary = "\n".join([
+                                    f"- [{c['source_file']}, Page {c['page']}]: {c['text']}"
+                                    for c in relevant_pdf_clauses
+                                ])
+                                user_pdf_findings.append(
+                                    f"User-Attached Policy & Safety Handbook '{att_name}' (Ingested Chunks & Grounded Rules):\n"
+                                    f"{user_pdf_rules_summary}"
+                                )
+                                for c in relevant_pdf_clauses:
+                                    user_pdf_citations.append({
+                                        "source_file": c["source_file"],
+                                        "page": c["page"],
+                                        "clause": f"Custom Policy Requirement (Page {c['page']})",
+                                        "excerpt": c["text"][:160] + "..."
+                                    })
+                    except Exception as pdf_err:
+                        logger.warning(f"Error running ingestion and retrieval on chat PDF attachment: {pdf_err}")
+
             cv_evidence_text = "\n\n".join(det_summary_items) if det_summary_items else "No explicit visual detections recorded."
             user_query = payload.content.strip() if payload.content else "Inspect the attached media for any compliance or safety violations."
-            multimodal_agent_prompt = (
-                f"User Question: '{user_query}'\n\n"
-                f"{cv_evidence_text}\n\n"
-                f"Instructions:\n"
-                f"1. Base your compliance evaluation strictly on the visual evidence analysis above.\n"
-                f"2. Explicitly list the detected object classes found in the footage.\n"
-                f"3. If any worker is missing a safety helmet or vest, or if vehicles/pallets present hazards, state clearly that Compliance Status is FAIL with the specific violations found.\n"
-                f"4. If every worker is verified compliant with no hazards, state Compliance Status is PASS.\n"
-                f"5. Structure your response with clean Markdown headers on separate lines:\n\n"
-                f"### Executive Summary\n\n"
-                f"### Evidence Analysis\n\n"
-                f"### Policy Citations\n\n"
-                f"- **Personal Protective Equipment Policy (WHP-003, Page 2):** Mandates the use of head protection (hard hats/helmets) and high-visibility vests for all personnel in operational zones.\n"
-                f"- **PPE User Handbook (SHB-02, Page 2):** Specifies correct donning procedures, requiring helmets to be secured on the head and vests to be worn over the torso for maximum visibility and protection.\n\n"
-                f"### Recommendation\n\n"
-            )
+
+            if user_pdf_findings:
+                user_pdf_ctx = "\n\n".join(user_pdf_findings)
+                first_doc = user_pdf_citations[0]["source_file"] if user_pdf_citations else "Attached Policy Document"
+                first_page = user_pdf_citations[0]["page"] if user_pdf_citations else 1
+                first_excerpt = user_pdf_citations[0]["excerpt"] if user_pdf_citations else "Governing safety regulations for operational zones."
+                multimodal_agent_prompt = (
+                    f"User Question: '{user_query}'\n\n"
+                    f"### USER-PROVIDED SPECIFIC SAFETY POLICY & HANDBOOK (HIGHEST PRECEDENCE):\n"
+                    f"{user_pdf_ctx}\n\n"
+                    f"### VISUAL EVIDENCE ANALYSIS:\n"
+                    f"{cv_evidence_text}\n\n"
+                    f"Instructions:\n"
+                    f"1. You MUST evaluate the visual evidence strictly against the USER-PROVIDED POLICY RULES above.\n"
+                    f"2. Explicitly cite '{first_doc}' with its exact page number ({first_page}) in your Policy Citations.\n"
+                    f"3. Explicitly list the detected object classes found in the footage.\n"
+                    f"4. If any worker or condition violates the attached custom policy rules, state clearly that Compliance Status is FAIL with the specific violations found.\n"
+                    f"5. If every worker is verified compliant with no hazards, state Compliance Status is PASS.\n"
+                    f"6. Structure your response with clean Markdown headers on separate lines:\n\n"
+                    f"### Executive Summary\n\n"
+                    f"### Evidence Analysis\n\n"
+                    f"### Policy Citations\n\n"
+                    f"- **{first_doc} (Page {first_page}):** {first_excerpt}\n\n"
+                    f"### Recommendation\n\n"
+                )
+            else:
+                multimodal_agent_prompt = (
+                    f"User Question: '{user_query}'\n\n"
+                    f"{cv_evidence_text}\n\n"
+                    f"Instructions:\n"
+                    f"1. Base your compliance evaluation strictly on the visual evidence analysis above.\n"
+                    f"2. Explicitly list the detected object classes found in the footage.\n"
+                    f"3. If any worker is missing a safety helmet or vest, or if vehicles/pallets present hazards, state clearly that Compliance Status is FAIL with the specific violations found.\n"
+                    f"4. If every worker is verified compliant with no hazards, state Compliance Status is PASS.\n"
+                    f"5. Structure your response with clean Markdown headers on separate lines:\n\n"
+                    f"### Executive Summary\n\n"
+                    f"### Evidence Analysis\n\n"
+                    f"### Policy Citations\n\n"
+                    f"- **Personal Protective Equipment Policy (WHP-003, Page 2):** Mandates the use of head protection (hard hats/helmets) and high-visibility vests for all personnel in operational zones.\n"
+                    f"- **PPE User Handbook (SHB-02, Page 2):** Specifies correct donning procedures, requiring helmets to be secured on the head and vests to be worn over the torso for maximum visibility and protection.\n\n"
+                    f"### Recommendation\n\n"
+                )
 
             if not os.getenv("PYTEST_CURRENT_TEST"):
                 try:
@@ -322,6 +406,44 @@ class ChatService:
                         route = agent_result.get("route", route)
                 except Exception as e:
                     logger.warning(f"Multimodal agent call failed: {e}")
+
+            # Excel Feature 4.8 Human Approval Gate: Auto-propose remediation ticket on violation
+            proposed_ticket = None
+            if ("FAIL" in assistant_content or "VIOLATION" in assistant_content or any("FAIL" in d for d in det_summary_items)) and not os.getenv("PYTEST_CURRENT_TEST"):
+                try:
+                    from app.models.agent_review import Ticket
+                    from app.models.knowledge_compliance import Finding
+                    f_row = db.query(Finding).first()
+                    f_id = f_row.id if f_row else uuid.uuid4()
+                    new_ticket = Ticket(
+                        finding_id=f_id,
+                        inspection_id=session_obj.inspection_id,
+                        title="PPE Non-Compliance Remediation Ticket",
+                        description="Automated visual audit detected safety violations. Proposing remediation ticket requiring supervisor approval.",
+                        priority="high",
+                        status="proposed",
+                        proposed_by_agent=True,
+                        created_by=user.id
+                    )
+                    db.add(new_ticket)
+                    db.commit()
+                    db.refresh(new_ticket)
+                    proposed_ticket = {
+                        "ticket_id": str(new_ticket.id),
+                        "code": f"TCK-{str(new_ticket.id)[:8].upper()}",
+                        "title": new_ticket.title,
+                        "status": "proposed",
+                        "priority": "high",
+                    }
+                    tck_code = proposed_ticket["code"]
+                    tck_banner = (
+                        f"\n\n- **Proposed Remediation Ticket:** `{tck_code}` (Ticket ID: `{new_ticket.id}`) — "
+                        f"**Status: PROPOSED (Awaiting Manager Approval)**."
+                    )
+                    if "### Recommendation" in assistant_content:
+                        assistant_content += tck_banner
+                except Exception as tck_err:
+                    logger.warning(f"Could not auto-propose ticket: {tck_err}")
 
             if not assistant_content:
                 if os.getenv("PYTEST_CURRENT_TEST"):
@@ -417,12 +539,17 @@ class ChatService:
             if content_citations:
                 citations = content_citations
 
+        # Prioritize user-attached PDF citations when user uploaded custom policy documentation
+        if user_pdf_citations:
+            citations = user_pdf_citations[:3]
+
         # 3. Store assistant message with citations
         assistant_msg = ChatMessage(
             session_id=session_id,
             role="assistant",
             content=assistant_content,
             citations=citations,
+            attachment_metadata=[proposed_ticket] if proposed_ticket else None,
         )
         db.add(assistant_msg)
 

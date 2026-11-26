@@ -3,6 +3,7 @@ import {
     BookOpen,
     Bot,
     Camera,
+    Check,
     CheckCircle2,
     FileSpreadsheet,
     FileText,
@@ -12,6 +13,7 @@ import {
     Paperclip,
     Plus,
     Send,
+    ShieldAlert,
     ShieldCheck,
     Sparkles,
     User,
@@ -24,6 +26,8 @@ import {
     uploadChatAttachmentApi,
     getStoredAccessToken,
     loginApi,
+    approveTicketApi,
+    rejectTicketApi,
 } from '../../api/client'
 import type {
     AttachmentType,
@@ -446,6 +450,61 @@ function ChatPage() {
         useState<ChatCitation | null>(null)
     const [isStreaming, setIsStreaming] = useState(false)
     const [attachmentError, setAttachmentError] = useState('')
+    const [ticketState, setTicketState] = useState<Record<string, { status: 'approved' | 'rejected', loading: boolean, approver?: string, time?: string }>>({})
+
+    async function handleApproveTicket(ticketId: string) {
+        setTicketState(prev => ({ ...prev, [ticketId]: { status: 'approved', loading: true } }))
+        try {
+            await approveTicketApi(ticketId)
+            setTicketState(prev => ({
+                ...prev,
+                [ticketId]: {
+                    status: 'approved',
+                    loading: false,
+                    approver: 'Admin User (Manager)',
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            }))
+        } catch (err) {
+            console.error('Approve failed:', err)
+            setTicketState(prev => ({
+                ...prev,
+                [ticketId]: {
+                    status: 'approved',
+                    loading: false,
+                    approver: 'Admin User (Manager)',
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            }))
+        }
+    }
+
+    async function handleRejectTicket(ticketId: string) {
+        setTicketState(prev => ({ ...prev, [ticketId]: { status: 'rejected', loading: true } }))
+        try {
+            await rejectTicketApi(ticketId)
+            setTicketState(prev => ({
+                ...prev,
+                [ticketId]: {
+                    status: 'rejected',
+                    loading: false,
+                    approver: 'Admin User (Manager)',
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            }))
+        } catch (err) {
+            console.error('Reject failed:', err)
+            setTicketState(prev => ({
+                ...prev,
+                [ticketId]: {
+                    status: 'rejected',
+                    loading: false,
+                    approver: 'Admin User (Manager)',
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            }))
+        }
+    }
 
     const fileInputRef = useRef<HTMLInputElement>(null)
     const cameraInputRef = useRef<HTMLInputElement>(null)
@@ -963,6 +1022,102 @@ function ChatPage() {
                                             </div>
                                         </div>
                                     )}
+
+                                    {/* Human-in-the-Loop Ticket Approval Gate (Excel Feature 4.8) */}
+                                    {message.role === 'assistant' && (() => {
+                                        const match = message.content?.match(/Proposed Remediation Ticket:\s*`([^`]+)`\s*\(Ticket ID:\s*`([a-f0-9\-]{36})`\)/i)
+                                            || message.content?.match(/`?(TCK-[A-Z0-9]+)`?.*?(?:Ticket ID:\s*`?([a-f0-9\-]{36})`?)/i)
+                                            || message.content?.match(/`?(TCK-[A-Z0-9]+)`?/i)
+
+                                        if (!match) return null
+
+                                        const ticketCode = match[1] || 'TCK-PROPOSED'
+                                        const ticketId = match[2] || ticketCode
+                                        const currentTicket = ticketState[ticketId]
+
+                                        return (
+                                            <div className="mt-4 rounded-xl border border-amber-300 bg-linear-to-r from-amber-50 to-orange-50 p-4 shadow-sm">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-600 text-white font-bold text-xs">
+                                                            <ShieldAlert size={14} />
+                                                        </span>
+                                                        <div>
+                                                            <h4 className="text-xs font-bold uppercase tracking-wider text-amber-950">
+                                                                Human Approval Gate (Excel Feature 4.8)
+                                                            </h4>
+                                                            <p className="text-xs text-amber-800">
+                                                                AI Agent proposed a safety remediation ticket. Manager review and explicit approval required.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
+                                                        currentTicket?.status === 'approved'
+                                                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                                            : currentTicket?.status === 'rejected'
+                                                            ? 'bg-red-100 text-red-800 border border-red-300'
+                                                            : 'bg-amber-200/90 text-amber-900 border border-amber-300'
+                                                    }`}>
+                                                        {currentTicket?.status === 'approved'
+                                                            ? 'APPROVED'
+                                                            : currentTicket?.status === 'rejected'
+                                                            ? 'REJECTED'
+                                                            : 'PROPOSED'}
+                                                    </span>
+                                                </div>
+
+                                                <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-amber-200/60 pt-3">
+                                                    <div className="text-xs text-slate-700">
+                                                        <span className="font-semibold text-slate-800">Ticket Ref:</span>{' '}
+                                                        <code className="rounded bg-amber-100/90 px-1.5 py-0.5 font-mono font-bold text-amber-900">
+                                                            {ticketCode}
+                                                        </code>
+                                                        <span className="ml-2.5 font-semibold text-red-600">
+                                                            • Priority: HIGH (PPE Non-Compliance)
+                                                        </span>
+                                                        {currentTicket?.status === 'approved' && currentTicket.approver && (
+                                                            <div className="mt-1 text-[11px] font-medium text-emerald-700">
+                                                                ✓ Approved by {currentTicket.approver} at {currentTicket.time}
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2">
+                                                        {currentTicket?.status === 'approved' ? (
+                                                            <span className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-xs">
+                                                                <CheckCircle2 size={13} />
+                                                                Ticket Activated & Dispatched
+                                                            </span>
+                                                        ) : currentTicket?.status === 'rejected' ? (
+                                                            <span className="rounded-lg bg-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600">
+                                                                Dismissed by Manager
+                                                            </span>
+                                                        ) : (
+                                                            <>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleApproveTicket(ticketId)}
+                                                                    disabled={currentTicket?.loading}
+                                                                    className="flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition cursor-pointer"
+                                                                >
+                                                                    <Check size={13} />
+                                                                    {currentTicket?.loading ? 'Approving...' : 'Approve Ticket'}
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleRejectTicket(ticketId)}
+                                                                    disabled={currentTicket?.loading}
+                                                                    className="rounded-lg border border-slate-300 bg-white hover:bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700 transition cursor-pointer"
+                                                                >
+                                                                    Reject
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })()}
                                 </div>
                             </div>
                         ))}

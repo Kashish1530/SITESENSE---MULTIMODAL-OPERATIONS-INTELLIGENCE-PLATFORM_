@@ -709,3 +709,29 @@ export async function updateAdminUserApi(
     body: JSON.stringify(payload),
   })
 }
+
+export async function approveTicketApi(
+  ticketId: string,
+  resolutionNotes: string = 'Approved via In-Chat Approval Gate',
+): Promise<any> {
+  return await apiFetch<any>(`/tickets/${ticketId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify({
+      approved: true,
+      resolution_notes: resolutionNotes,
+    }),
+  })
+}
+
+export async function rejectTicketApi(
+  ticketId: string,
+  resolutionNotes: string = 'Rejected via In-Chat Approval Gate',
+): Promise<any> {
+  return await apiFetch<any>(`/tickets/${ticketId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify({
+      approved: false,
+      resolution_notes: resolutionNotes,
+    }),
+  })
+}

@@ -1,4 +1,5 @@
 import ReportViewer from './components/reports/ReportViewer'
+import PolicyManagementPage from './components/policies/PolicyManagementPage'
 import { useEffect, useRef, useState } from 'react'
 import AppLayout from './components/layout/AppLayout'
 import Overview from './components/dashboard/Overview'
@@ -717,6 +718,10 @@ function AppContent() {
           correctiveActions={correctiveActions}
         />
       )
+    }
+
+    if (activePage === 'Policies & Knowledge') {
+      return <PolicyManagementPage currentUser={user} />
     }
     if (
       activePage === 'Report Viewer' &&

@@ -653,6 +653,39 @@ export async function getPoliciesApi(q?: string): Promise<any[]> {
   return Array.isArray(data) ? data : (data?.items || [])
 }
 
+export async function uploadPolicyApi(payload: {
+  siteId: string
+  title: string
+  version?: string
+  effectiveDate?: string
+  description?: string
+  file: File
+}): Promise<any> {
+  const formData = new FormData()
+  formData.append('site_id', payload.siteId)
+  formData.append('title', payload.title)
+  formData.append('version', payload.version || '1.0')
+  if (payload.effectiveDate) {
+    formData.append('effective_date', payload.effectiveDate)
+  }
+  if (payload.description) {
+    formData.append('description', payload.description)
+  }
+  formData.append('file', payload.file)
+
+  const token = getStoredAccessToken()
+  const res = await fetch(`${API_BASE_URL}/policies/upload`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.detail || 'Policy document ingestion failed.')
+  }
+  return await res.json()
+}
+
 export async function getRulesApi(): Promise<any[]> {
   const data = await apiFetch<any>('/rules')
   return Array.isArray(data) ? data : (data?.items || [])

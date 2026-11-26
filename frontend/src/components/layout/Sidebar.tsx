@@ -1,6 +1,7 @@
 
 import {
     Activity,
+    BookOpen,
     Building2,
     ClipboardCheck,
     FileText,
@@ -34,6 +35,7 @@ const iconMap = {
     Search,
     Inspections: ClipboardCheck,
     Upload,
+    'Policies & Knowledge': BookOpen,
     'Review Queue': ShieldCheck,
     'Intelligence Chat': MessageSquare,
     'Agent Trace Viewer': Activity,
@@ -53,6 +55,7 @@ const sectionMap: Record<string, string> = {
     Upload: 'WORKSPACE',
     'My Tasks': 'WORKSPACE',
     'My History': 'WORKSPACE',
+    'Policies & Knowledge': 'OPERATIONS',
     'Review Queue': 'OPERATIONS',
     'Intelligence Chat': 'INTELLIGENCE',
     'Agent Trace Viewer': 'INTELLIGENCE',

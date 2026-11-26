@@ -10,10 +10,8 @@ Queries company safety handbooks and warehouse policies using:
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+from agentic.tools.query_database import get_db_url
 from agentic.tools.registry import registry
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-POLICIES_JSON_PATH = PROJECT_ROOT / "policies" / "policy_clauses.json"
 
 _hybrid_search_instance = None
 
@@ -92,51 +90,48 @@ def search_policies(query: str, clause_id: Optional[str] = None, policy_type: Op
         except Exception as err:
             print(f"[PolicySearch] Hybrid search encountered an error: {err}")
 
-    # 2. Check structured clauses in JSON as complementary reference
-    if POLICIES_JSON_PATH.exists():
+    # 2. Query dynamically uploaded policy chunks from PostgreSQL database
+    db_url = get_db_url()
+    if db_url:
         try:
-            with open(POLICIES_JSON_PATH, "r", encoding="utf-8") as f:
-                clauses: List[Dict[str, Any]] = json.load(f)
-
-            for item in clauses:
-                if clause_id and clause_id.lower() in item.get("clause_id", "").lower():
-                    hits.append({
-                        "citation": f"{item['clause_id']} — {item['title']} ({item.get('policy_doc', 'Policy Handbook')}, Page {item['page']})",
-                        "policy_document": item.get("policy_doc", "Operations & Safety Policy"),
-                        "section": item["section"],
-                        "clause_id": item["clause_id"],
-                        "summary": item["summary"],
-                        "severity": item["severity"],
-                        "rule_type": item["rule_type"],
-                        "retrieval_method": "Policy Clause Index"
-                    })
-                    continue
-
-                if policy_type:
-                    p_lower = policy_type.lower()
-                    if p_lower == "site" and "site" not in item.get("policy_doc", "").lower():
-                        continue
-                    if p_lower == "warehouse" and "warehouse" not in item.get("policy_doc", "").lower():
-                        continue
-
-                title_match = any(w in item["title"].lower() for w in q_norm.split() if len(w) > 2)
-                summary_match = any(w in item["summary"].lower() for w in q_norm.split() if len(w) > 2)
-                kw_match = any(kw in q_norm for kw in item.get("keywords", []))
-                class_match = any(gc.lower() in q_norm for gc in item.get("governing_classes", []))
-
-                if title_match or summary_match or kw_match or class_match:
-                    hits.append({
-                        "citation": f"{item['clause_id']} — {item['title']} ({item.get('policy_doc', 'Policy Handbook')}, Page {item['page']})",
-                        "policy_document": item.get("policy_doc", "Operations & Safety Policy"),
-                        "section": item["section"],
-                        "clause_id": item["clause_id"],
-                        "summary": item["summary"],
-                        "severity": item["severity"],
-                        "rule_type": item["rule_type"],
-                        "retrieval_method": "Policy Clause Index"
-                    })
-        except Exception:
-            pass
+            import psycopg2
+            from psycopg2.extras import RealDictCursor
+            with psycopg2.connect(db_url) as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    term = f"%{q_norm}%"
+                    cur.execute("""
+                        SELECT 
+                            pc.id,
+                            pc.chunk_index,
+                            pc.content,
+                            pc.page_number,
+                            pc.section_heading,
+                            p.title,
+                            p.source_file,
+                            p.version
+                        FROM policy_chunks pc
+                        JOIN policies p ON pc.policy_id = p.id
+                        WHERE pc.content ILIKE %s OR pc.section_heading ILIKE %s OR p.title ILIKE %s
+                        LIMIT 4;
+                    """, (term, term, term))
+                    db_chunks = cur.fetchall()
+                    for ch in db_chunks:
+                        doc_name = ch.get("title") or ch.get("source_file", "Policy Document")
+                        page = ch.get("page_number", 1)
+                        heading = ch.get("section_heading") or f"Page {page}"
+                        content = ch.get("content", "")
+                        hits.append({
+                            "citation": f"[{doc_name}] Page {page} — {heading}",
+                            "policy_document": doc_name,
+                            "section": f"Page {page}",
+                            "clause_id": heading,
+                            "summary": content[:350] + "..." if len(content) > 350 else content,
+                            "severity": "major",
+                            "rule_type": "operational_standard",
+                            "retrieval_method": "PostgreSQL policy_chunks Ingestion Store"
+                        })
+        except Exception as db_err:
+            print(f"[PolicySearch] Dynamic database query encountered: {db_err}")
 
     # 3. Grounded refusal signal if nothing matched
     if not hits:

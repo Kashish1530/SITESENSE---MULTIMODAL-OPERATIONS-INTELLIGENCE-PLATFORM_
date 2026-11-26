@@ -117,16 +117,13 @@ When a user uploads a custom safety manual or contractor SOP in the chat:
 ```bash
 python agentic/test_all_features.py
 ```
-*Executes all 11 acid tests covering Features 4.1 through 4.11 directly against Neon PostgreSQL.*
 
 ### Benchmark Query Router Accuracy (Feature 4.3)
 ```bash
 python agentic/eval_router.py
 ```
-*Evaluates the 12 labeled test questions in `evals/golden_sets/agent_test_set.json` and outputs accuracy %.*
 
 ### Run Guardrails & Injection Defense Benchmark (Feature 4.10)
 ```bash
 python agentic/test_guardrails.py
 ```
-*Tests 5 adversarial prompt injection payloads and 20 legitimate operational queries to verify 0% False Positives.*

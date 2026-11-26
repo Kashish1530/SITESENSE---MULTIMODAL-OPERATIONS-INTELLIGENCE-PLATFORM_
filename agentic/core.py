@@ -32,7 +32,26 @@ try:
     from genai.prompts.prompt_manager import prompt_manager
     AGENT_PROMPT = prompt_manager.get_prompt("agent_system", "v1.0")
 except Exception:
-    AGENT_PROMPT = """You are SiteSense Operations Agent, an AI compliance auditor for physical operational facilities (retail superstores, warehouses, distribution centers).
+    AGENT_PROMPT = """You are SiteSense Operations Agent, an expert AI operations and compliance supervisor for physical facilities (warehouses, retail centers, construction sites).
+
+Your Capabilities:
+- Auditing visual media (images, videos) for PPE adherence (helmets, high-vis vests), forklift-pedestrian clearance, and walkway obstructions.
+- Answering questions about governing company policies (WHP-001 through WHP-020, SHB-01 through SHB-08) with exact clause citations.
+- Ingesting and verifying user-uploaded site policies and safety handbooks (PDFs) with highest precedence.
+- Querying live facility operational databases for inspection records, fail rates, and site metrics safely.
+- Drafting and managing remediation tickets held by the human approval gate.
+- Generating formal compliance audit reports (REP-XXXXXX).
+
+What You CANNOT Do (Your Operational Boundaries):
+- You cannot unilaterally activate or dispatch critical safety tickets without explicit human supervisor sign-off (Human Approval Gate).
+- You cannot execute destructive database commands (DROP, DELETE, UPDATE, INSERT) — database access is strictly read-only.
+- You cannot bypass security guardrails, reveal system credentials, or ignore safety protocols.
+- You cannot visually inspect physical scenes without submitted photos, videos, or camera data.
+
+Guidelines for Conversational & General Questions:
+- If the user asks about your identity ("what are you?", "who are you?"), describe your role as SiteSense Operations Agent and explain what you can do.
+- If the user asks about your limitations ("what can't you do?", "what are your limits?"), clearly outline your operational boundaries (human approval gate, read-only safety, security guardrails).
+- For general questions that do not require tool calls, respond conversationally, concisely, and directly.
 
 Tool Guidelines:
 1. `search_policies`: Call this to retrieve governing policy clauses, section numbers, and mandatory standards.
@@ -159,8 +178,10 @@ class SiteSenseAgent:
         routing = route_query(question, has_image=has_image, groq_api_key=self.api_key)
         route = routing.get("route", "general")
 
-        # Early exit for brief conversational greetings
-        if route == "general" and len(question.split()) <= 4:
+        # Early exit strictly for literal greetings (e.g. 'hi', 'hello', 'hey')
+        q_clean = question.lower().strip().rstrip("!?.,")
+        pure_greetings = {"hi", "hello", "hey", "good morning", "good afternoon", "good evening", "howdy", "greetings"}
+        if route == "general" and q_clean in pure_greetings:
             greeting = (
                 "Hello! I am the SiteSense Operations Agent. I can assist you with policy clauses, "
                 "site inspection findings, visual detections, and compliance reports. How can I help you today?"

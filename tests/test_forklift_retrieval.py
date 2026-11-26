@@ -5,12 +5,10 @@ from genai.retrieval.pgvector_search import (
 )
 
 QUERY = "What are the safety rules for forklift operators?"
-
 TARGET_DOCUMENTS = ["WHP-006", "SHB-03"]
 
 
 def main():
-
     embedding = generate_query_embedding(QUERY)
 
     vector_string = (
@@ -21,7 +19,6 @@ def main():
 
     try:
         with connection.cursor() as cursor:
-
             cursor.execute(
                 """
                 SELECT
@@ -47,9 +44,10 @@ def main():
             results = cursor.fetchall()
 
             print("\n====== TARGET DOCUMENT RETRIEVAL ======")
+            print(f"Query: {QUERY}")
+            print(f"Results: {len(results)}")
 
             for rank, row in enumerate(results, start=1):
-
                 print(f"\nRank: {rank}")
                 print("Chunk:", row[0])
                 print("Document:", row[1])
@@ -57,7 +55,6 @@ def main():
                 print("Page:", row[3])
                 print("Similarity:", round(float(row[4]), 4))
                 print("Content:", row[5][:700])
-
                 print("-" * 70)
 
     finally:

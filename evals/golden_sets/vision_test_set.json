@@ -1,0 +1,36 @@
+{
+  "target_model": "Ultralytics YOLOv8",
+  "total_classes": 16,
+  "classes": [
+    "person",
+    "safety-vest",
+    "safety-helmet",
+    "safet--fire-extinguisher",
+    "fire-hose",
+    "pallets",
+    "fire",
+    "spill",
+    "safety-signage",
+    "exit-sign",
+    "empty-shelf",
+    "forklift",
+    "vehicle/truck",
+    "obstacle",
+    "machinery",
+    "safety-cone"
+  ],
+  "benchmark_metrics_target": {
+    "mAP50_minimum": 0.70,
+    "mAP50_95_minimum": 0.45,
+    "inference_fps_gpu": 30,
+    "inference_latency_p95_ms": 35.0
+  },
+  "spatial_zones": [
+    "main_walkway",
+    "operational_floor",
+    "emergency_exit",
+    "loading_bay",
+    "racking_aisle",
+    "machinery_zone"
+  ]
+}

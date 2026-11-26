@@ -24,17 +24,17 @@ model = SentenceTransformer(MODEL_NAME)
 # DATABASE CONNECTION
 # --------------------------------------------------
 
-def get_connection():
 
+def get_connection():
     return psycopg2.connect(
         host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
+        port=os.getenv("DB_PORT", "5432"),
         dbname=os.getenv("DB_NAME"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
-        connect_timeout=10,
+        sslmode="require",
+        connect_timeout=15
     )
-
 
 # --------------------------------------------------
 # QUERY EMBEDDING

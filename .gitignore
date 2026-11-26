@@ -1,7 +1,38 @@
+# Environments and keys
 .env
+backend/.env
 .venv/
-__pycache__/
-# Local backups and database dumps
-backups/
-*.dump
+venv/
+ENV/
 
+# Large binaries and archives
+*.zip
+*.tar.gz
+*.pt
+*.dump
+models/weights/*.pt
+
+# Temporary integration and backup folders
+_integration_backups/
+_integration_staging/
+backups/
+
+# Python cache & test artifacts
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Node & Frontend dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.vite/
+
+# Ephemeral runtime media and report outputs
+storage/
+media_storage/
+backend/storage/
+backend/media_storage/

@@ -115,6 +115,9 @@ class ChatService:
         citations: List[Dict[str, Any]] = []
         agent_result = None
         assistant_content = ""
+        user_pdf_findings: List[str] = []
+        user_pdf_citations: List[Dict[str, Any]] = []
+        proposed_ticket: Optional[Dict[str, Any]] = None
 
         # Multimodal media analysis workflow (CV + Policy Reasoning)
         if has_attachment:
@@ -123,8 +126,6 @@ class ChatService:
                 types_found.add("image")
 
             det_summary_items = []
-            user_pdf_findings = []
-            user_pdf_citations = []
             storage = StorageService()
 
             for att in attachments_meta:

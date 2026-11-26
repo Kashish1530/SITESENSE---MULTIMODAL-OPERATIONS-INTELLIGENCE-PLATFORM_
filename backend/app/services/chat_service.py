@@ -397,7 +397,13 @@ class ChatService:
                         sys.path.insert(0, str(ROOT_DIR))
                     from agentic.core import SiteSenseAgent
                     agent = SiteSenseAgent()
-                    agent_result = agent.run(question=multimodal_agent_prompt, session_id=str(session_id), user_id=str(user.id), has_image=True)
+                    agent_result = agent.run(
+                        question=multimodal_agent_prompt,
+                        session_id=str(session_id),
+                        user_id=str(user.id),
+                        user_role=user.role,
+                        has_image=True
+                    )
                     if agent_result and agent_result.get("answer"):
                         assistant_content = agent_result["answer"]
                         # Clean up any malformed inline bullets so each bullet item is on its own line
@@ -479,7 +485,12 @@ class ChatService:
                     sys.path.insert(0, str(ROOT_DIR))
                 from agentic.core import SiteSenseAgent
                 agent = SiteSenseAgent()
-                agent_result = agent.run(question=payload.content, session_id=str(session_id), user_id=str(user.id))
+                agent_result = agent.run(
+                    question=payload.content,
+                    session_id=str(session_id),
+                    user_id=str(user.id),
+                    user_role=user.role
+                )
                 if not agent_result or not agent_result.get("answer"):
                     raise RuntimeError("Live policy agent failed to generate a response.")
                 assistant_content = agent_result["answer"]

@@ -131,7 +131,8 @@ class SiteSenseAgent:
         session_id: str = "default_session",
         user_id: Optional[str] = None,
         has_image: bool = False,
-        use_cache: bool = True
+        use_cache: bool = True,
+        user_role: Optional[str] = "admin"
     ) -> Dict[str, Any]:
         """
         Executes the agentic workflow:
@@ -177,6 +178,30 @@ class SiteSenseAgent:
         # Route query
         routing = route_query(question, has_image=has_image, groq_api_key=self.api_key)
         route = routing.get("route", "general")
+
+        # Role-Based Access Control (RBAC): Database queries restricted to Admin, Supervisor, and Super Admin
+        role_clean = (user_role or "field").lower().strip()
+        allowed_db_roles = {"admin", "super_admin", "supervisor", "manager"}
+        db_keywords = ["database", "audit_log", "audit log", "table", "sql query", "select from", "records from", "show me data", "give me data", "data of"]
+        is_db_query = route == "database" or any(kw in question.lower() for kw in db_keywords)
+
+        if is_db_query and role_clean not in allowed_db_roles:
+            refusal_msg = (
+                f"### Access Denied: Database Access Restricted\n\n"
+                f"🔒 **Permission Required:** Direct database inspection, table queries, and audit log retrieval are strictly restricted to **Admin**, **Supervisor**, and **Super Admin** personnel.\n\n"
+                f"Your current account role is `{user_role or 'field'}`. Access to database tables and raw system records is denied."
+            )
+            elapsed = time.time() - start_time
+            run_id = log_agent_run_to_neon(user_id, question, "blocked", [], 25, 0.0001, elapsed)
+            return {
+                "answer": refusal_msg,
+                "route": "blocked",
+                "tools_called": [],
+                "tokens": 25,
+                "cost": 0.0001,
+                "latency": round(elapsed, 3),
+                "audit_run_id": run_id
+            }
 
         # Early exit strictly for literal greetings (e.g. 'hi', 'hello', 'hey')
         q_clean = question.lower().strip().rstrip("!?.,")
@@ -264,8 +289,15 @@ class SiteSenseAgent:
 
                     print(f"  [Agent Step {iteration}] Calling tool: {fn_name} with {fn_args}", flush=True)
                     
-                    # Execute tool via registry
-                    exec_result = registry.execute(fn_name, fn_args)
+                    # Check RBAC for query_database tool
+                    if fn_name == "query_database" and role_clean not in allowed_db_roles:
+                        exec_result = {
+                            "success": False,
+                            "error": f"Permission Denied: User role '{user_role}' is not authorized to execute database queries. Only Admin, Supervisor, and Super Admin can query the database."
+                        }
+                    else:
+                        # Execute tool via registry
+                        exec_result = registry.execute(fn_name, fn_args)
                     output_str = json.dumps(exec_result)
 
                     tool_trace.append({

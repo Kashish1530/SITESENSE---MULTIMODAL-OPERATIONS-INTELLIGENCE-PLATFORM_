@@ -1,4 +1,4 @@
-# SiteSense — Module 4: Agentic Intelligence Layer
+# SiteSense - Module 4: Agentic Intelligence Layer
 
 The **Agentic Intelligence Layer** (`agentic/`) is the central operational brain of SiteSense. It transforms static inspection findings, computer vision detections, and corporate policy manuals into an autonomous, tool-using, multi-step reasoning supervisor.
 

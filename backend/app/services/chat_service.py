@@ -20,6 +20,24 @@ from app.services.storage_service import StorageService
 logger = logging.getLogger(__name__)
 
 
+def normalize_chat_markdown(text: str) -> str:
+    """Normalizes squashed Markdown tables, inline bullets, and section headers."""
+    if not text:
+        return ""
+    # Split text preceding a table header on the same line (e.g. "Summary of Violations: | Violation Type |")
+    text = re.sub(r'([^\n|]+?)\s*(\|(?:\s*[^|\n]+\s*\|)+)', r'\1\n\n\2', text)
+    # Split squashed table rows onto clean new lines
+    text = re.sub(r'\|\s*\|\s*', '|\n|', text)
+    # Ensure empty blank line after table block before any succeeding text
+    text = re.sub(r'(\|[^\n]+\|)\s*\n\s*([^|\n\s])', r'\1\n\n\2', text)
+    # Clean up inline bullet items
+    text = re.sub(r'\s+([*\-•])\s+', r'\n\n- ', text)
+    # Standardize major section headers
+    for sec in ['Executive Summary', 'Evidence Analysis', 'Policy Citations', 'Recommendation']:
+        text = re.sub(rf'(?i)(?:###|\*\*)?\s*\b{sec}\b(?:\*\*)?:?', f'\n\n### {sec}\n\n', text)
+    return text.strip()
+
+
 class ChatService:
     """Service managing conversational sessions, multimodal queries, and grounded citations."""
 
@@ -363,7 +381,8 @@ class ChatService:
                     f"3. Explicitly list the detected object classes found in the footage.\n"
                     f"4. If any worker or condition violates the attached custom policy rules, state clearly that Compliance Status is FAIL with the specific violations found.\n"
                     f"5. If every worker is verified compliant with no hazards, state Compliance Status is PASS.\n"
-                    f"6. Structure your response with clean Markdown headers on separate lines:\n\n"
+                    f"6. When presenting tables (worker detections, violations, timeline), format them as proper multi-line Markdown tables with each row on its own line. Never join rows on a single line with '| |'.\n"
+                    f"7. Structure your response with clean Markdown headers on separate lines:\n\n"
                     f"### Executive Summary\n\n"
                     f"### Evidence Analysis\n\n"
                     f"### Policy Citations\n\n"
@@ -379,7 +398,8 @@ class ChatService:
                     f"2. Explicitly list the detected object classes found in the footage.\n"
                     f"3. If any worker is missing a safety helmet or vest, or if vehicles/pallets present hazards, state clearly that Compliance Status is FAIL with the specific violations found.\n"
                     f"4. If every worker is verified compliant with no hazards, state Compliance Status is PASS.\n"
-                    f"5. Structure your response with clean Markdown headers on separate lines:\n\n"
+                    f"5. When presenting tables (worker detections, violations, timeline), format them as proper multi-line Markdown tables with each row on its own line. Never join rows on a single line with '| |'.\n"
+                    f"6. Structure your response with clean Markdown headers on separate lines:\n\n"
                     f"### Executive Summary\n\n"
                     f"### Evidence Analysis\n\n"
                     f"### Policy Citations\n\n"
@@ -405,11 +425,7 @@ class ChatService:
                         has_image=True
                     )
                     if agent_result and agent_result.get("answer"):
-                        assistant_content = agent_result["answer"]
-                        # Clean up any malformed inline bullets so each bullet item is on its own line
-                        assistant_content = re.sub(r'\s+([*\-•])\s+', r'\n\n- ', assistant_content)
-                        for sec in ['Executive Summary', 'Evidence Analysis', 'Policy Citations', 'Recommendation']:
-                            assistant_content = re.sub(rf'(?i)(?:###|\*\*)?\s*\b{sec}\b(?:\*\*)?:?', f'\n\n### {sec}\n\n', assistant_content)
+                        assistant_content = normalize_chat_markdown(agent_result["answer"])
                         route = agent_result.get("route", route)
                 except Exception as e:
                     logger.warning(f"Multimodal agent call failed: {e}")
@@ -493,7 +509,7 @@ class ChatService:
                 )
                 if not agent_result or not agent_result.get("answer"):
                     raise RuntimeError("Live policy agent failed to generate a response.")
-                assistant_content = agent_result["answer"]
+                assistant_content = normalize_chat_markdown(agent_result["answer"])
                 route = agent_result.get("route", route)
 
         # Extract live grounded policy citations from agent tool results (for both multimodal and policy)

@@ -160,27 +160,40 @@ function FormattedMessage({ content }: { content: string }) {
         'POLICY VIOLATIONS?',
         'AUDIT LOG TABLE',
         'KEY OBSERVATIONS',
+        'SUMMARY OF VIOLATIONS',
     ]
     for (const kw of sectionKeywords) {
         const re = new RegExp(`(?:^|\\n|\\.\\s+)(?:\\*{1,3}|#{1,4}\\s*)?(${kw})(?:\\*{1,3}|:)?(?:\\s*[*•\\-]\\s*|\\s{2,}|\\s*\\n|\\s*$)`, 'gi')
         text = text.replace(re, (_, match) => `\n\n### ${match.trim()}\n\n* `)
     }
 
-    // 2. Ensure markdown table rows on a single line (separated by | |) are split into proper newlines
+    // 2. Separate prefix text before a table on the same line (e.g. "Summary of Violations: | Violation Type | Count |")
+    text = text.split('\n').map(line => {
+        const trimmedLine = line.trim()
+        const m = trimmedLine.match(/^([^|]+?)\s*(\|.+)$/)
+        if (m && m[2].endsWith('|') && m[2].includes('|')) {
+            return m[1].trim() + '\n\n' + m[2].trim()
+        }
+        return line
+    }).join('\n')
+
+    // 3. Ensure markdown table rows on a single line (separated by | |) are split into proper newlines
     text = text.replace(/\|\s*\|\s*/g, '|\n|')
 
-    // 3. Ensure inline bullet dashes (e.g. "observation. - **ITEM**") are split onto clean new lines
+    // 4. Ensure table blocks are separated from surrounding prose
+    text = text.replace(/([^\n|])\n+(\|(?:\s*[^|\n]+\s*\|)+)/g, '$1\n\n$2')
+    text = text.replace(/(\|[^\n]+\|)\n+([^|\n\s])/g, '$1\n\n$2')
+    text = text.replace(/(\|[^\n]+\|)\s*(###|\*\*)/g, '$1\n\n$2')
+    text = text.replace(/(###[^\n]+)\s*(\|)/g, '$1\n\n$2')
+    text = text.replace(/(Schema:[^\n]+)\s*(\|)/gi, '$1\n\n$2')
+
+    // 5. Ensure inline bullet dashes (e.g. "observation. - **ITEM**") are split onto clean new lines
     text = text.replace(/\s+-\s+\*\*([^*]+)\*\*/g, '\n\n* **$1**')
     text = text.replace(/([.!?])\s+-\s+/g, '$1\n\n* ')
     text = text.replace(/(KEY OBSERVATIONS|OBSERVATIONS|SUMMARY|FINDINGS):\s*-\s*/gi, '### $1\n\n* ')
 
-    // 4. Ensure bullet points (* or • or -) start on clean new lines
+    // 6. Ensure bullet points (* or • or -) start on clean new lines
     text = text.replace(/\s+([*\-•])\s+/g, '\n\n* ')
-
-    // 5. Ensure table blocks are separated from surrounding prose
-    text = text.replace(/(\|[^\n]+\|)\s*(###|\*\*)/g, '$1\n\n$2')
-    text = text.replace(/(###[^\n]+)\s*(\|)/g, '$1\n\n$2')
-    text = text.replace(/(Schema:[^\n]+)\s*(\|)/gi, '$1\n\n$2')
 
     const rawParagraphs = text.split(/\n\s*\n/)
 
@@ -348,7 +361,8 @@ function FormattedMessage({ content }: { content: string }) {
 
                 // Case 4: Markdown Table
                 const tableLineIndices = lines.map((l, i) => l.trim().startsWith('|') && l.trim().endsWith('|') ? i : -1).filter(i => i !== -1)
-                const isTable = tableLineIndices.length >= 2
+                const hasSeparator = lines.some(l => /^[|\s\-:]+$/.test(l.trim()))
+                const isTable = tableLineIndices.length >= 2 || (tableLineIndices.length >= 1 && hasSeparator)
                 if (isTable) {
                     const tableLines = lines.filter(l => l.trim().startsWith('|') && l.trim().endsWith('|'))
                     const preTableLines = lines.filter(l => !l.trim().startsWith('|') || !l.trim().endsWith('|')).filter(l => l.trim())
@@ -359,18 +373,18 @@ function FormattedMessage({ content }: { content: string }) {
                     const headers = parseCells(headerLine)
 
                     return (
-                        <div key={pIdx} className="space-y-2 my-2">
+                        <div key={pIdx} className="space-y-2.5 my-3">
                             {preTableLines.length > 0 && (
-                                <div className="rounded-lg bg-slate-100 border border-slate-200 px-3 py-1.5 font-mono text-xs text-slate-700">
-                                    {preTableLines.join(' ')}
+                                <div className="text-xs font-bold text-slate-800 uppercase tracking-wide px-1">
+                                    {renderInlineFormatting(preTableLines.join(' '))}
                                 </div>
                             )}
-                            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-2xs">
-                                <table className="w-full text-left text-xs sm:text-sm">
-                                    <thead className="bg-slate-100 text-slate-800 uppercase tracking-wider font-semibold text-[11px] border-b border-slate-200">
+                            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
+                                <table className="w-full text-left text-xs sm:text-sm border-collapse">
+                                    <thead className="bg-slate-100 text-slate-800 uppercase tracking-wider font-bold text-[11px] border-b border-slate-200">
                                         <tr>
                                             {headers.map((h, hIdx) => (
-                                                <th key={hIdx} className="px-3.5 py-2.5">
+                                                <th key={hIdx} className="px-3.5 py-2.5 border-r border-slate-200 last:border-r-0">
                                                     {h}
                                                 </th>
                                             ))}
@@ -380,24 +394,27 @@ function FormattedMessage({ content }: { content: string }) {
                                         {dataLines.map((row, rIdx) => {
                                             const cells = parseCells(row)
                                             return (
-                                                <tr key={rIdx} className="hover:bg-slate-50/60 transition">
+                                                <tr key={rIdx} className="hover:bg-slate-50/70 transition even:bg-slate-50/30">
                                                     {cells.map((cell, cIdx) => {
-                                                        const isPass = /yes|compliant|pass/i.test(cell)
-                                                        const isFail = /no|violation|fail/i.test(cell)
+                                                        const cleanCell = cell.replace(/\*\*/g, '').trim()
+                                                        const isPass = /^(?:✅\s*)?(?:yes|compliant|pass|worn|detected)\b/i.test(cleanCell) || cleanCell === '✅'
+                                                        const isFail = /^(?:❌\s*)?(?:no|violation|fail|missing|non-compliant)\b/i.test(cleanCell) || /VIOLATION/i.test(cleanCell) || cleanCell === '❌'
                                                         return (
-                                                            <td key={cIdx} className="px-3.5 py-2.5 text-slate-700">
+                                                            <td key={cIdx} className="px-3.5 py-2.5 text-slate-700 border-r border-slate-100 last:border-r-0">
                                                                 {isPass ? (
-                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                                                        <CheckCircle2 size={11} className="text-emerald-600" />
-                                                                        {cell.replace(/\*\*/g, '')}
+                                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs">
+                                                                        <CheckCircle2 size={12} className="text-emerald-600 shrink-0" />
+                                                                        {cleanCell.replace(/[✅✔️]/g, '').trim() || 'Compliant'}
                                                                     </span>
                                                                 ) : isFail ? (
-                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                                                                        <X size={11} className="text-rose-600" />
-                                                                        {cell.replace(/\*\*/g, '')}
+                                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-300 shadow-2xs">
+                                                                        <X size={12} className="text-rose-600 shrink-0" />
+                                                                        {cleanCell.replace(/[❌✖️]/g, '').trim() || 'Violation'}
                                                                     </span>
                                                                 ) : (
-                                                                    renderInlineFormatting(cell)
+                                                                    <span className="font-medium text-slate-800">
+                                                                        {renderInlineFormatting(cell)}
+                                                                    </span>
                                                                 )}
                                                             </td>
                                                         )

@@ -25,6 +25,7 @@ import {
     sendChatMessageApi,
     uploadChatAttachmentApi,
     getStoredAccessToken,
+    clearStoredSession,
     loginApi,
     approveTicketApi,
     rejectTicketApi,
@@ -703,8 +704,21 @@ function ChatPage() {
                 try {
                     if (!backendSessionId.current) {
                         setActivity(['Initializing intelligence session...'])
-                        const session = await createChatSessionApi('Operations Assistant')
-                        backendSessionId.current = session.id
+                        try {
+                            const session = await createChatSessionApi('Operations Assistant')
+                            backendSessionId.current = session.id
+                        } catch (initErr: any) {
+                            // If token was expired or rejected, clear credentials and perform auto-reauth
+                            if (initErr?.status === 401 || String(initErr?.message || '').toLowerCase().includes('expired')) {
+                                clearStoredSession()
+                                const authRes = await loginApi('admin@sitesense.io', 'SiteSense@2026')
+                                token = authRes.token
+                                const session = await createChatSessionApi('Operations Assistant')
+                                backendSessionId.current = session.id
+                            } else {
+                                throw initErr
+                            }
+                        }
                     }
 
                     setActivity([

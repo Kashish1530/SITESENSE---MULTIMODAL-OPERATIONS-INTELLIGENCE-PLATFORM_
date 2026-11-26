@@ -195,10 +195,14 @@ export async function apiFetch<T>(
           if (retryRes.ok) {
             return (await retryRes.json()) as T
           }
+        } else {
+          clearStoredSession()
         }
       } catch {
-        // Fall through to error
+        clearStoredSession()
       }
+    } else {
+      clearStoredSession()
     }
   }
 

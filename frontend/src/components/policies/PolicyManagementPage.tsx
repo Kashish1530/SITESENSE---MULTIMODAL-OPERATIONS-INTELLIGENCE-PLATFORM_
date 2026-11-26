@@ -12,6 +12,8 @@ import {
   Building2,
   Check,
   RefreshCw,
+  MessageSquare,
+  ChevronRight,
 } from 'lucide-react'
 import type { DemoSite, DemoUser } from '../../data/users'
 import { DEMO_SITES } from '../../data/users'
@@ -19,6 +21,7 @@ import { getPoliciesApi, uploadPolicyApi, getSitesApi } from '../../api/client'
 
 type Props = {
   currentUser: DemoUser
+  onNavigate?: (page: string) => void
 }
 
 export type PolicyItem = {
@@ -33,7 +36,7 @@ export type PolicyItem = {
   site_id?: string
 }
 
-export default function PolicyManagementPage({ currentUser }: Props) {
+export default function PolicyManagementPage({ currentUser, onNavigate }: Props) {
   const [policies, setPolicies] = useState<PolicyItem[]>([])
   const [sites, setSites] = useState<DemoSite[]>(DEMO_SITES)
   const [isLoading, setIsLoading] = useState(true)
@@ -54,11 +57,6 @@ export default function PolicyManagementPage({ currentUser }: Props) {
   const [ingestStep, setIngestStep] = useState('')
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null)
-
-  // RAG query test state
-  const [testQuery, setTestQuery] = useState('')
-  const [testResults, setTestResults] = useState<any[] | null>(null)
-  const [isSearchingRag, setIsSearchingRag] = useState(false)
 
   const loadData = async () => {
     setIsLoading(true)
@@ -151,20 +149,6 @@ export default function PolicyManagementPage({ currentUser }: Props) {
     } finally {
       setIsIngesting(false)
       setIngestStep('')
-    }
-  }
-
-  const handleTestSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!testQuery.trim()) return
-    setIsSearchingRag(true)
-    try {
-      const res = await getPoliciesApi(testQuery)
-      setTestResults(res)
-    } catch (err) {
-      console.error('RAG test error:', err)
-    } finally {
-      setIsSearchingRag(false)
     }
   }
 
@@ -445,78 +429,30 @@ export default function PolicyManagementPage({ currentUser }: Props) {
         )}
       </div>
 
-      {/* Live RAG Test Console Section */}
-      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm dark:border-slate-800/90 dark:bg-slate-900/80">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400">
-            <Sparkles className="h-5 w-5" />
+      {/* Unified AI Copilot Link Card */}
+      <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-blue-200/70 bg-gradient-to-r from-blue-50/80 via-indigo-50/30 to-white p-6 shadow-sm dark:border-blue-900/40 dark:from-blue-950/20 dark:via-slate-900 dark:to-slate-900 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-500/20">
+            <MessageSquare className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white">
-              Live Policy Retrieval & Refusal Console
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              Interact with Ingested Policies in Intelligence Chat
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Test semantic hybrid retrieval against your uploaded database chunks
+            <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
+              Ask natural language questions, verify visual PPE compliance against standards, and review proposed tickets with the SiteSense AI Agent.
             </p>
           </div>
         </div>
 
-        <form onSubmit={handleTestSearch} className="mt-4 flex gap-3">
-          <input
-            type="text"
-            value={testQuery}
-            onChange={(e) => setTestQuery(e.target.value)}
-            placeholder="Try: 'What is the rule for forklift pedestrian clearance?' or 'helmet standard'"
-            className="flex-1 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm text-slate-900 transition focus:border-blue-500 focus:bg-white focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-          />
+        {onNavigate && (
           <button
-            type="submit"
-            disabled={isSearchingRag || !testQuery.trim()}
-            className="flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
+            onClick={() => onNavigate('Intelligence Chat')}
+            className="flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition hover:from-blue-700 hover:to-indigo-700"
           >
-            {isSearchingRag ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Search className="h-4 w-4" />
-            )}
-            Test Query
+            <span>Open Intelligence Chat</span>
+            <ChevronRight className="h-4 w-4" />
           </button>
-        </form>
-
-        {testResults && (
-          <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Retrieval Results ({testResults.length} matches)
-            </div>
-            {testResults.length === 0 ? (
-              <div className="mt-2 text-sm text-slate-500">
-                No matching policy chunks found. (Ungrounded queries are refused).
-              </div>
-            ) : (
-              <div className="mt-2 space-y-3">
-                {testResults.map((r, i) => (
-                  <div
-                    key={i}
-                    className="rounded-lg border border-slate-200/80 bg-white p-3 shadow-xs dark:border-slate-800 dark:bg-slate-900"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="font-semibold text-slate-900 dark:text-white">
-                        {r.title || r.source_file}
-                      </div>
-                      <span className="rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-400">
-                        v{r.version || '1.0'}
-                      </span>
-                    </div>
-                    {r.description && (
-                      <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
-                        {r.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         )}
       </div>
 

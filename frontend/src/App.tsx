@@ -721,7 +721,12 @@ function AppContent() {
     }
 
     if (activePage === 'Policies & Knowledge') {
-      return <PolicyManagementPage currentUser={user} />
+      return (
+        <PolicyManagementPage
+          currentUser={user}
+          onNavigate={handleNavigate}
+        />
+      )
     }
     if (
       activePage === 'Report Viewer' &&

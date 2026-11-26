@@ -75,16 +75,17 @@ class RoleChecker:
 # Role-specific dependency shortcuts
 require_admin = RoleChecker(["admin"])
 require_manager = RoleChecker(["admin", "manager"])
-require_reviewer = RoleChecker(["admin", "reviewer"])
-require_field = RoleChecker(["admin", "manager", "field", "reviewer"])
+require_policy_uploader = RoleChecker(["admin", "manager", "reviewer", "supervisor"])
+require_reviewer = RoleChecker(["admin", "reviewer", "supervisor"])
+require_field = RoleChecker(["admin", "manager", "field", "reviewer", "supervisor", "employee"])
 
 
 def verify_site_access(site_id: uuid.UUID, user: User, db: Session) -> bool:
     """Verify that user is authorized to view or modify resources for a given site.
-    Admins and Managers have cross-site access; Field and Reviewer users are restricted to site_memberships.
+    Admins, Managers, and Supervisors have authorized access; Field users are verified via site_memberships.
     """
     user_role = (user.role or "").lower()
-    if user_role in ("admin", "manager"):
+    if user_role in ("admin", "manager", "supervisor"):
         return True
 
     # Check site membership

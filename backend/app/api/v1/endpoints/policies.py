@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, require_manager
+from app.api.deps import get_current_user, get_db, require_policy_uploader
 from app.models.knowledge_compliance import Policy, PolicyChunk
 from app.models.users_sites import User
 from app.services.policy_ingestion_service import PolicyIngestionService
@@ -90,7 +90,7 @@ def upload_policy(
     effective_date: Optional[date] = Form(None),
     description: Optional[str] = Form(None),
     file: UploadFile = File(...),
-    current_user=Depends(require_manager),
+    current_user=Depends(require_policy_uploader),
     db: Session = Depends(get_db),
 ):
     try:

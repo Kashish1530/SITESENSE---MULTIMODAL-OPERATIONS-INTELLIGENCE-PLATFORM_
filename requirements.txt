@@ -1,18 +1,42 @@
-# SiteSense — Python Dependencies
+# ==============================================================================
+# SiteSense — Unified Python Dependencies (Member 1 + Member 2 Integrated)
+# ==============================================================================
 
-# Dataset & config scripts (audit, validation, splitting, stats)
-PyYAML>=6.0
-pillow>=10.0.0
-
-# Object detection (YOLO) & computer vision
+# ── Member 1 (Gargi): YOLO Detection, Training & Dataset Tools ────────────────
 ultralytics>=8.3.0
 opencv-python>=4.9.0
 numpy>=1.26.0
-
-# Visualization & utilities
+PyYAML>=6.0
+pillow>=10.0.0
 matplotlib>=3.8.0
 pandas>=2.0.0
 tqdm>=4.66.0
 
+# ── Member 2 (Divyani): Video Analytics, Spatial Zones, Tracking & Microservice ─
+shapely>=2.0.0
+fastapi>=0.110.0
+uvicorn>=0.30.0
+pydantic>=2.0.0
+streamlit>=1.35.0
+fpdf2>=2.7.0
+pytest>=8.0.0
+
+# ── Member (Aastha): OCR, Multilingual Sign Translation & Site Text Intelligence ──
+paddleocr>=3.0.0
+paddlepaddle>=3.0.0
+paddlex[ocr-core]>=3.0.0
+zxing-cpp>=2.2.0         # QR code & barcode decoding (fast, no Java needed)
+easyocr>=1.7.0           # Fallback OCR engine
+deep-translator>=1.11.0
+requests>=2.31.0
+pytest-cov>=4.1.0
+
+# ── Member 4 (Kashish): Backend API, Database & Agentic Layer ─────────────────
+psycopg2-binary>=2.9.9
+sqlalchemy>=2.0.0
+python-dotenv>=1.0.0
+groq>=0.18.0
+python-multipart>=0.0.9
+
 # Note: torch & torchvision are installed automatically by ultralytics.
-# For GPU (CUDA) support, install PyTorch from https://pytorch.org/get-started/locally/
+# For CUDA GPU support, install from https://pytorch.org/get-started/locally/

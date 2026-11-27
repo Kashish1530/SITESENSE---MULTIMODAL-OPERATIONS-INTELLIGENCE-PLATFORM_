@@ -1,0 +1,83 @@
+[
+  {
+    "id": "Q01",
+    "question": "What is our company policy on safety helmets in warehouse operational zones?",
+    "expected_clause_id": "Clause W6.1",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_rule_type": "required_object_present",
+    "severity": "Critical",
+    "target_class": "safety-helmet"
+  },
+  {
+    "id": "Q02",
+    "question": "What is the mandatory clear width required for primary pedestrian walkways?",
+    "expected_clause_id": "Clause W2.1",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_threshold": "1.2 meters (4.0 feet)",
+    "target_class": "pallets"
+  },
+  {
+    "id": "Q03",
+    "question": "What distance must forklifts maintain from pedestrians in the warehouse?",
+    "expected_clause_id": "Clause W1.1",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_threshold": "2.5 meters (8.0 feet)",
+    "target_class": "forklift"
+  },
+  {
+    "id": "Q04",
+    "question": "What is the policy when an empty shelf is observed in retail bays?",
+    "expected_clause_id": "Clause W3.1",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_threshold": "15% max empty area, restock within 2 hours",
+    "target_class": "empty-shelf"
+  },
+  {
+    "id": "Q05",
+    "question": "What is the maximum allowable height for freestanding pallet stacks?",
+    "expected_clause_id": "Clause W2.2",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_threshold": "2.4 meters (8.0 feet) or 3 tiers",
+    "target_class": "pallets"
+  },
+  {
+    "id": "Q06",
+    "question": "How quickly must a liquid spill be cordoned off with safety cones?",
+    "expected_clause_id": "Clause W5.1",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_threshold": "within 15 minutes, at least 2 safety cones",
+    "target_class": "spill"
+  },
+  {
+    "id": "Q07",
+    "question": "What clearance must be maintained around fire extinguishers?",
+    "expected_clause_id": "Clause W4.1",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_threshold": "1.0 meter radial clearance",
+    "target_class": "safet--fire-extinguisher"
+  },
+  {
+    "id": "Q08",
+    "question": "What are the rules regarding machinery safety perimeters and who needs a permit?",
+    "expected_clause_id": "Clause S2.1",
+    "expected_policy": "Site Safety & Field Operations Policy",
+    "expected_permit": "Lockout/Tagout (LOTO) permit",
+    "target_class": "machinery"
+  },
+  {
+    "id": "Q09",
+    "question": "What is the yard speed limit for heavy transport trucks?",
+    "expected_clause_id": "Clause S1.1",
+    "expected_policy": "Site Safety & Field Operations Policy",
+    "expected_threshold": "15 km/h",
+    "target_class": "vehicle/truck"
+  },
+  {
+    "id": "Q10",
+    "question": "What clearance must be maintained in front of fire hose reel stations?",
+    "expected_clause_id": "Clause W4.2",
+    "expected_policy": "Warehouse Storage & Distribution Center Policy",
+    "expected_threshold": "1.5 meters",
+    "target_class": "fire-hose"
+  }
+]

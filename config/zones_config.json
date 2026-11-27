@@ -1,0 +1,102 @@
+{
+    "camera_id": "CAM_WH_01",
+    "resolution": [
+        1920,
+        1080
+    ],
+    "zones": {
+        "emergency_exit": {
+            "zone_id": "ZONE_EXIT_01",
+            "zone_name": "Main Emergency Fire Exit",
+            "zone_type": "exclusion",
+            "alert_severity": "CRITICAL",
+            "coordinates": [
+                [
+                    800,
+                    500
+                ],
+                [
+                    1400,
+                    500
+                ],
+                [
+                    1400,
+                    1080
+                ],
+                [
+                    800,
+                    1080
+                ]
+            ],
+            "prohibited_classes": [
+                5,
+                11,
+                12,
+                13,
+                14
+            ],
+            "blockage_threshold_seconds": 4.0,
+            "description": "Evacuation path must have zero obstruction"
+        },
+        "pedestrian_aisle": {
+            "zone_id": "ZONE_AISLE_01",
+            "zone_name": "Walkway Aisle 3",
+            "zone_type": "walkway",
+            "alert_severity": "HIGH",
+            "coordinates": [
+                [
+                    300,
+                    200
+                ],
+                [
+                    650,
+                    200
+                ],
+                [
+                    650,
+                    1080
+                ],
+                [
+                    300,
+                    1080
+                ]
+            ],
+            "prohibited_classes": [
+                5,
+                7,
+                13
+            ],
+            "blockage_threshold_seconds": 8.0,
+            "description": "Keep walkways clear of pallets, spills, and debris"
+        },
+        "machinery_restricted": {
+            "zone_id": "ZONE_MACHINERY_01",
+            "zone_name": "Excavator Operating Radius",
+            "zone_type": "proximity_exclusion",
+            "alert_severity": "CRITICAL",
+            "coordinates": [
+                [
+                    100,
+                    100
+                ],
+                [
+                    700,
+                    100
+                ],
+                [
+                    700,
+                    600
+                ],
+                [
+                    100,
+                    600
+                ]
+            ],
+            "prohibited_classes": [
+                0
+            ],
+            "blockage_threshold_seconds": 1.0,
+            "description": "Workers must not enter active heavy machinery swing radius"
+        }
+    }
+}

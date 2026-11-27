@@ -1,0 +1,42 @@
+﻿# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# Frontend & Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Uploads & Runtime storage
+storage/
+uploads/
+media_storage/
+backend/media_storage/
+*.tmp
+
+# Large Model Binaries (> 50MB)
+weights/
+*.pt
+!backend/app/weights/best_3.pt
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

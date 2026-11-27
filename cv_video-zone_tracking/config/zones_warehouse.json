@@ -1,46 +1,73 @@
 {
+  "camera_id": "CAM_WAREHOUSE_01",
+  "site_id": "SITE_WAREHOUSE",
+  "site_name": "Warehouse Facility Operations",
   "site_type": "warehouse",
-  "camera_id": "CAM_WH_01",
-  "resolution": [1280, 720],
+  "resolution": [
+    1280,
+    720
+  ],
   "zones": {
     "emergency_exit": {
-      "zone_id": "ZONE_EXIT_01",
-      "zone_name": "Emergency Fire Exit Doorway",
-      "zone_type": "exclusion",
+      "zone_id": "ZONE_EMERGENCY_EXIT",
+      "zone_name": "Emergency Exit",
+      "zone_type": "machinery_perimeter",
       "alert_severity": "CRITICAL",
-      "coordinates": [[480, 340], [920, 340], [920, 700], [480, 700]],
-      "prohibited_classes": [5, 11, 12, 13, 14],
+      "coordinates": [
+        [
+          256,
+          180
+        ],
+        [
+          1088,
+          180
+        ],
+        [
+          1088,
+          576
+        ],
+        [
+          256,
+          576
+        ]
+      ],
+      "prohibited_classes": [
+        0,
+        5,
+        11,
+        13
+      ],
       "blockage_threshold_seconds": 3.0,
-      "description": "Evacuation path must have zero obstruction from pallets, forklifts, or obstacles. People moving are allowed."
-    },
-    "pedestrian_aisle": {
-      "zone_id": "ZONE_AISLE_01",
-      "zone_name": "Main Walkway Aisle",
-      "zone_type": "walkway",
-      "alert_severity": "HIGH",
-      "coordinates": [[200, 300], [480, 300], [480, 680], [200, 680]],
-      "prohibited_classes": [5, 7, 11, 12, 13],
-      "blockage_threshold_seconds": 4.0,
-      "description": "Keep walkways clear of pallets, spills, and vehicle obstruction"
-    },
-    "fire_extinguisher_clearance": {
-      "zone_id": "ZONE_FIRE_EXT_01",
-      "zone_name": "Fire Extinguisher Clearance Area",
-      "zone_type": "equipment_clearance",
-      "alert_severity": "HIGH",
-      "coordinates": [[950, 250], [1200, 250], [1200, 500], [950, 500]],
-      "prohibited_classes": [5, 10, 11, 13],
-      "blockage_threshold_seconds": 3.0,
-      "description": "3-foot safety perimeter around fire extinguisher must remain accessible and unobstructed."
+      "description": "Evacuation and transit route must remain 100% unobstructed at all times."
     }
   },
   "counting_lines": {
-    "exit_door_counter": {
-      "line_id": "LINE_EXIT_DOOR",
-      "name": "Exit Doorway Pedestrian Flow",
-      "coordinates": [[700, 360], [950, 600]],
-      "count_classes": [0],
-      "description": "Counts workers entering and exiting through the door"
+    "line_main_flow": {
+      "line_id": "LINE_MAIN_FLOW",
+      "name": "Main Entrance Flow",
+      "coordinates": [
+        [
+          576,
+          360
+        ],
+        [
+          896,
+          612
+        ]
+      ],
+      "count_classes": [
+        0
+      ],
+      "description": "Virtual pedestrian and equipment counter"
     }
+  },
+  "dynamic_danger_zones": {
+    "enabled": true,
+    "machinery_classes": [11, 12, 14],
+    "target_classes": [0],
+    "danger_radius_px": 180,
+    "warning_radius_px": 260,
+    "alert_severity": "CRITICAL",
+    "description": "Dynamic circular buffer around heavy moving equipment (Forklifts, Trucks, Machinery)"
   }
 }

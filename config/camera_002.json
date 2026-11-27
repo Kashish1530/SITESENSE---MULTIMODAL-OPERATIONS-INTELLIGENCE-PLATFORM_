@@ -1,0 +1,37 @@
+{
+  "camera_id": "CAM_002",
+  "site_id": "SITE_CONST_01",
+  "site_name": "Metropolitan Tower Construction - Excavator Sector",
+  "resolution": [1280, 720],
+  "zones": {
+    "machinery_restricted": {
+      "zone_id": "ZONE_MACHINERY_01",
+      "zone_name": "Heavy Machinery Swing & Operating Radius",
+      "zone_type": "proximity_exclusion",
+      "alert_severity": "CRITICAL",
+      "coordinates": [[200, 280], [600, 280], [600, 700], [200, 700]],
+      "prohibited_classes": [0],
+      "blockage_threshold_seconds": 1.5,
+      "description": "Workers must not enter active heavy machinery swing radius"
+    },
+    "vehicle_loading_zone": {
+      "zone_id": "ZONE_HAZARD_01",
+      "zone_name": "Loading & Vehicle Transit Area",
+      "zone_type": "exclusion",
+      "alert_severity": "HIGH",
+      "coordinates": [[0, 180], [350, 180], [350, 600], [0, 600]],
+      "prohibited_classes": [0, 7, 13],
+      "blockage_threshold_seconds": 2.0,
+      "description": "Vehicle and loading zone must remain clear of pedestrians and spills"
+    }
+  },
+  "counting_lines": {
+    "site_perimeter_gate": {
+      "line_id": "LINE_GATE_01",
+      "name": "Perimeter Access Line",
+      "coordinates": [[100, 500], [500, 500]],
+      "count_classes": [0, 12],
+      "description": "Perimeter gate bidirectional transit counter"
+    }
+  }
+}

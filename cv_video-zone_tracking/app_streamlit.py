@@ -15,12 +15,15 @@ import streamlit as st
 import cv2
 import json
 import os
+import gc
 import glob
 import shutil
 from pathlib import Path
 from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
+import torch
+from shapely.geometry import Polygon, Point
 
 import sys
 sys.path.append(os.path.abspath("src"))
@@ -31,7 +34,7 @@ from annotator import VisualAnnotator
 from heatmap_generator import HeatmapGenerator
 from report_generator import generate_pdf_report
 from zone_validator import (
-    ZoneConfigValidator, CANONICAL_CLASSES,
+    ZoneConfigValidator, CANONICAL_CLASSES, NAME_TO_CLASS_ID,
     VALID_SEVERITIES, VALID_ZONE_TYPES, get_zone_config_json_schema
 )
 from violation_db import (
@@ -211,6 +214,16 @@ with st.sidebar.container(border=True):
     conf_threshold = st.slider("Confidence Threshold:", 0.15, 0.80, 0.25, 0.05)
     enable_audio = st.checkbox("🔊 Real-Time Audio Chime", value=True)
 
+with st.sidebar.container(border=True):
+    st.markdown("**⚡ Dynamic Machinery Danger Zone**")
+    enable_dyn_danger = st.checkbox("Circular Danger Zone (OSHA)", value=True, help="Dynamic circular buffer around moving heavy equipment (Forklifts, Trucks, Machinery)")
+    danger_radius_px = st.slider("Danger Zone Radius (px):", 50, 450, 180, step=10, help="Distance threshold in pixels. If a person is within this distance of a machine, triggers immediate DANGER alert.")
+    machinery_classes_selected = st.multiselect(
+        "Monitored Heavy Machinery:",
+        ["forklift", "machinery", "vehicle"],
+        default=["forklift", "machinery", "vehicle"]
+    )
+
 start_analysis = st.sidebar.button("▶️ Run Vision Pipeline", type="primary", use_container_width=True)
 
 # Sidebar Database Stats
@@ -272,13 +285,14 @@ if "last_results" not in st.session_state:
     st.session_state["last_results"] = None
 
 # ── Main Tabbed Navigation ────────────────────────────────────────────────────
-tab_live, tab_evidence, tab_analytics, tab_lifecycle, tab_trends, tab_zone_editor = st.tabs([
+tab_live, tab_evidence, tab_analytics, tab_lifecycle, tab_trends, tab_zone_editor, tab_ocr = st.tabs([
     "🎥 Live Vision Ops",
     "📸 Captured Evidence Gallery",
     "📈 Heatmap & Audit Report",
     "🚨 Violation Lifecycle Desk",
     "📊 Weekly Compliance Trends",
-    "📐 Visual Zone Configuration Editor (Admin Screen 12)"
+    "📐 Visual Zone Configuration Editor (Admin Screen 12)",
+    "🔤 Site Text & Sign Intelligence (OCR)"
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -328,6 +342,18 @@ if start_analysis:
         tracker     = ByteTrackEngine(model_weights=model_path)
         tracker.model.overrides["conf"] = conf_threshold
         zone_engine = ZoneEngine(zone_config_path)
+
+        # Apply Dynamic Machinery Danger Zone configuration
+        zone_engine.dynamic_danger_config["enabled"] = enable_dyn_danger
+        zone_engine.dynamic_danger_config["danger_radius_px"] = float(danger_radius_px)
+        zone_engine.dynamic_danger_config["warning_radius_px"] = float(danger_radius_px * 1.4)
+        m_ids = set()
+        for mc in machinery_classes_selected:
+            if mc in NAME_TO_CLASS_ID:
+                m_ids.add(NAME_TO_CLASS_ID[mc])
+        if m_ids:
+            zone_engine.dynamic_danger_config["machinery_classes"] = m_ids
+
         heatmap_gen = HeatmapGenerator(width=width, height=height)
 
         frame_idx            = 0
@@ -356,7 +382,7 @@ if start_analysis:
             # 2. Cumulative Heatmap update
             heatmap_gen.update(tracked_objects)
 
-            # 3. Zone & Dwell Evaluation
+            # 3. Zone & Dwell Evaluation (includes Dynamic Machinery Danger Zone proximity)
             violations, crossings = zone_engine.evaluate_tracks(tracked_objects, timestamp)
 
             active_zone_ids = set()
@@ -369,10 +395,15 @@ if start_analysis:
                 )
                 emitted_events.append(event)
 
-            # 4. Annotations Drawing
-            annotated_frame = frame.copy()
+            # 4. In-Place Zero-Copy Annotations Drawing (Eliminates ArrayMemoryError)
+            annotated_frame = frame
             annotated_frame = VisualAnnotator.draw_zones(annotated_frame, zone_engine.zones, active_zone_ids)
             annotated_frame = VisualAnnotator.draw_counting_lines(annotated_frame, zone_engine.counting_lines)
+            annotated_frame = VisualAnnotator.draw_dynamic_danger_zones(
+                annotated_frame,
+                zone_engine.last_dynamic_danger_circles,
+                zone_engine.last_proximity_alerts
+            )
             annotated_frame = VisualAnnotator.draw_tracked_objects(annotated_frame, tracked_objects, violations)
             annotated_frame = VisualAnnotator.draw_hud(
                 annotated_frame, frame_idx, timestamp, violations,
@@ -414,9 +445,13 @@ if start_analysis:
                             st.components.v1.html(AUDIO_ALERT_JS, height=0)
                         last_audio_played_ts = timestamp
 
-            # Render Live Video Frame
+            # Render Live Video Frame with immediate cleanup
             frame_rgb = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
             video_placeholder.image(frame_rgb, use_container_width=True)
+            del frame_rgb
+
+            if frame_idx % 25 == 0:
+                gc.collect()
 
             # Update KPI Header Cards
             top_kpi_tracks.markdown(f"### {len(tracked_objects)}")
@@ -583,6 +618,39 @@ with tab_analytics:
                 st.caption(f"File: `{os.path.basename(report_pdf_path)}` ({len(pdf_bytes)//1024} KB)")
     else:
         st.info("Run a video analysis from the sidebar to generate the heatmap and audit report.")
+
+    # ── Member 1 (Gargi) AI Model Training & Evaluation Scorecard ────────────
+    st.markdown("---")
+    with st.container(border=True):
+        st.markdown("**🧠 AI Model Performance & Benchmark Scorecard (Member 1 — Gargi)**")
+        st.caption("Official test set evaluation metrics across 16 canonical SiteSense object classes.")
+        
+        rep_files = sorted(glob.glob("reports/*_summary.json"))
+        if rep_files:
+            rep_names = [os.path.basename(r) for r in rep_files]
+            chosen_rep = st.selectbox("Select Model Evaluation Run:", rep_names, index=0)
+            rep_path = os.path.join("reports", chosen_rep)
+            try:
+                with open(rep_path, "r") as rf:
+                    rep_data = json.load(rf)
+                eval_res = rep_data.get("evaluation_results", {})
+                
+                m1, m2, m3, m4, m5 = st.columns(5)
+                m1.metric("mAP@50", f"{eval_res.get('mAP50', 0.0)*100:.1f}%")
+                m2.metric("Precision", f"{eval_res.get('precision', 0.0)*100:.1f}%")
+                m3.metric("Recall", f"{eval_res.get('recall', 0.0)*100:.1f}%")
+                m4.metric("F1-Score", f"{eval_res.get('f1', 0.0)*100:.1f}%")
+                m5.metric("mAP@50-95", f"{eval_res.get('mAP50_95', 0.0)*100:.1f}%")
+
+                per_class = eval_res.get("per_class", {})
+                if per_class:
+                    with st.expander("Detailed 16-Class Taxonomy Metrics", expanded=False):
+                        df_classes = pd.DataFrame(per_class).T
+                        st.dataframe(df_classes, use_container_width=True)
+            except Exception as e:
+                st.caption(f"Error loading evaluation report: {e}")
+        else:
+            st.info("No training evaluation summaries found in `reports/`.")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TAB 4: VIOLATION LIFECYCLE & RESOLUTION DESK
@@ -858,80 +926,237 @@ with tab_zone_editor:
                 value="Evacuation and transit route must remain 100% unobstructed at all times."
             )
 
-        # Polygon Points & Presets
+        # Polygon Points & Shape Adjuster
         with st.container(border=True):
-            st.markdown("**4️⃣ Polygon Coordinates & Presets**")
-            
-            # Quick preset buttons
-            st.markdown("Quick Geometry Presets:")
-            pr_c1, pr_c2, pr_c3, pr_c4 = st.columns(4)
-            if pr_c1.button("🚪 Center Door", use_container_width=True):
+            st.markdown("**4️⃣ Adjust Polygon Bounding Box Shape as per Image**")
+            st.caption("Customize the geometry to match perspective aisles, conveyor lanes, doorways, or complex restricted equipment zones.")
+
+            # Ensure editor_points exists and is non-empty list of [x, y]
+            if not st.session_state.get("editor_points") or len(st.session_state["editor_points"]) < 3:
+                # Default perspective walkway
                 st.session_state["editor_points"] = [
-                    [int(frame_w * 0.38), int(frame_h * 0.45)],
-                    [int(frame_w * 0.72), int(frame_h * 0.45)],
-                    [int(frame_w * 0.72), int(frame_h * 0.95)],
-                    [int(frame_w * 0.38), int(frame_h * 0.95)]
+                    [int(frame_w * 0.35), int(frame_h * 0.35)],
+                    [int(frame_w * 0.65), int(frame_h * 0.35)],
+                    [int(frame_w * 0.85), int(frame_h * 0.95)],
+                    [int(frame_w * 0.15), int(frame_h * 0.95)]
+                ]
+
+            curr_pts = st.session_state["editor_points"]
+
+            # Quick Preset Geometry Buttons
+            st.markdown("🎯 **One-Click Presets (Perspective & Standard):**")
+            p_col1, p_col2, p_col3, p_col4 = st.columns(4)
+            if p_col1.button("🛣️ Perspective Aisle", use_container_width=True, help="Narrow far end, wide floor foreground — fits warehouse aisles!"):
+                st.session_state["editor_points"] = [
+                    [int(frame_w * 0.38), int(frame_h * 0.36)],
+                    [int(frame_w * 0.62), int(frame_h * 0.36)],
+                    [int(frame_w * 0.80), int(frame_h * 0.95)],
+                    [int(frame_w * 0.20), int(frame_h * 0.95)]
                 ]
                 st.rerun()
-            if pr_c2.button("🚶 Left Aisle", use_container_width=True):
+
+            if p_col2.button("📦 Left Rack Zone", use_container_width=True, help="Perspective boundary along left storage racks"):
                 st.session_state["editor_points"] = [
-                    [int(frame_w * 0.15), int(frame_h * 0.40)],
-                    [int(frame_w * 0.38), int(frame_h * 0.40)],
-                    [int(frame_w * 0.38), int(frame_h * 0.95)],
+                    [int(frame_w * 0.05), int(frame_h * 0.35)],
+                    [int(frame_w * 0.35), int(frame_h * 0.35)],
+                    [int(frame_w * 0.20), int(frame_h * 0.95)],
+                    [int(frame_w * 0.02), int(frame_h * 0.95)]
+                ]
+                st.rerun()
+
+            if p_col3.button("📦 Right Rack Zone", use_container_width=True, help="Perspective boundary along right storage racks"):
+                st.session_state["editor_points"] = [
+                    [int(frame_w * 0.65), int(frame_h * 0.35)],
+                    [int(frame_w * 0.95), int(frame_h * 0.35)],
+                    [int(frame_w * 0.98), int(frame_h * 0.95)],
+                    [int(frame_w * 0.80), int(frame_h * 0.95)]
+                ]
+                st.rerun()
+
+            if p_col4.button("🚪 Central Box", use_container_width=True, help="Standard rectangular bounding box in center"):
+                st.session_state["editor_points"] = [
+                    [int(frame_w * 0.35), int(frame_h * 0.35)],
+                    [int(frame_w * 0.65), int(frame_h * 0.35)],
+                    [int(frame_w * 0.65), int(frame_h * 0.85)],
+                    [int(frame_w * 0.35), int(frame_h * 0.85)]
+                ]
+                st.rerun()
+
+            st.markdown("---")
+
+            # Shape Tool Selector
+            shape_tool = st.radio(
+                "Select Shape Adjustment Mode:",
+                [
+                    "🛣️ Perspective Aisle / Trapezoid Adjuster (Best for Corridors & Walkways)",
+                    "📐 4-Corner / Vertex Fine-Tuner (Nudge Each Corner)",
+                    "📦 Bounding Box Handles (X-min, X-max, Y-min, Y-max)",
+                    "✏️ Freeform Multi-Point Editor (Add / Delete Any Vertex)"
+                ],
+                index=0
+            )
+
+            # MODE 1: PERSPECTIVE TRAPEZOID ADJUSTER
+            if "Perspective Aisle" in shape_tool:
+                st.markdown("**Perspective Aisle Controls (Align with image depth & width):**")
+                
+                # Derive initial values from current points
+                xs = [p[0] for p in curr_pts]
+                ys = [p[1] for p in curr_pts]
+                cur_cx = int(sum(xs) / len(xs)) if xs else frame_w // 2
+                cur_ymin = min(ys) if ys else int(frame_h * 0.35)
+                cur_ymax = max(ys) if ys else int(frame_h * 0.95)
+                
+                col_c1, col_c2 = st.columns(2)
+                with col_c1:
+                    aisle_cx = st.slider("Aisle Center Position (X):", 50, max(60, frame_w - 50), min(max(50, cur_cx), max(50, frame_w - 50)), step=10, key="sld_aisle_cx")
+                    aisle_ymin = st.slider("Far End Horizon Depth (Top Y):", 0, max(10, frame_h - 100), min(max(0, cur_ymin), max(0, frame_h - 100)), step=10, key="sld_aisle_ymin")
+                    aisle_top_w = st.slider("Far End Width (Top Aisle Width):", 40, frame_w, min(frame_w, 240), step=10, key="sld_aisle_top_w")
+                with col_c2:
+                    st.write("")
+                    aisle_ymax = st.slider("Near Floor Limit (Bottom Y):", min(frame_h, aisle_ymin + 30), frame_h, min(max(aisle_ymin + 30, cur_ymax), frame_h), step=10, key="sld_aisle_ymax")
+                    aisle_bot_w = st.slider("Near Floor Width (Bottom Aisle Width):", 60, frame_w, min(frame_w, 620), step=10, key="sld_aisle_bot_w")
+
+                # Compute trapezoid
+                p1 = [max(0, aisle_cx - aisle_top_w // 2), aisle_ymin]
+                p2 = [min(frame_w, aisle_cx + aisle_top_w // 2), aisle_ymin]
+                p3 = [min(frame_w, aisle_cx + aisle_bot_w // 2), aisle_ymax]
+                p4 = [max(0, aisle_cx - aisle_bot_w // 2), aisle_ymax]
+                st.session_state["editor_points"] = [p1, p2, p3, p4]
+
+            # MODE 2: 4-CORNER / VERTEX FINE-TUNER
+            elif "4-Corner" in shape_tool:
+                st.markdown("**Fine-Tune Individual Corners (4 Vertices):**")
+                # If current points is not 4, make it 4
+                if len(curr_pts) != 4:
+                    curr_pts = [
+                        [int(frame_w * 0.35), int(frame_h * 0.35)],
+                        [int(frame_w * 0.65), int(frame_h * 0.35)],
+                        [int(frame_w * 0.75), int(frame_h * 0.90)],
+                        [int(frame_w * 0.25), int(frame_h * 0.90)]
+                    ]
+                    st.session_state["editor_points"] = curr_pts
+
+                c_box1, c_box2 = st.columns(2)
+                with c_box1:
+                    with st.container(border=True):
+                        st.markdown("**Corner ① (Top-Left / Far-Left)**")
+                        x1 = st.slider("Corner ① X:", 0, frame_w, min(max(0, curr_pts[0][0]), frame_w), step=5, key="c1_x")
+                        y1 = st.slider("Corner ① Y:", 0, frame_h, min(max(0, curr_pts[0][1]), frame_h), step=5, key="c1_y")
+
+                    with st.container(border=True):
+                        st.markdown("**Corner ④ (Bottom-Left / Near-Left)**")
+                        x4 = st.slider("Corner ④ X:", 0, frame_w, min(max(0, curr_pts[3][0]), frame_w), step=5, key="c4_x")
+                        y4 = st.slider("Corner ④ Y:", 0, frame_h, min(max(0, curr_pts[3][1]), frame_h), step=5, key="c4_y")
+
+                with c_box2:
+                    with st.container(border=True):
+                        st.markdown("**Corner ② (Top-Right / Far-Right)**")
+                        x2 = st.slider("Corner ② X:", 0, frame_w, min(max(0, curr_pts[1][0]), frame_w), step=5, key="c2_x")
+                        y2 = st.slider("Corner ② Y:", 0, frame_h, min(max(0, curr_pts[1][1]), frame_h), step=5, key="c2_y")
+
+                    with st.container(border=True):
+                        st.markdown("**Corner ③ (Bottom-Right / Near-Right)**")
+                        x3 = st.slider("Corner ③ X:", 0, frame_w, min(max(0, curr_pts[2][0]), frame_w), step=5, key="c3_x")
+                        y3 = st.slider("Corner ③ Y:", 0, frame_h, min(max(0, curr_pts[2][1]), frame_h), step=5, key="c3_y")
+
+                st.session_state["editor_points"] = [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+
+            # MODE 3: BOUNDING BOX HANDLES (RECTANGULAR)
+            elif "Bounding Box Handles" in shape_tool:
+                st.markdown("**Rectangular Bounding Box Handles (X-min, X-max, Y-min, Y-max):**")
+                xs = [p[0] for p in curr_pts]
+                ys = [p[1] for p in curr_pts]
+                cur_xmin = min(xs) if xs else int(frame_w * 0.3)
+                cur_xmax = max(xs) if xs else int(frame_w * 0.7)
+                cur_ymin = min(ys) if ys else int(frame_h * 0.3)
+                cur_ymax = max(ys) if ys else int(frame_h * 0.8)
+
+                col_b1, col_b2 = st.columns(2)
+                with col_b1:
+                    bx_min = st.slider("Left Boundary (X-Min):", 0, max(1, frame_w - 50), min(max(0, cur_xmin), max(1, frame_w - 50)), step=10, key="bx_min")
+                    by_min = st.slider("Top Boundary (Y-Min):", 0, max(1, frame_h - 50), min(max(0, cur_ymin), max(1, frame_h - 50)), step=10, key="by_min")
+                with col_b2:
+                    bx_max = st.slider("Right Boundary (X-Max):", bx_min + 20, frame_w, max(bx_min + 20, min(cur_xmax, frame_w)), step=10, key="bx_max")
+                    by_max = st.slider("Bottom Boundary (Y-Max):", by_min + 20, frame_h, max(by_min + 20, min(cur_ymax, frame_h)), step=10, key="by_max")
+
+                # Quick transform nudge buttons
+                st.markdown("Quick Nudge Transform:")
+                n_c1, n_c2, n_c3, n_c4 = st.columns(4)
+                if n_c1.button("⬅️ Left 20px", use_container_width=True):
+                    st.session_state["editor_points"] = [[max(0, p[0] - 20), p[1]] for p in curr_pts]
+                    st.rerun()
+                if n_c2.button("➡️ Right 20px", use_container_width=True):
+                    st.session_state["editor_points"] = [[min(frame_w, p[0] + 20), p[1]] for p in curr_pts]
+                    st.rerun()
+                if n_c3.button("⬆️ Up 20px", use_container_width=True):
+                    st.session_state["editor_points"] = [[p[0], max(0, p[1] - 20)] for p in curr_pts]
+                    st.rerun()
+                if n_c4.button("⬇️ Down 20px", use_container_width=True):
+                    st.session_state["editor_points"] = [[p[0], min(frame_h, p[1] + 20)] for p in curr_pts]
+                    st.rerun()
+
+                st.session_state["editor_points"] = [
+                    [bx_min, by_min],
+                    [bx_max, by_min],
+                    [bx_max, by_max],
+                    [bx_min, by_max]
+                ]
+
+            # MODE 4: FREEFORM MULTI-POINT EDITOR
+            else:
+                st.markdown("**Freeform Vertex List (N-Sided Polygon):**")
+                for v_idx, pt in enumerate(curr_pts):
+                    r_c1, r_c2, r_c3 = st.columns([1.5, 1.5, 1.0])
+                    with r_c1:
+                        new_vx = st.number_input(f"Vertex #{v_idx+1} X:", 0, frame_w, pt[0], step=10, key=f"v_{v_idx}_x")
+                    with r_c2:
+                        new_vy = st.number_input(f"Vertex #{v_idx+1} Y:", 0, frame_h, pt[1], step=10, key=f"v_{v_idx}_y")
+                    with r_c3:
+                        st.write("")
+                        st.write("")
+                        if st.button(f"🗑️ Delete #{v_idx+1}", key=f"del_v_{v_idx}"):
+                            if len(curr_pts) > 3:
+                                curr_pts.pop(v_idx)
+                                st.session_state["editor_points"] = curr_pts
+                                st.rerun()
+                            else:
+                                st.warning("Polygon requires at least 3 vertices.")
+                    curr_pts[v_idx] = [int(new_vx), int(new_vy)]
+
+                col_add_x, col_add_y, col_add_btn = st.columns([1.2, 1.2, 1.0])
+                with col_add_x:
+                    add_px = st.number_input("New Point X:", 0, frame_w, frame_w // 2, step=20)
+                with col_add_y:
+                    add_py = st.number_input("New Point Y:", 0, frame_h, frame_h // 2, step=20)
+                with col_add_btn:
+                    st.write("")
+                    st.write("")
+                    if st.button("➕ Add Vertex", use_container_width=True):
+                        st.session_state["editor_points"].append([int(add_px), int(add_py)])
+                        st.rerun()
+
+            # Coordinates JSON Readout / Manual Edit
+            pts_str = json.dumps(st.session_state["editor_points"])
+            with st.expander("📝 Direct JSON Coordinates Edit", expanded=False):
+                edited_pts_str = st.text_area("Edit JSON Array [[x,y], ...]:", value=pts_str, height=70)
+                try:
+                    parsed_pts = json.loads(edited_pts_str)
+                    if isinstance(parsed_pts, list) and len(parsed_pts) >= 3 and all(isinstance(p, list) and len(p) == 2 for p in parsed_pts):
+                        st.session_state["editor_points"] = parsed_pts
+                except Exception:
+                    pass
+
+            col_pt_undo, col_pt_clr = st.columns(2)
+            if col_pt_undo.button("↩️ Reset to Default Box", use_container_width=True):
+                st.session_state["editor_points"] = [
+                    [int(frame_w * 0.35), int(frame_h * 0.35)],
+                    [int(frame_w * 0.65), int(frame_h * 0.35)],
+                    [int(frame_w * 0.85), int(frame_h * 0.95)],
                     [int(frame_w * 0.15), int(frame_h * 0.95)]
                 ]
                 st.rerun()
-            if pr_c3.button("🧯 Fire Ext. Bay", use_container_width=True):
-                st.session_state["editor_points"] = [
-                    [int(frame_w * 0.74), int(frame_h * 0.35)],
-                    [int(frame_w * 0.95), int(frame_h * 0.35)],
-                    [int(frame_w * 0.95), int(frame_h * 0.70)],
-                    [int(frame_w * 0.74), int(frame_h * 0.70)]
-                ]
-                st.rerun()
-            if pr_c4.button("📦 Dock Perimeter", use_container_width=True):
-                st.session_state["editor_points"] = [
-                    [int(frame_w * 0.20), int(frame_h * 0.25)],
-                    [int(frame_w * 0.85), int(frame_h * 0.25)],
-                    [int(frame_w * 0.85), int(frame_h * 0.80)],
-                    [int(frame_w * 0.20), int(frame_h * 0.80)]
-                ]
-                st.rerun()
-
-            # Point adjustment controls
-            col_add_x, col_add_y, col_add_btn = st.columns([1.2, 1.2, 1.0])
-            with col_add_x:
-                add_px = st.number_input("Point X:", min_value=0, max_value=frame_w, value=int(frame_w / 2), step=20)
-            with col_add_y:
-                add_py = st.number_input("Point Y:", min_value=0, max_value=frame_h, value=int(frame_h / 2), step=20)
-            with col_add_btn:
-                st.write("")
-                st.write("")
-                if st.button("➕ Add Vertex", use_container_width=True):
-                    st.session_state["editor_points"].append([int(add_px), int(add_py)])
-                    st.rerun()
-
-            # Manual JSON coordinate editor
-            pts_str = json.dumps(st.session_state["editor_points"])
-            edited_pts_str = st.text_area(
-                "Polygon Coordinates [[x1,y1], [x2,y2], ...]:",
-                value=pts_str,
-                height=80,
-                help="Enter valid JSON list of coordinate pairs."
-            )
-            try:
-                parsed_pts = json.loads(edited_pts_str)
-                if isinstance(parsed_pts, list) and all(isinstance(p, list) and len(p) == 2 for p in parsed_pts):
-                    st.session_state["editor_points"] = parsed_pts
-            except Exception:
-                pass
-
-            col_pt_undo, col_pt_clr = st.columns(2)
-            if col_pt_undo.button("↩️ Undo Last Vertex", use_container_width=True):
-                if st.session_state["editor_points"]:
-                    st.session_state["editor_points"].pop()
-                    st.rerun()
-            if col_pt_clr.button("🗑️ Clear Vertices", use_container_width=True):
+            if col_pt_clr.button("🗑️ Clear All Vertices", use_container_width=True):
                 st.session_state["editor_points"] = []
                 st.rerun()
 
@@ -947,6 +1172,25 @@ with tab_zone_editor:
             with lc_col2:
                 lx2 = st.number_input("Line End X:", 0, frame_w, int(frame_w * 0.70), step=20)
                 ly2 = st.number_input("Line End Y:", 0, frame_h, int(frame_h * 0.85), step=20)
+
+        # Dynamic Heavy Machinery Danger Zone (Circular Buffer)
+        with st.container(border=True):
+            st.markdown("**5️⃣ Dynamic Heavy Machinery Danger Zone (Circular Proximity Rules)**")
+            st.caption("Configures moving circular danger halos around heavy equipment (Forklifts, Trucks, Machinery).")
+            ed_enable_dyn_danger = st.checkbox("Enable Dynamic Heavy Machinery Danger Zone (OSHA)", value=True, key="ed_dyn_enable")
+            ed_d_col1, ed_d_col2 = st.columns(2)
+            with ed_d_col1:
+                ed_danger_radius = st.slider("Danger Radius (px from machine):", 50, 450, 180, step=10, key="ed_sld_danger_r")
+            with ed_d_col2:
+                ed_warning_radius = st.slider("Warning Outer Radius (px):", 100, 600, 260, step=10, key="ed_sld_warn_r")
+            
+            ed_machinery_classes = st.multiselect(
+                "Heavy Machinery Trigger Classes:",
+                ["forklift", "machinery", "vehicle"],
+                default=["forklift", "machinery", "vehicle"],
+                key="ed_machinery_cls"
+            )
+            preview_sample_circle = st.checkbox("👁️ Preview Dynamic Danger Circle on Frame", value=True, key="ed_prev_circle")
 
         # Save Button & Action
         st.markdown("---")
@@ -980,6 +1224,17 @@ with tab_zone_editor:
                     "coordinates": [[int(lx1), int(ly1)], [int(lx2), int(ly2)]],
                     "count_classes": [0],
                     "description": "Virtual pedestrian and equipment counter"
+                }
+
+            if ed_enable_dyn_danger:
+                candidate_payload["dynamic_danger_zones"] = {
+                    "enabled": True,
+                    "machinery_classes": [NAME_TO_CLASS_ID[c] for c in ed_machinery_classes if c in NAME_TO_CLASS_ID],
+                    "target_classes": [0],
+                    "danger_radius_px": float(ed_danger_radius),
+                    "warning_radius_px": float(ed_warning_radius),
+                    "alert_severity": "CRITICAL",
+                    "description": "Dynamic circular buffer around heavy moving equipment"
                 }
 
             # Strictly validate with ZoneConfigValidator
@@ -1074,6 +1329,26 @@ with tab_zone_editor:
                     cv2.arrowedLine(vis_canvas, (mid_x - 15, mid_y - 20), (mid_x + 15, mid_y + 20), (0, 255, 0), 2, cv2.LINE_AA)
                     cv2.putText(vis_canvas, f"{line_name_in} (COUNTING)", (p1[0], p1[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 0), 2)
 
+                # Draw sample dynamic danger circle if enabled
+                if 'preview_sample_circle' in locals() and preview_sample_circle and ed_enable_dyn_danger:
+                    circ_cx = int(frame_w * 0.50)
+                    circ_cy = int(frame_h * 0.65)
+                    r_danger = int(ed_danger_radius)
+                    r_warn = int(ed_warning_radius)
+                    # Warning outer halo
+                    cv2.circle(vis_canvas, (circ_cx, circ_cy), r_warn, (0, 140, 255), 1, cv2.LINE_AA)
+                    # Primary danger circle
+                    cv2.circle(vis_canvas, (circ_cx, circ_cy), r_danger, (0, 0, 255), 3, cv2.LINE_AA)
+                    cv2.circle(vis_canvas, (circ_cx, circ_cy), 5, (0, 0, 255), -1)
+                    badge_lbl = f"SAMPLE MACHINERY DANGER ZONE (R={r_danger}px)"
+                    (lb_w, lb_h), _ = cv2.getTextSize(badge_lbl, cv2.FONT_HERSHEY_SIMPLEX, 0.45, 1)
+                    cv2.rectangle(vis_canvas, (circ_cx - lb_w // 2 - 4, circ_cy - r_danger - lb_h - 6),
+                                  (circ_cx + lb_w // 2 + 4, circ_cy - r_danger + 4), (0, 0, 180), -1)
+                    cv2.rectangle(vis_canvas, (circ_cx - lb_w // 2 - 4, circ_cy - r_danger - lb_h - 6),
+                                  (circ_cx + lb_w // 2 + 4, circ_cy - r_danger + 4), (0, 0, 255), 1)
+                    cv2.putText(vis_canvas, badge_lbl, (circ_cx - lb_w // 2, circ_cy - r_danger - 2),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1, cv2.LINE_AA)
+
                 # Convert BGR to RGB for Streamlit rendering
                 vis_rgb = cv2.cvtColor(vis_canvas, cv2.COLOR_BGR2RGB)
                 st.image(vis_rgb, use_container_width=True)
@@ -1138,6 +1413,16 @@ with tab_zone_editor:
                         "description": "Virtual pedestrian and equipment counter"
                     }
                 }
+            if 'ed_enable_dyn_danger' in locals() and ed_enable_dyn_danger:
+                curr_dict["dynamic_danger_zones"] = {
+                    "enabled": True,
+                    "machinery_classes": [NAME_TO_CLASS_ID[c] for c in ed_machinery_classes if c in NAME_TO_CLASS_ID],
+                    "target_classes": [0],
+                    "danger_radius_px": float(ed_danger_radius),
+                    "warning_radius_px": float(ed_warning_radius),
+                    "alert_severity": "CRITICAL",
+                    "description": "Dynamic circular buffer around heavy moving equipment"
+                }
             st.json(curr_dict)
             st.download_button(
                 "⬇️ Download Config JSON",
@@ -1146,4 +1431,387 @@ with tab_zone_editor:
                 mime="application/json",
                 use_container_width=True
             )
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 7: SITE TEXT & SIGN INTELLIGENCE (OCR & MULTILINGUAL CONSOLE)
+# ═══════════════════════════════════════════════════════════════════════════════
+with tab_ocr:
+    st.markdown("### 🔤 Site Text & Sign Intelligence (OCR Console)")
+    st.caption(
+        "Integrated OCR & Site Intelligence module (Member: Aastha). "
+        "Extracts signage, pallet barcodes, QR codes, safety policies, and multilingual translations."
+    )
+
+    ocr_col1, ocr_col2 = st.columns([1.1, 1.3])
+
+    with ocr_col1:
+        with st.container(border=True):
+            st.markdown("**1️⃣ Input Media for Text / Sign Extraction**")
+            ocr_src = st.radio("Source:", ["Upload Sign / Label Image", "Extract from Current Video Feed"], horizontal=True)
+            ocr_img_bgr = None
+
+            if ocr_src == "Upload Sign / Label Image":
+                up_ocr = st.file_uploader("Upload Image (.jpg / .png):", type=["jpg", "jpeg", "png"], key="ocr_file_up")
+                if up_ocr is not None:
+                    b = np.asarray(bytearray(up_ocr.read()), dtype=np.uint8)
+                    ocr_img_bgr = cv2.imdecode(b, cv2.IMREAD_COLOR)
+            else:
+                if selected_video_path and os.path.exists(selected_video_path):
+                    c_tmp = cv2.VideoCapture(selected_video_path)
+                    _, f_tmp = c_tmp.read()
+                    c_tmp.release()
+                    if f_tmp is not None:
+                        ocr_img_bgr = f_tmp
+
+            if ocr_img_bgr is not None:
+                st.caption(f"Image Resolution: **{ocr_img_bgr.shape[1]} × {ocr_img_bgr.shape[0]} px**")
+
+        with st.container(border=True):
+            st.markdown("**2️⃣ OCR & Translation Parameters**")
+            ocr_conf = st.slider("Minimum OCR Text Confidence:", 0.15, 0.90, 0.30, 0.05, key="ocr_conf_sld")
+            enable_trans = st.checkbox("Enable Multilingual Translation to English", value=True)
+            enable_code_scan = st.checkbox("Scan Barcodes & QR Codes (OpenCV/zxing)", value=True)
+
+            run_ocr_btn = st.button("🔍 Extract Site Intelligence", type="primary", use_container_width=True)
+
+        with st.container(border=True):
+            st.markdown("**🚀 Standalone Microservices & CLI Tools**")
+            st.markdown("""
+            * **FastAPI Web UI**: `python src/scripts/app.py`
+            * **Dataset Evaluator**: `python src/scripts/main.py`
+            * **CLI Translation**: `python src/scripts/run_ocr_translate_cli.py`
+            """)
+
+    with ocr_col2:
+        with st.container(border=True):
+            st.markdown("**🖥️ Visual Detection & Intelligence Findings**")
+
+            if ocr_img_bgr is not None:
+                vis_ocr = ocr_img_bgr.copy()
+
+                if run_ocr_btn:
+                    with st.spinner("Processing text recognition & code extraction..."):
+                        scanned_codes = []
+                        ocr_text_lines = []
+                        translated_lines = []
+
+                        # ── Step 1: QR Code + Barcode scanning ──────────────────
+                        if enable_code_scan:
+                            # OpenCV QR detector
+                            try:
+                                qr_det = cv2.QRCodeDetector()
+                                val, pts, _ = qr_det.detectAndDecode(ocr_img_bgr)
+                                if val:
+                                    scanned_codes.append({"type": "QR_CODE", "data": val})
+                                    if pts is not None:
+                                        pts_i = pts.astype(int).reshape(-1, 2)
+                                        cv2.polylines(vis_ocr, [pts_i], True, (0, 255, 0), 3)
+                                        # label on frame
+                                        cv2.putText(vis_ocr, "QR", (pts_i[0][0], max(20, pts_i[0][1] - 8)),
+                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                            except Exception:
+                                pass
+
+                            # OpenCV Barcode detector (available in opencv-contrib / 4.8+)
+                            try:
+                                bd = cv2.barcode.BarcodeDetector()
+                                ok_b, decoded_b, types_b, pts_b = bd.detectAndDecodeMulti(ocr_img_bgr)
+                                if ok_b:
+                                    for d_val, d_type, d_pts in zip(decoded_b, types_b, pts_b):
+                                        if d_val:
+                                            scanned_codes.append({"type": f"BARCODE_{d_type}", "data": d_val})
+                                            if d_pts is not None:
+                                                p_arr = d_pts.astype(int).reshape(-1, 2)
+                                                cv2.polylines(vis_ocr, [p_arr], True, (255, 165, 0), 3)
+                            except Exception:
+                                pass
+
+                            # zxingcpp fallback
+                            if not scanned_codes:
+                                try:
+                                    import zxingcpp
+                                    gray_zx = cv2.cvtColor(ocr_img_bgr, cv2.COLOR_BGR2GRAY)
+                                    zx_results = zxingcpp.read_barcodes(gray_zx)
+                                    for zr in zx_results:
+                                        if zr.text:
+                                            scanned_codes.append({
+                                                "type": str(zr.format).upper(),
+                                                "data": zr.text,
+                                                "pos": zr.position
+                                            })
+                                except Exception:
+                                    pass
+
+                        # ── Step 2: OCR text extraction ─────────────────────────────────────────
+                        # Priority chain:
+                        #   1. Custom OCREngine  (PaddleOCR 3.x, enable_mkldnn=False — Windows safe)
+                        #   2. Raw PaddleOCR 3.x (predict() API, also enable_mkldnn=False)
+                        #   3. EasyOCR           (pure-Python fallback, always works)
+                        ocr_success = False
+
+                        # --- Priority 1: Custom OCREngine (src/ocr_module) ─────────────────────
+                        # Aastha's OCR wrapper already sets enable_mkldnn=False which bypasses
+                        # the Windows oneDNN crash in PaddlePaddle 3.x.
+                        if not ocr_success:
+                            try:
+                                import warnings as _w, logging as _log
+                                _log.disable(_log.CRITICAL)
+                                _w.filterwarnings("ignore")
+                                from ocr_module.ocr_engine import OCREngine
+                                _ocr_eng = OCREngine(min_confidence=ocr_conf)
+                                _ocr_res = _ocr_eng.process_image_array(ocr_img_bgr,
+                                                                         save_outputs=False)
+                                if _ocr_res and _ocr_res.success:
+                                    for item in _ocr_res.extracted_text:
+                                        box = np.array(item.bounding_box, dtype=np.int32)
+                                        cv2.polylines(vis_ocr, [box], True, (0, 200, 255), 2)
+                                        cv2.putText(vis_ocr, item.text,
+                                                    (box[0][0], max(15, box[0][1] - 5)),
+                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+                                        ocr_text_lines.append({"text": item.text,
+                                                               "conf": getattr(item, "confidence", 1.0)})
+                                    ocr_success = True
+                            except Exception:
+                                pass  # will try next priority
+
+                        # --- Priority 2: Raw PaddleOCR 3.x with mkldnn disabled ───────────────
+                        if not ocr_success:
+                            try:
+                                import warnings as _w, logging as _log, os as _os
+                                _log.disable(_log.CRITICAL)
+                                _w.filterwarnings("ignore")
+                                # Env flag disables oneDNN globally
+                                _os.environ.setdefault("FLAGS_use_mkldnn", "0")
+                                from paddleocr import PaddleOCR as _PaddleOCR
+                                _pocr = _PaddleOCR(lang="en", enable_mkldnn=False)
+                                # 3.x API: predict() returns list of dicts
+                                _raw = list(_pocr.predict(ocr_img_bgr))
+                                for _page in _raw:
+                                    if not _page:
+                                        continue
+                                    _texts  = _page.get("rec_texts", []) or []
+                                    _scores = _page.get("rec_scores", []) or []
+                                    _polys  = _page.get("rec_polys",  []) or \
+                                              _page.get("dt_polys",   []) or []
+                                    for txt, conf, poly in zip(_texts, _scores, _polys):
+                                        if conf >= ocr_conf:
+                                            pts_arr = np.array(poly, dtype=np.int32)
+                                            cv2.polylines(vis_ocr, [pts_arr], True, (0, 200, 255), 2)
+                                            cv2.putText(vis_ocr, txt,
+                                                        (int(pts_arr[0][0]), max(15, int(pts_arr[0][1]) - 5)),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+                                            ocr_text_lines.append({"text": txt, "conf": conf})
+                                if ocr_text_lines:
+                                    ocr_success = True
+                            except ImportError:
+                                st.caption("⚠️ PaddleOCR not installed. "
+                                           "Run: `pip install paddleocr paddlepaddle`")
+                            except Exception as _ep:
+                                st.caption(f"⚠️ PaddleOCR inference error: {_ep}")
+
+                        # --- Priority 3: EasyOCR fallback ───────────────────────────────────────
+                        if not ocr_success:
+                            try:
+                                import easyocr as _easyocr, warnings as _w, logging as _log
+                                _log.disable(_log.CRITICAL)
+                                _w.filterwarnings("ignore")
+                                _reader = _easyocr.Reader(["en"], gpu=False, verbose=False)
+                                easy_res = _reader.readtext(ocr_img_bgr)
+                                for (box_pts, txt, conf) in easy_res:
+                                    if conf >= ocr_conf:
+                                        pts_arr = np.array(box_pts, dtype=np.int32)
+                                        cv2.polylines(vis_ocr, [pts_arr], True, (0, 180, 220), 2)
+                                        cv2.putText(vis_ocr, txt,
+                                                    (int(box_pts[0][0]), max(15, int(box_pts[0][1]) - 5)),
+                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+                                        ocr_text_lines.append({"text": txt, "conf": conf})
+                                if easy_res:
+                                    ocr_success = True
+                                    st.caption("ℹ️ Using EasyOCR (PaddleOCR engine not available on this platform)")
+                            except Exception:
+                                pass
+
+                        # ── Step 3: Translation ─────────────────────────────────
+                        if enable_trans and ocr_text_lines:
+                            try:
+                                from deep_translator import GoogleTranslator
+                                translator = GoogleTranslator(source="auto", target="en")
+                                for item in ocr_text_lines:
+                                    try:
+                                        t = translator.translate(item["text"])
+                                        translated_lines.append(t if t else item["text"])
+                                    except Exception:
+                                        translated_lines.append(item["text"])
+                            except Exception:
+                                translated_lines = [i["text"] for i in ocr_text_lines]
+
+                    # ── Build & persist JSON payload ─────────────────────────
+                    vis_ocr_rgb = cv2.cvtColor(vis_ocr, cv2.COLOR_BGR2RGB)
+                    structured_codes = []
+                    for code in scanned_codes:
+                        entry = {"type": code["type"], "data": code["data"]}
+                        kv_lines = [l.strip() for l in code["data"].splitlines() if ":" in l]
+                        if kv_lines:
+                            entry["structured_fields"] = {
+                                l.partition(":")[0].strip(): l.partition(":")[2].strip()
+                                for l in kv_lines
+                            }
+                        structured_codes.append(entry)
+
+                    full_text_raw = "\n".join(i["text"] for i in ocr_text_lines)
+                    full_text_translated = (
+                        "\n".join(translated_lines) if translated_lines else full_text_raw
+                    )
+                    ts_str = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+                    export_payload = {
+                        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                        "source": ocr_src,
+                        "image_resolution": {
+                            "width": int(ocr_img_bgr.shape[1]),
+                            "height": int(ocr_img_bgr.shape[0]),
+                        },
+                        "scanned_codes": structured_codes,
+                        "ocr_text_lines": [
+                            {
+                                "line": i + 1,
+                                "text": item["text"],
+                                "confidence": round(float(item["conf"]), 4),
+                                "translation": (
+                                    translated_lines[i]
+                                    if i < len(translated_lines)
+                                    else item["text"]
+                                ),
+                            }
+                            for i, item in enumerate(ocr_text_lines)
+                        ],
+                        "full_text_raw": full_text_raw,
+                        "full_text_translated": full_text_translated,
+                    }
+                    export_json_str = json.dumps(export_payload, indent=2, ensure_ascii=False)
+                    export_filename = f"site_intelligence_{ts_str}.json"
+
+                    # Auto-save to outputs/ocr_results/
+                    saved_json_path = None
+                    try:
+                        ocr_out_dir = Path("outputs") / "ocr_results"
+                        ocr_out_dir.mkdir(parents=True, exist_ok=True)
+                        saved_json_path = ocr_out_dir / export_filename
+                        saved_json_path.write_text(export_json_str, encoding="utf-8")
+                    except Exception:
+                        saved_json_path = None
+
+                    st.session_state["last_ocr_result"] = {
+                        "vis_ocr_rgb": vis_ocr_rgb,
+                        "scanned_codes": scanned_codes,
+                        "ocr_text_lines": ocr_text_lines,
+                        "translated_lines": translated_lines,
+                        "ocr_success": ocr_success,
+                        "enable_code_scan": enable_code_scan,
+                        "enable_trans": enable_trans,
+                        "export_json_str": export_json_str,
+                        "export_filename": export_filename,
+                        "saved_json_path": str(saved_json_path) if saved_json_path else None,
+                    }
+
+                # Render either fresh or persisted results (survives Download click rerun)
+                ocr_res_state = st.session_state.get("last_ocr_result") if (
+                    run_ocr_btn or "last_ocr_result" in st.session_state
+                ) else None
+
+                if ocr_res_state is not None:
+                    st.image(
+                        ocr_res_state["vis_ocr_rgb"],
+                        use_container_width=True,
+                        caption="Annotated Detection Output",
+                    )
+
+                    # ── Download & Saved Path Bar ────────────────────────────
+                    dl_col1, dl_col2 = st.columns([1.2, 1.8])
+                    with dl_col1:
+                        st.download_button(
+                            label="📥 Download Extracted Data (JSON)",
+                            data=ocr_res_state["export_json_str"],
+                            file_name=ocr_res_state["export_filename"],
+                            mime="application/json",
+                            use_container_width=True,
+                            key="dl_ocr_json_btn",
+                        )
+                    with dl_col2:
+                        if ocr_res_state.get("saved_json_path"):
+                            st.caption(f"💾 Auto-saved: `{ocr_res_state['saved_json_path']}`")
+
+                    s_codes = ocr_res_state["scanned_codes"]
+                    s_lines = ocr_res_state["ocr_text_lines"]
+                    s_trans = ocr_res_state["translated_lines"]
+
+                    # ══════════════════════════════════════════════════════════
+                    # RESULTS PANEL — QR / Barcode cards
+                    # ══════════════════════════════════════════════════════════
+                    if s_codes:
+                        st.markdown("---")
+                        st.markdown("### 📱 Scanned Codes")
+                        for idx, code in enumerate(s_codes):
+                            icon = "📱" if "QR" in code["type"] else "🔲"
+                            with st.container(border=True):
+                                badge_col, info_col = st.columns([1, 4])
+                                with badge_col:
+                                    st.metric(label="Type", value=code["type"].replace("_", " "))
+                                with info_col:
+                                    st.markdown(f"**{icon} Decoded Content:**")
+                                    st.code(code["data"], language=None)
+
+                                lines_kv = [l.strip() for l in code["data"].splitlines() if ":" in l]
+                                if lines_kv:
+                                    st.markdown("**📋 Structured Entity Breakdown:**")
+                                    kv_data = {}
+                                    for kv_line in lines_kv:
+                                        k, _, v = kv_line.partition(":")
+                                        kv_data[k.strip()] = v.strip()
+                                    kv_df = pd.DataFrame(list(kv_data.items()), columns=["Field", "Value"])
+                                    st.dataframe(kv_df, use_container_width=True, hide_index=True)
+                    elif ocr_res_state["enable_code_scan"]:
+                        st.info("🔍 No QR code or barcode detected in this image.")
+
+                    # ══════════════════════════════════════════════════════════
+                    # RESULTS PANEL — OCR Text lines
+                    # ══════════════════════════════════════════════════════════
+                    if s_lines:
+                        st.markdown("---")
+                        st.markdown(f"### 🔤 Extracted Text Lines ({len(s_lines)} detected)")
+                        full_text_raw = "\n".join(i["text"] for i in s_lines)
+                        full_text_translated = "\n".join(s_trans) if s_trans else full_text_raw
+                        t_col1, t_col2 = st.columns(2)
+                        with t_col1:
+                            st.markdown("**🔤 Raw Extracted Text:**")
+                            st.text_area("", full_text_raw, height=200, key="ocr_raw_out", disabled=True)
+                        with t_col2:
+                            st.markdown("**🌐 Translated (English):**" if ocr_res_state["enable_trans"] else "**🔤 Text:**")
+                            st.text_area("", full_text_translated, height=200, key="ocr_trans_out", disabled=True)
+
+                        st.markdown("**📊 Line-by-Line Confidence:**")
+                        line_df_data = []
+                        for i, item in enumerate(s_lines):
+                            line_df_data.append({
+                                "#": i + 1,
+                                "Extracted Text": item["text"],
+                                "Confidence": f"{item['conf']*100:.1f}%",
+                                "Translation": s_trans[i] if i < len(s_trans) else item["text"]
+                            })
+                        st.dataframe(pd.DataFrame(line_df_data), use_container_width=True, hide_index=True)
+
+                    elif ocr_res_state["ocr_success"]:
+                        st.info("No text detected above the confidence threshold. Try lowering the minimum confidence.")
+                    else:
+                        st.warning(
+                            "⚠️ PaddleOCR engine could not initialize. "
+                            "Run: `pip install paddleocr paddlepaddle` in your venv. "
+                            "QR/Barcode scanning still works independently above."
+                        )
+
+                else:
+                    # Image loaded but button not pressed yet — show preview
+                    vis_ocr_rgb = cv2.cvtColor(vis_ocr, cv2.COLOR_BGR2RGB)
+                    st.image(vis_ocr_rgb, use_container_width=True, caption="Preview — click Extract to analyze")
+            else:
+                st.info("Upload an image or select a video feed to run Site Text & Sign Intelligence.")
 

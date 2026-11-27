@@ -32,8 +32,32 @@ detection_*/outputs/
 
 # Training runs & checkpoints (large files > 100MB rejected by GitHub)
 runs/
+weights/
 *.pt
+!backend/app/weights/best_3.pt
 *.cache
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Frontend & Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Uploads & Runtime storage
+storage/
+uploads/
+media_storage/
+backend/media_storage/
+*.tmp
+*.log
 
 # Dataset images (keep directory structure and yaml configs)
 data/raw/images/
@@ -43,3 +67,8 @@ data/raw/images/
 .idea/
 .DS_Store
 Thumbs.db
+
+# OCR & PaddleX models / samples
+.paddlex/
+samples/output/*
+!samples/output/.gitkeep

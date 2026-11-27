@@ -24,20 +24,43 @@ class SpatialEventFormatter:
         zone_name_lower = violation.get("zone_name", "").lower()
         
         # Categorize spatial incident type
-        if "exit" in zone_name_lower or zone_type == "exclusion":
+        if zone_type in ["dynamic_danger_zone", "dynamic_proximity"] or "danger" in zone_name_lower or "machinery" in zone_name_lower or "crane" in zone_name_lower or zone_type == "proximity_exclusion":
+            event_type = "MACHINERY_PROXIMITY_HAZARD"
+        elif "exit" in zone_name_lower or zone_type == "exclusion":
             event_type = "EMERGENCY_EXIT_BLOCKED"
         elif "extinguisher" in zone_name_lower or "equipment" in zone_name_lower or zone_type == "equipment_clearance" or ("fire" in zone_name_lower and "exit" not in zone_name_lower):
             event_type = "FIRE_EQUIPMENT_OBSTRUCTED"
         elif "aisle" in zone_name_lower or "walkway" in zone_name_lower or zone_type == "walkway":
             event_type = "WALKWAY_OBSTRUCTED"
-        elif "crane" in zone_name_lower or "machinery" in zone_name_lower or zone_type == "proximity_exclusion":
-            event_type = "MACHINERY_PROXIMITY_HAZARD"
         else:
             event_type = "ZONE_INTRUSION"
 
         conf = float(violation.get("confidence", 0.90))
         # Human-in-the-loop review threshold (< 70% confidence sent to Reviewer Queue)
         needs_human_review = bool(conf < 0.70)
+
+        target_payload = {
+            "track_id": violation["track_id"],
+            "class_id": c_id,
+            "class_name": class_name,
+            "confidence": round(conf, 3),
+            "bbox_xyxy": violation["bbox"]
+        }
+        if zone_type == "dynamic_danger_zone":
+            target_payload.update({
+                "person_id": violation.get("person_id", violation["track_id"]),
+                "machine_id": violation.get("machine_id"),
+                "machine_class": violation.get("machine_class"),
+                "distance_px": violation.get("distance_px"),
+                "danger_radius_px": violation.get("danger_radius_px")
+            })
+            rec_action = (
+                f"CRITICAL: Worker #{violation.get('person_id', violation['track_id'])} must step back immediately "
+                f"from {str(violation.get('machine_class', 'machinery')).title()} #{violation.get('machine_id', '')} "
+                f"(Distance: {violation.get('distance_px', 0)}px <= Limit: {violation.get('danger_radius_px', 180)}px)!"
+            )
+        else:
+            rec_action = f"Remove {class_name} from {violation['zone_name']} immediately."
 
         return {
             "event_id": f"EVT_{uuid.uuid4().hex[:8].upper()}",
@@ -47,13 +70,7 @@ class SpatialEventFormatter:
             "severity": violation["severity"],
             "zone_id": violation["zone_id"],
             "zone_name": violation["zone_name"],
-            "target": {
-                "track_id": violation["track_id"],
-                "class_id": c_id,
-                "class_name": class_name,
-                "confidence": round(conf, 3),
-                "bbox_xyxy": violation["bbox"]
-            },
+            "target": target_payload,
             "temporal": {
                 "entry_timestamp": violation["entry_timestamp"],
                 "current_timestamp": violation["current_timestamp"],
@@ -64,5 +81,5 @@ class SpatialEventFormatter:
             "needs_human_review": needs_human_review,
             "associated_ppe": violation.get("associated_ppe", []),
             "evidence_required": True,
-            "recommended_action": f"Remove {class_name} from {violation['zone_name']} immediately."
+            "recommended_action": rec_action
         }

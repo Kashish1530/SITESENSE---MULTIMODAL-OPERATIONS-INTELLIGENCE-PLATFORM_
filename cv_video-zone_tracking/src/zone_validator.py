@@ -168,6 +168,39 @@ def get_zone_config_json_schema() -> Dict[str, Any]:
                         "description": {"type": "string"}
                     }
                 }
+            },
+            "dynamic_danger_zones": {
+                "type": "object",
+                "description": "Dynamic circular buffer around heavy moving equipment",
+                "properties": {
+                    "enabled": {"type": "boolean", "default": True},
+                    "machinery_classes": {
+                        "type": "array",
+                        "items": {"type": ["integer", "string"]},
+                        "default": [11, 12, 14]
+                    },
+                    "target_classes": {
+                        "type": "array",
+                        "items": {"type": ["integer", "string"]},
+                        "default": [0]
+                    },
+                    "danger_radius_px": {
+                        "type": "number",
+                        "minimum": 1.0,
+                        "default": 180.0
+                    },
+                    "warning_radius_px": {
+                        "type": "number",
+                        "minimum": 1.0,
+                        "default": 260.0
+                    },
+                    "alert_severity": {
+                        "type": "string",
+                        "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"],
+                        "default": "CRITICAL"
+                    },
+                    "description": {"type": "string"}
+                }
             }
         }
     }
@@ -369,6 +402,51 @@ class ZoneConfigValidator:
                         "count_classes": count_classes if count_classes else [0],
                         "description": str(l_val.get("description", "")).strip()
                     }
+
+        # Validate Dynamic Danger Zones (Machinery Circular Buffer)
+        ddz_raw = config.get("dynamic_danger_zones", {})
+        if ddz_raw and isinstance(ddz_raw, dict):
+            enabled = bool(ddz_raw.get("enabled", True))
+            raw_m_classes = ddz_raw.get("machinery_classes", [11, 12, 14])
+            m_classes = []
+            for c in raw_m_classes:
+                norm = cls.normalize_class_id(c)
+                if norm is not None and norm not in m_classes:
+                    m_classes.append(norm)
+            if not m_classes:
+                m_classes = [11, 12, 14]
+
+            raw_t_classes = ddz_raw.get("target_classes", [0])
+            t_classes = []
+            for c in raw_t_classes:
+                norm = cls.normalize_class_id(c)
+                if norm is not None and norm not in t_classes:
+                    t_classes.append(norm)
+            if not t_classes:
+                t_classes = [0]
+
+            try:
+                danger_r = float(ddz_raw.get("danger_radius_px", 180.0))
+                if danger_r <= 0:
+                    errors.append("dynamic_danger_zones 'danger_radius_px' must be greater than 0.")
+                    danger_r = 180.0
+            except (ValueError, TypeError):
+                errors.append("dynamic_danger_zones 'danger_radius_px' must be a numeric value.")
+                danger_r = 180.0
+
+            sev = str(ddz_raw.get("alert_severity", "CRITICAL")).upper().strip()
+            if sev not in VALID_SEVERITIES:
+                sev = "CRITICAL"
+
+            sanitized["dynamic_danger_zones"] = {
+                "enabled": enabled,
+                "machinery_classes": m_classes,
+                "target_classes": t_classes,
+                "danger_radius_px": danger_r,
+                "warning_radius_px": float(ddz_raw.get("warning_radius_px", danger_r * 1.4)),
+                "alert_severity": sev,
+                "description": str(ddz_raw.get("description", "Dynamic circular danger zone around heavy equipment")).strip()
+            }
 
         is_valid = len(errors) == 0
         return is_valid, errors, sanitized

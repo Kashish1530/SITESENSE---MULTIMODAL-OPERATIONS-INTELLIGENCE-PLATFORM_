@@ -102,16 +102,160 @@ class ZoneEngine:
                 count_classes=l_val.get("count_classes", [0])
             )
 
+        # Dynamic Machinery Circular Danger Zone Configuration
+        ddz_cfg = self.config.get("dynamic_danger_zones", {})
+        raw_m_classes = ddz_cfg.get("machinery_classes", [11, 12, 14])
+        raw_t_classes = ddz_cfg.get("target_classes", [0])
+        self.dynamic_danger_config = {
+            "enabled": bool(ddz_cfg.get("enabled", True)),
+            "machinery_classes": set(int(c) for c in raw_m_classes if isinstance(c, (int, str)) and str(c).isdigit()),
+            "target_classes": set(int(c) for c in raw_t_classes if isinstance(c, (int, str)) and str(c).isdigit()),
+            "danger_radius_px": float(ddz_cfg.get("danger_radius_px", 180.0)),
+            "warning_radius_px": float(ddz_cfg.get("warning_radius_px", 260.0)),
+            "alert_severity": str(ddz_cfg.get("alert_severity", "CRITICAL")).upper(),
+            "description": str(ddz_cfg.get("description", "Dynamic circular danger zone around heavy equipment"))
+        }
+        if not self.dynamic_danger_config["machinery_classes"]:
+            self.dynamic_danger_config["machinery_classes"] = {11, 12, 14}
+        if not self.dynamic_danger_config["target_classes"]:
+            self.dynamic_danger_config["target_classes"] = {0}
+
+        self.last_dynamic_danger_circles: List[Dict] = []
+        self.last_proximity_alerts: List[Dict] = []
+
     @staticmethod
     def get_ground_contact_point(bbox: List[int]) -> Point:
         """Calculates bottom-center point [x_mid, y2]"""
         x1, y1, x2, y2 = bbox
         return Point((x1 + x2) / 2.0, float(y2))
 
-    def evaluate_tracks(self, tracked_objects: List[Dict], timestamp: float) -> Tuple[List[Dict], List[Dict]]:
+    def evaluate_dynamic_machinery_danger_zones(
+        self,
+        tracked_objects: List[Dict],
+        timestamp: float
+    ) -> Tuple[List[Dict], List[Dict]]:
+        """
+        Evaluates dynamic circular danger zones around moving heavy machinery (forklifts, vehicles, machinery).
+        If a person (target class) falls within danger_radius_px of any heavy machinery,
+        triggers an immediate DANGER alert with person_id, machine_id, and exact pixel distance.
+
+        Returns:
+            proximity_alerts: List of danger alerts with person ID, machine ID, and distance in px.
+            dynamic_circles: List of circular zone geometries for rendering on video frames.
+        """
+        if not self.dynamic_danger_config.get("enabled", True):
+            self.last_dynamic_danger_circles = []
+            self.last_proximity_alerts = []
+            return [], []
+
+        m_classes = self.dynamic_danger_config.get("machinery_classes", {11, 12, 14})
+        t_classes = self.dynamic_danger_config.get("target_classes", {0})
+        danger_r = float(self.dynamic_danger_config.get("danger_radius_px", 180.0))
+        warning_r = float(self.dynamic_danger_config.get("warning_radius_px", danger_r * 1.4))
+        severity = self.dynamic_danger_config.get("alert_severity", "CRITICAL")
+
+        CLASS_NAMES = {
+            0: "person", 1: "safety_helmet", 2: "safety_vest", 3: "fire_extinguisher",
+            4: "fire_hose", 5: "pallet", 6: "fire", 7: "spill", 8: "safety_signage",
+            9: "exit_sign", 10: "empty_shelf", 11: "forklift", 12: "vehicle",
+            13: "obstacle", 14: "machinery", 15: "safety_cone"
+        }
+
+        machinery_objs = []
+        person_objs = []
+
+        for obj in tracked_objects:
+            cid = obj.get("class_id")
+            cname = str(obj.get("class_name", CLASS_NAMES.get(cid, ""))).lower()
+            if cid in m_classes or cname in ["forklift", "machinery", "vehicle"]:
+                machinery_objs.append(obj)
+            elif cid in t_classes or cname == "person":
+                person_objs.append(obj)
+
+        proximity_alerts = []
+        dynamic_circles = []
+        violated_machine_ids = set()
+
+        for m_obj in machinery_objs:
+            m_id = m_obj["track_id"]
+            m_cid = m_obj.get("class_id", 14)
+            m_cname = m_obj.get("class_name", CLASS_NAMES.get(m_cid, "machinery"))
+            m_bbox = m_obj["bbox"]
+
+            m_cx = (m_bbox[0] + m_bbox[2]) / 2.0
+            m_cy = float(m_bbox[3])  # bottom center of machine on floor
+
+            for p_obj in person_objs:
+                p_id = p_obj["track_id"]
+                p_bbox = p_obj["bbox"]
+                p_conf = float(p_obj.get("confidence", 0.90))
+                p_px = (p_bbox[0] + p_bbox[2]) / 2.0
+                p_py = float(p_bbox[3])
+
+                dx = p_px - m_cx
+                dy = p_py - m_cy
+                dist_px = float(np.sqrt(dx * dx + dy * dy))
+
+                if dist_px <= danger_r:
+                    violated_machine_ids.add(m_id)
+                    alert_msg = (
+                        f"CRITICAL DANGER: Person ID #{p_id} is very near {m_cname.capitalize()} "
+                        f"ID #{m_id} (Distance: {dist_px:.1f}px <= Limit: {danger_r:.0f}px)!"
+                    )
+                    proximity_alerts.append({
+                        "zone_id": f"DANGER_ZONE_{m_cname.upper()}_{m_id}",
+                        "zone_name": f"Dynamic Danger Zone ({m_cname.capitalize()} #{m_id})",
+                        "zone_type": "dynamic_danger_zone",
+                        "severity": severity,
+                        "track_id": p_id,
+                        "person_id": p_id,
+                        "machine_id": m_id,
+                        "machine_class": m_cname,
+                        "machine_class_id": m_cid,
+                        "distance_px": round(dist_px, 1),
+                        "danger_radius_px": round(danger_r, 1),
+                        "class_id": 0,
+                        "confidence": p_conf,
+                        "bbox": p_bbox,
+                        "machine_bbox": m_bbox,
+                        "person_pt": (int(round(p_px)), int(round(p_py))),
+                        "machine_pt": (int(round(m_cx)), int(round(m_cy))),
+                        "entry_timestamp": round(timestamp, 2),
+                        "current_timestamp": round(timestamp, 2),
+                        "dwell_time_seconds": 0.0,
+                        "status": "DANGER_PROXIMITY_ALERT",
+                        "alert_message": alert_msg
+                    })
+
+            dynamic_circles.append({
+                "machine_id": m_id,
+                "class_id": m_cid,
+                "class_name": m_cname,
+                "center": (int(round(m_cx)), int(round(m_cy))),
+                "radius": int(round(danger_r)),
+                "warning_radius": int(round(warning_r)),
+                "is_violated": (m_id in violated_machine_ids),
+                "bbox": m_bbox
+            })
+
+        self.last_dynamic_danger_circles = dynamic_circles
+        self.last_proximity_alerts = proximity_alerts
+        return proximity_alerts, dynamic_circles
+
+    def evaluate_tracks(
+        self,
+        tracked_objects: List[Dict],
+        timestamp: float,
+        evaluate_machinery_danger: bool = True
+    ) -> Tuple[List[Dict], List[Dict]]:
         active_zone_tracks = set()
         spatial_violations = []
         crossing_events = []
+
+        # Evaluate Dynamic Heavy Machinery Danger Zones (Circular Proximity)
+        if evaluate_machinery_danger and self.dynamic_danger_config.get("enabled", True):
+            proximity_alerts, _ = self.evaluate_dynamic_machinery_danger_zones(tracked_objects, timestamp)
+            spatial_violations.extend(proximity_alerts)
 
         for obj in tracked_objects:
             t_id = obj["track_id"]

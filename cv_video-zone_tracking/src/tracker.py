@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 from ultralytics import YOLO
 from typing import List, Dict, Set, Optional
 
@@ -19,43 +20,53 @@ class ByteTrackEngine:
         Returns tracked objects with persistent track IDs.
         Uses exact 16-class taxonomy directly from trained model.
         """
-        results = self.model.track(
-            frame,
-            persist=True,
-            tracker="bytetrack.yaml",
-            conf=0.25,
-            iou=0.45,
-            verbose=False
-        )
-        
-        tracked_objects = []
-        if results[0].boxes is not None and results[0].boxes.id is not None:
-            boxes = results[0].boxes
-            for i in range(len(boxes)):
-                track_id = int(boxes.id[i].item())
-                class_id = int(boxes.cls[i].item())
-                conf = float(boxes.conf[i].item())
-                x1, y1, x2, y2 = [int(v) for v in boxes.xyxy[i].tolist()]
-                
-                # Maintain trajectory
-                if track_id not in self.track_history:
-                    self.track_history[track_id] = []
-                self.track_history[track_id].append([(x1 + x2) // 2, y2])
-                
-                # Register unique entities (avoids duplicate counting across 3+ minute videos)
-                self.all_unique_tracks.add(track_id)
-                if class_id not in self.unique_tracks_by_class:
-                    self.unique_tracks_by_class[class_id] = set()
-                self.unique_tracks_by_class[class_id].add(track_id)
+        with torch.inference_mode():
+            results = self.model.track(
+                frame,
+                persist=True,
+                tracker="bytetrack.yaml",
+                conf=0.25,
+                iou=0.45,
+                verbose=False
+            )
+            
+            tracked_objects = []
+            if results[0].boxes is not None and results[0].boxes.id is not None:
+                boxes = results[0].boxes
+                for i in range(len(boxes)):
+                    track_id = int(boxes.id[i].item())
+                    class_id = int(boxes.cls[i].item())
+                    conf = float(boxes.conf[i].item())
+                    x1, y1, x2, y2 = [int(v) for v in boxes.xyxy[i].tolist()]
+                    
+                    # Maintain trajectory (capped to 30 points to avoid memory bloat)
+                    if track_id not in self.track_history:
+                        self.track_history[track_id] = []
+                    self.track_history[track_id].append([(x1 + x2) // 2, y2])
+                    if len(self.track_history[track_id]) > 30:
+                        self.track_history[track_id] = self.track_history[track_id][-30:]
+                    
+                    # Register unique entities (avoids duplicate counting across 3+ minute videos)
+                    self.all_unique_tracks.add(track_id)
+                    if class_id not in self.unique_tracks_by_class:
+                        self.unique_tracks_by_class[class_id] = set()
+                    self.unique_tracks_by_class[class_id].add(track_id)
 
-                tracked_objects.append({
-                    "track_id": track_id,
-                    "class_id": class_id,
-                    "confidence": conf,
-                    "bbox": [x1, y1, x2, y2]
-                })
-                
-        return tracked_objects
+                    class_name = self.model.names.get(class_id, str(class_id))
+                    tracked_objects.append({
+                        "track_id": track_id,
+                        "class_id": class_id,
+                        "class_name": class_name,
+                        "confidence": conf,
+                        "bbox": [x1, y1, x2, y2]
+                    })
+            
+            del results
+            return tracked_objects
+
+    def update(self, frame: np.ndarray) -> List[Dict]:
+        """Convenience alias for process_frame."""
+        return self.process_frame(frame)
 
     def get_unique_person_count(self) -> int:
         """Returns the distinct number of unique individuals tracked (class_id=0)."""

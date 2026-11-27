@@ -1,0 +1,42 @@
+{
+  "camera_id": "CAM_TEST_01",
+  "site_id": "TEST_SITE_DYNAMIC",
+  "site_name": "SiteSense Managed Facility",
+  "site_type": "warehouse",
+  "resolution": [
+    1280,
+    720
+  ],
+  "zones": {
+    "danger_zone": {
+      "zone_id": "ZONE_DANGER_99",
+      "zone_name": "Crane Danger Zone",
+      "zone_type": "exclusion",
+      "alert_severity": "CRITICAL",
+      "coordinates": [
+        [
+          100,
+          100
+        ],
+        [
+          400,
+          100
+        ],
+        [
+          400,
+          400
+        ],
+        [
+          100,
+          400
+        ]
+      ],
+      "prohibited_classes": [
+        0
+      ],
+      "blockage_threshold_seconds": 2.0,
+      "description": "Dynamic zone created by admin"
+    }
+  },
+  "counting_lines": {}
+}

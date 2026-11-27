@@ -167,6 +167,48 @@
           }
         }
       }
+    },
+    "dynamic_danger_zones": {
+      "type": "object",
+      "description": "Dynamic circular buffer around heavy moving equipment",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "machinery_classes": {
+          "type": "array",
+          "items": {
+            "type": ["integer", "string"]
+          },
+          "default": [11, 12, 14]
+        },
+        "target_classes": {
+          "type": "array",
+          "items": {
+            "type": ["integer", "string"]
+          },
+          "default": [0]
+        },
+        "danger_radius_px": {
+          "type": "number",
+          "minimum": 1.0,
+          "default": 180.0
+        },
+        "warning_radius_px": {
+          "type": "number",
+          "minimum": 1.0,
+          "default": 260.0
+        },
+        "alert_severity": {
+          "type": "string",
+          "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"],
+          "default": "CRITICAL"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
     }
   }
 }

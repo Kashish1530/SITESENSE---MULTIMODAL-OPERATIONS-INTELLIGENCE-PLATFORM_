@@ -87,6 +87,7 @@ class DynamicZoneConfigPayload(BaseModel):
     resolution: Optional[List[int]] = [1280, 720]
     zones: Dict[str, Any]
     counting_lines: Optional[Dict[str, Any]] = {}
+    dynamic_danger_zones: Optional[Dict[str, Any]] = None
 
 
 # ── Health ────────────────────────────────────────────────────────────────────

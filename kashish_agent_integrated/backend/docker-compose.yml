@@ -1,0 +1,26 @@
+services:
+  minio:
+    image: alpine/minio:latest-release
+    container_name: sitesense-minio
+    user: "0:0"
+    restart: unless-stopped
+    ports:
+      - "9000:9000" # MinIO S3 API endpoint
+      - "9001:9001" # MinIO Web Console
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: sitesense-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  minio_data:
+    name: backend_minio_data

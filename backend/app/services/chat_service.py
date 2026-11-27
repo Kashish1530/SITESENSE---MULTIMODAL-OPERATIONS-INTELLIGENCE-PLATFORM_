@@ -21,20 +21,28 @@ logger = logging.getLogger(__name__)
 
 
 def normalize_chat_markdown(text: str) -> str:
-    """Normalizes squashed Markdown tables, inline bullets, and section headers."""
+    """Normalizes squashed Markdown tables and section headers safely without breaking tables."""
     if not text:
         return ""
-    # Split text preceding a table header on the same line (e.g. "Summary of Violations: | Violation Type |")
-    text = re.sub(r'([^\n|]+?)\s*(\|(?:\s*[^|\n]+\s*\|)+)', r'\1\n\n\2', text)
+    # Safely separate prefix text before a table on the same line (e.g. "Summary: | Col 1 | Col 2 |")
+    lines = text.split("\n")
+    cleaned_lines = []
+    for line in lines:
+        st = line.strip()
+        if not st.startswith("|") and "|" in st and st.endswith("|"):
+            idx = st.find("|")
+            cleaned_lines.append(st[:idx].strip() + "\n\n" + st[idx:].strip())
+        else:
+            cleaned_lines.append(line)
+    text = "\n".join(cleaned_lines)
+
     # Split squashed table rows onto clean new lines
     text = re.sub(r'\|\s*\|\s*', '|\n|', text)
-    # Ensure empty blank line after table block before any succeeding text
-    text = re.sub(r'(\|[^\n]+\|)\s*\n\s*([^|\n\s])', r'\1\n\n\2', text)
-    # Clean up inline bullet items
-    text = re.sub(r'\s+([*\-•])\s+', r'\n\n- ', text)
+
     # Standardize major section headers
     for sec in ['Executive Summary', 'Evidence Analysis', 'Policy Citations', 'Recommendation']:
         text = re.sub(rf'(?i)(?:###|\*\*)?\s*\b{sec}\b(?:\*\*)?:?', f'\n\n### {sec}\n\n', text)
+
     return text.strip()
 
 

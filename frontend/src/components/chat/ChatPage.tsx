@@ -161,19 +161,18 @@ function FormattedMessage({ content }: { content: string }) {
         'POLICY VIOLATIONS?',
         'AUDIT LOG TABLE',
         'KEY OBSERVATIONS',
-        'SUMMARY OF VIOLATIONS',
     ]
     for (const kw of sectionKeywords) {
         const re = new RegExp(`(?:^|\\n|\\.\\s+)(?:\\*{1,3}|#{1,4}\\s*)?(${kw})(?:\\*{1,3}|:)?(?:\\s*[*•\\-]\\s*|\\s{2,}|\\s*\\n|\\s*$)`, 'gi')
         text = text.replace(re, (_, match) => `\n\n### ${match.trim()}\n\n* `)
     }
 
-    // 2. Separate prefix text before a table on the same line (e.g. "Summary of Violations: | Violation Type | Count |")
+    // 2. Safely separate prefix text before a table on the same line (only if line doesn't start with pipe)
     text = text.split('\n').map(line => {
         const trimmedLine = line.trim()
-        const m = trimmedLine.match(/^([^|]+?)\s*(\|.+)$/)
-        if (m && m[2].endsWith('|') && m[2].includes('|')) {
-            return m[1].trim() + '\n\n' + m[2].trim()
+        if (!trimmedLine.startsWith('|') && trimmedLine.includes('|') && trimmedLine.endsWith('|')) {
+            const idx = trimmedLine.indexOf('|')
+            return trimmedLine.slice(0, idx).trim() + '\n\n' + trimmedLine.slice(idx).trim()
         }
         return line
     }).join('\n')
@@ -181,20 +180,28 @@ function FormattedMessage({ content }: { content: string }) {
     // 3. Ensure markdown table rows on a single line (separated by | |) are split into proper newlines
     text = text.replace(/\|\s*\|\s*/g, '|\n|')
 
-    // 4. Ensure table blocks are separated from surrounding prose
-    text = text.replace(/([^\n|])\n+(\|(?:\s*[^|\n]+\s*\|)+)/g, '$1\n\n$2')
-    text = text.replace(/(\|[^\n]+\|)\n+([^|\n\s])/g, '$1\n\n$2')
-    text = text.replace(/(\|[^\n]+\|)\s*(###|\*\*)/g, '$1\n\n$2')
-    text = text.replace(/(###[^\n]+)\s*(\|)/g, '$1\n\n$2')
-    text = text.replace(/(Schema:[^\n]+)\s*(\|)/gi, '$1\n\n$2')
+    // 4. Safely isolate table blocks with empty lines before and after so they form standalone paragraphs
+    const rawLines = text.split('\n')
+    const isolatedLines: string[] = []
+    let inTable = false
+    for (const line of rawLines) {
+        const st = line.trim()
+        const isTblLine = st.startsWith('|') && st.endsWith('|')
+        if (isTblLine && !inTable) {
+            isolatedLines.push('')
+            inTable = true
+        } else if (!isTblLine && inTable && st) {
+            isolatedLines.push('')
+            inTable = false
+        }
+        isolatedLines.push(line)
+    }
+    text = isolatedLines.join('\n')
 
     // 5. Ensure inline bullet dashes (e.g. "observation. - **ITEM**") are split onto clean new lines
-    text = text.replace(/\s+-\s+\*\*([^*]+)\*\*/g, '\n\n* **$1**')
+    text = text.replace(/([.!?])\s+-\s+\*\*([^*]+)\*\*/g, '$1\n\n* **$2**')
     text = text.replace(/([.!?])\s+-\s+/g, '$1\n\n* ')
     text = text.replace(/(KEY OBSERVATIONS|OBSERVATIONS|SUMMARY|FINDINGS):\s*-\s*/gi, '### $1\n\n* ')
-
-    // 6. Ensure bullet points (* or • or -) start on clean new lines
-    text = text.replace(/\s+([*\-•])\s+/g, '\n\n* ')
 
     const rawParagraphs = text.split(/\n\s*\n/)
 
@@ -361,23 +368,29 @@ function FormattedMessage({ content }: { content: string }) {
                 }
 
                 // Case 4: Markdown Table
-                const tableLineIndices = lines.map((l, i) => l.trim().startsWith('|') && l.trim().endsWith('|') ? i : -1).filter(i => i !== -1)
+                const tableLines = lines.filter(l => l.trim().startsWith('|') && l.trim().endsWith('|'))
                 const hasSeparator = lines.some(l => /^[|\s\-:]+$/.test(l.trim()))
-                const isTable = tableLineIndices.length >= 2 || (tableLineIndices.length >= 1 && hasSeparator)
-                if (isTable) {
-                    const tableLines = lines.filter(l => l.trim().startsWith('|') && l.trim().endsWith('|'))
-                    const preTableLines = lines.filter(l => !l.trim().startsWith('|') || !l.trim().endsWith('|')).filter(l => l.trim())
-                    const headerLine = tableLines[0]
-                    const dataLines = tableLines.slice(1).filter(l => !/^[|\s\-:]+$/.test(l))
+                const isTable = tableLines.length >= 2 || (tableLines.length >= 1 && hasSeparator)
 
-                    const parseCells = (row: string) => row.split('|').slice(1, -1).map(c => c.trim())
+                if (isTable) {
+                    const nonTableLines = lines.filter(l => !l.trim().startsWith('|') || !l.trim().endsWith('|')).filter(l => l.trim())
+                    const headerLine = tableLines.find(l => !/^[|\s\-:]+$/.test(l.trim())) || tableLines[0]
+                    const headerIdx = tableLines.indexOf(headerLine)
+                    const dataLines = tableLines.slice(headerIdx + 1).filter(l => !/^[|\s\-:]+$/.test(l.trim()))
+
+                    const parseCells = (row: string) => {
+                        let clean = row.trim()
+                        if (clean.startsWith('|')) clean = clean.slice(1)
+                        if (clean.endsWith('|')) clean = clean.slice(0, -1)
+                        return clean.split('|').map(c => c.trim())
+                    }
                     const headers = parseCells(headerLine)
 
                     return (
                         <div key={pIdx} className="space-y-2.5 my-3">
-                            {preTableLines.length > 0 && (
-                                <div className="text-xs font-bold text-slate-800 uppercase tracking-wide px-1">
-                                    {renderInlineFormatting(preTableLines.join(' '))}
+                            {nonTableLines.length > 0 && (
+                                <div className="text-xs font-semibold text-slate-700 px-1">
+                                    {renderInlineFormatting(nonTableLines.join(' '))}
                                 </div>
                             )}
                             <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
@@ -385,7 +398,7 @@ function FormattedMessage({ content }: { content: string }) {
                                     <thead className="bg-slate-100 text-slate-800 uppercase tracking-wider font-bold text-[11px] border-b border-slate-200">
                                         <tr>
                                             {headers.map((h, hIdx) => (
-                                                <th key={hIdx} className="px-3.5 py-2.5 border-r border-slate-200 last:border-r-0">
+                                                <th key={hIdx} className="px-3.5 py-2.5 border-r border-slate-200 last:border-r-0 whitespace-nowrap">
                                                     {h}
                                                 </th>
                                             ))}
@@ -400,6 +413,10 @@ function FormattedMessage({ content }: { content: string }) {
                                                         const cleanCell = cell.replace(/\*\*/g, '').trim()
                                                         const isPass = /^(?:✅\s*)?(?:yes|compliant|pass|worn|detected)\b/i.test(cleanCell) || cleanCell === '✅'
                                                         const isFail = /^(?:❌\s*)?(?:no|violation|fail|missing|non-compliant)\b/i.test(cleanCell) || /VIOLATION/i.test(cleanCell) || cleanCell === '❌'
+                                                        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanCell)
+                                                        const isAction = /^(?:create_user|update_user|delete_user|login|logout|raise_ticket|generate_report)$/i.test(cleanCell)
+                                                        const isTimestamp = /^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}$/.test(cleanCell)
+
                                                         return (
                                                             <td key={cIdx} className="px-3.5 py-2.5 text-slate-700 border-r border-slate-100 last:border-r-0">
                                                                 {isPass ? (
@@ -411,6 +428,18 @@ function FormattedMessage({ content }: { content: string }) {
                                                                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-300 shadow-2xs">
                                                                         <X size={12} className="text-rose-600 shrink-0" />
                                                                         {cleanCell.replace(/[❌✖️]/g, '').trim() || 'Violation'}
+                                                                    </span>
+                                                                ) : isAction ? (
+                                                                    <span className="inline-block px-2 py-0.5 rounded bg-blue-50 text-blue-800 font-mono text-xs border border-blue-200">
+                                                                        {cleanCell}
+                                                                    </span>
+                                                                ) : isUuid ? (
+                                                                    <code className="text-[11px] font-mono bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded" title={cleanCell}>
+                                                                        {cleanCell.slice(0, 8)}...
+                                                                    </code>
+                                                                ) : isTimestamp ? (
+                                                                    <span className="font-mono text-xs text-slate-600 whitespace-nowrap">
+                                                                        {cleanCell}
                                                                     </span>
                                                                 ) : (
                                                                     <span className="font-medium text-slate-800">

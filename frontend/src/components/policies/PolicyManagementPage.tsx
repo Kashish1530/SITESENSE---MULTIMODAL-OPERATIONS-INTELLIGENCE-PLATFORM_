@@ -659,9 +659,8 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
               <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:bg-slate-950/60 dark:text-slate-400">
                 <tr>
                   <th className="px-6 py-3.5">Policy Document</th>
-                  <th className="px-6 py-3.5">Facility / Scope</th>
+                  <th className="px-6 py-3.5">Facility</th>
                   <th className="px-6 py-3.5">Version</th>
-                  <th className="px-6 py-3.5">Document Scope</th>
                   <th className="px-6 py-3.5">Effective Date</th>
                   <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
@@ -686,8 +685,12 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                             <div className="font-semibold text-slate-900 dark:text-white">
                               {policy.title}
                             </div>
-                            <div className="text-xs text-slate-400">
-                              {policy.source_file}
+                            <div className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-400">
+                              <span className="font-mono">{policy.source_file}</span>
+                              <span>•</span>
+                              <span>~{policy.pages_count || 20} Pages</span>
+                              <span>•</span>
+                              <span>{policy.file_size || 'PDF'}</span>
                             </div>
                           </div>
                         </div>
@@ -704,17 +707,6 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                         <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
                           v{policy.version || '1.0'}
                         </span>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col text-xs">
-                          <span className="font-semibold text-slate-900 dark:text-white">
-                            {policy.sections_count || Math.max(3, Math.ceil((policy.chunks_count || 8) / 2))} Sections
-                          </span>
-                          <span className="text-slate-400">
-                            ~{policy.pages_count || 20} Pages • {policy.file_size || 'PDF'}
-                          </span>
-                        </div>
                       </td>
 
                       <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">

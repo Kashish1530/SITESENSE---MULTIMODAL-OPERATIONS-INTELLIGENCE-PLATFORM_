@@ -16,6 +16,7 @@ import ReviewQueue from './components/inspections/ReviewQueue'
 import ChatPage from './components/chat/ChatPage'
 import SitesZonesPage from './components/zones/SitesZonesPage'
 import Login from './components/auth/Login'
+import AppLoadingScreen from './components/common/AppLoadingScreen'
 import { useOrganizationUsers } from './hooks/useOrganizationUsers'
 import type { DemoUser } from './data/users'
 import { getRoleConfig } from './data/roles'
@@ -820,5 +821,14 @@ function AppContent() {
 }
 
 export default function App() {
-  return <AppContent />
+  const [isBooting, setIsBooting] = useState(() => {
+    return (import.meta as any).env?.MODE === 'test' ? false : true
+  })
+
+  return (
+    <>
+      {isBooting && <AppLoadingScreen onComplete={() => setIsBooting(false)} />}
+      <AppContent />
+    </>
+  )
 }

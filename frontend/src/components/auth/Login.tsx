@@ -9,6 +9,7 @@ import {
     Mail,
     ShieldCheck,
 } from 'lucide-react'
+import ThreeBackground from './ThreeBackground'
 
 type LoginProps = {
     onLogin: (identifier: string, password: string) => void
@@ -27,8 +28,12 @@ export default function Login({ onLogin, error, isLoading = false }: LoginProps)
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10">
-            <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl lg:grid-cols-2">
+        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-10">
+            {/* Interactive 3D Objects Roaming Canvas */}
+            <ThreeBackground />
+
+            {/* Elevated Login Card with Glassmorphic Accent */}
+            <div className="relative z-10 grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-white/95 shadow-2xl backdrop-blur-xl transition dark:border-slate-800 dark:bg-slate-900/95 lg:grid-cols-2">
 
                 <section className="relative hidden flex-col justify-between overflow-hidden bg-slate-950 p-10 text-white lg:flex">
                     <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-blue-600/20 blur-3xl" />

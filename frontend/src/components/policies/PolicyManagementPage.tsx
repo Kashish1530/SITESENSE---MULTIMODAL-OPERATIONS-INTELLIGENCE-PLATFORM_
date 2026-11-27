@@ -10,8 +10,6 @@ import {
   Building2,
   Check,
   RefreshCw,
-  MessageSquare,
-  ChevronRight,
   X,
   ShieldCheck,
   Printer,
@@ -174,7 +172,7 @@ const SAMPLE_DOCUMENT_TEXTS: Record<string, DocumentSection[]> = {
   ],
 }
 
-export default function PolicyManagementPage({ currentUser, onNavigate }: Props) {
+export default function PolicyManagementPage({ currentUser }: Props) {
   const [policies, setPolicies] = useState<PolicyItem[]>(DEFAULT_DOCUMENTS)
   const [sites, setSites] = useState<DemoSite[]>(DEMO_SITES)
   const [isLoading, setIsLoading] = useState(true)
@@ -738,31 +736,6 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
             </table>
           </div>
         )}
-      </div>
-
-      {/* Unified AI Copilot Link Card */}
-      <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-blue-200/70 bg-gradient-to-r from-blue-50/80 via-indigo-50/30 to-white p-6 shadow-sm dark:border-blue-900/40 dark:from-blue-950/20 dark:via-slate-900 dark:to-slate-900 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-500/20">
-            <MessageSquare className="h-6 w-6" />
-          </div>
-          <div>
-            <h3 className="text-base font-semibold text-slate-900 dark:text-white">
-              Interact with Ingested Policies in Intelligence Chat
-            </h3>
-            <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
-              Ask natural language questions, verify visual PPE compliance against standards, and review proposed tickets with the SiteSense AI Agent.
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={() => onNavigate?.('Intelligence Chat')}
-          className="flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition hover:bg-blue-700"
-        >
-          Open Intelligence Chat
-          <ChevronRight className="h-4 w-4" />
-        </button>
       </div>
 
       {/* Real Document Reader Modal */}

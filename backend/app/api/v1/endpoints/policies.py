@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -221,6 +222,35 @@ def upload_policy(
             status_code=500,
             detail="Policy ingestion failed. Check backend logs.",
         )
+
+
+@router.get(
+    "/{policy_id}/file",
+    response_class=FileResponse,
+    summary="Download or stream policy document PDF",
+    description="Streams the raw uploaded policy PDF file for in-browser PDF viewing.",
+)
+def get_policy_file(
+    policy_id: uuid.UUID,
+    token: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+) -> FileResponse:
+    policy = db.query(Policy).filter(Policy.id == policy_id).first()
+    if not policy or not policy.file_path:
+        raise HTTPException(status_code=404, detail="Policy file not found.")
+
+    from pathlib import Path
+    from app.config.settings import get_settings
+    settings = get_settings()
+    full_path = Path(settings.MEDIA_STORAGE_PATH).resolve() / policy.file_path
+    if not full_path.exists():
+        raise HTTPException(status_code=404, detail="Physical document file missing on disk.")
+
+    return FileResponse(
+        path=full_path,
+        filename=policy.source_file or "policy.pdf",
+        media_type="application/pdf",
+    )
 
 
 @router.delete(

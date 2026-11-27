@@ -668,6 +668,12 @@ export async function deletePolicyApi(policyId: string): Promise<any> {
   })
 }
 
+export function getPolicyFileUrl(policyId: string): string {
+  const token = getStoredAccessToken()
+  const tokenParam = token ? `?token=${encodeURIComponent(token)}` : ''
+  return `${API_BASE_URL}/policies/${policyId}/file${tokenParam}`
+}
+
 export async function uploadPolicyApi(payload: {
   siteId: string
   title: string

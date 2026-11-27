@@ -8,7 +8,6 @@ import {
   BookOpen,
   Sparkles,
   Loader2,
-  Layers,
   Building2,
   Check,
   RefreshCw,
@@ -19,12 +18,15 @@ import {
   Printer,
   Download,
   Trash2,
+  FileCode,
+  Layers,
 } from 'lucide-react'
 import type { DemoSite, DemoUser } from '../../data/users'
 import { DEMO_SITES } from '../../data/users'
 import {
   getPoliciesApi,
   getPolicyDocumentApi,
+  getPolicyFileUrl,
   uploadPolicyApi,
   deletePolicyApi,
   getSitesApi,
@@ -42,11 +44,12 @@ export type PolicyItem = {
   source_file: string
   effective_date?: string | null
   description?: string | null
-  status: string
-  chunks_count: number
+  chunks_count?: number
   site_id?: string
   sections_count?: number
   pages_count?: number
+  file_size?: string
+  blobUrl?: string
 }
 
 export type DocumentSection = {
@@ -63,10 +66,10 @@ const DEFAULT_DOCUMENTS: PolicyItem[] = [
     source_file: 'SHB-01_Warehouse_Safety_and_Daily_Operations_Handbook.pdf',
     effective_date: '2026-01-15',
     description: 'Core facility safety standard covering PPE compliance, forklift speed zones, loading dock clearances, and stacking limits.',
-    status: 'Active Standard',
     chunks_count: 11,
     sections_count: 7,
     pages_count: 22,
+    file_size: '2.4 MB',
     site_id: 'SITE-001',
   },
   {
@@ -76,10 +79,10 @@ const DEFAULT_DOCUMENTS: PolicyItem[] = [
     source_file: 'ohs_guidelines_2026.pdf',
     effective_date: '2026-02-01',
     description: 'Industrial site health and safety standards for assembly areas, emergency egress routes, and fire safety systems.',
-    status: 'Active Standard',
     chunks_count: 14,
     sections_count: 9,
     pages_count: 36,
+    file_size: '3.8 MB',
     site_id: 'SITE-002',
   },
   {
@@ -89,10 +92,10 @@ const DEFAULT_DOCUMENTS: PolicyItem[] = [
     source_file: 'SITE_SAFETY_AND_OPERATIONS_POLICY.pdf',
     effective_date: '2026-01-01',
     description: 'Field inspection guidelines, perimeter security, PPE enforcement, and spill containment protocols.',
-    status: 'Active Standard',
     chunks_count: 9,
     sections_count: 6,
     pages_count: 18,
+    file_size: '1.9 MB',
     site_id: 'SITE-003',
   },
   {
@@ -102,10 +105,10 @@ const DEFAULT_DOCUMENTS: PolicyItem[] = [
     source_file: 'HAZMAT_STORAGE_STANDARD_2026.pdf',
     effective_date: '2026-03-01',
     description: 'Chemical depot ventilation requirements, secondary containment, and eye-wash station clearance rules.',
-    status: 'Active Standard',
     chunks_count: 8,
     sections_count: 5,
     pages_count: 14,
+    file_size: '1.5 MB',
     site_id: 'SITE-001',
   },
 ]
@@ -182,6 +185,7 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
   // Document Reader Modal State
   const [selectedDocForView, setSelectedDocForView] = useState<PolicyItem | null>(null)
   const [docSections, setDocSections] = useState<DocumentSection[]>([])
+  const [activeViewTab, setActiveViewTab] = useState<'document' | 'pdf'>('document')
   const [isLoadingDoc, setIsLoadingDoc] = useState(false)
   const [docSearchQuery, setDocSearchQuery] = useState('')
 
@@ -227,10 +231,10 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
           source_file: p.source_file || 'policy.pdf',
           effective_date: p.effective_date || null,
           description: p.description || null,
-          status: p.status || 'Active Standard',
           chunks_count: p.chunks_count || 8,
           sections_count: Math.max(3, Math.ceil((p.chunks_count || 8) / 2)),
           pages_count: Math.max(5, (p.chunks_count || 8) * 2),
+          file_size: p.file_path ? 'PDF Document' : 'Standard Document',
           site_id: p.site_id || undefined,
         }))
         setPolicies(mapped)
@@ -258,6 +262,7 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
   const handleOpenDocReader = async (policy: PolicyItem) => {
     setSelectedDocForView(policy)
     setDocSearchQuery('')
+    setActiveViewTab(policy.blobUrl ? 'pdf' : 'document')
     setIsLoadingDoc(true)
     try {
       const docData = await getPolicyDocumentApi(policy.id).catch(() => null)
@@ -287,7 +292,7 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
       await deletePolicyApi(policyToDelete.id).catch(() => ({}))
 
       setPolicies((prev) => prev.filter((p) => p.id !== policyToDelete.id))
-      setToastMessage(`Policy "${policyToDelete.title}" and its vector index were permanently deleted.`)
+      setToastMessage(`Policy "${policyToDelete.title}" was permanently deleted.`)
 
       if (selectedDocForView?.id === policyToDelete.id) {
         setSelectedDocForView(null)
@@ -354,7 +359,9 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
         `Successfully indexed "${title}" into authoritative knowledge base.`
       )
 
-      // Add to visible policies list immediately
+      // Retain local blobUrl for instant visual PDF previewing in this browser session
+      const blobUrl = URL.createObjectURL(selectedFile)
+
       const newDoc: PolicyItem = {
         id: res?.policy_id || String(Date.now()),
         title: title.trim(),
@@ -362,11 +369,12 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
         source_file: selectedFile.name,
         effective_date: effectiveDate,
         description: description.trim() || undefined,
-        status: 'Active Standard',
         chunks_count: res?.chunks_created || 8,
         sections_count: Math.max(3, Math.ceil((res?.chunks_created || 8) / 2)),
         pages_count: res?.pages_extracted || 12,
+        file_size: `${(selectedFile.size / 1024 / 1024).toFixed(1)} MB`,
         site_id: uploadSiteId,
+        blobUrl,
       }
 
       setPolicies((prev) => [newDoc, ...prev.filter((p) => p.id !== newDoc.id)])
@@ -502,7 +510,7 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
               {policies.length}
             </span>
             <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-              Available
+              Published
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-400">
@@ -557,20 +565,19 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
         <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900/60">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              AI Grounding Status
+              Compliance Standard
             </span>
             <span className="rounded-lg bg-purple-500/10 p-2 text-purple-600 dark:text-purple-400">
-              <Sparkles className="h-4 w-4" />
+              <ShieldCheck className="h-4 w-4" />
             </span>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-2xl font-bold text-slate-900 dark:text-white">
-              Active RAG
+              ISO / OSHA
             </span>
-            <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
           <p className="mt-1 text-xs text-slate-400">
-            Strict refusal on ungrounded questions
+            Authoritative corporate operations
           </p>
         </div>
       </div>
@@ -604,7 +611,7 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
         </div>
       </div>
 
-      {/* Uploaded Documents Table */}
+      {/* Uploaded Documents Table - Cleaned without Status Column */}
       <div className="rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900/60">
         <div className="border-b border-slate-100 p-5 dark:border-slate-800/80">
           <div className="flex items-center justify-between">
@@ -655,7 +662,6 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                   <th className="px-6 py-3.5">Facility / Scope</th>
                   <th className="px-6 py-3.5">Version</th>
                   <th className="px-6 py-3.5">Document Scope</th>
-                  <th className="px-6 py-3.5">Status</th>
                   <th className="px-6 py-3.5">Effective Date</th>
                   <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
@@ -706,16 +712,9 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                             {policy.sections_count || Math.max(3, Math.ceil((policy.chunks_count || 8) / 2))} Sections
                           </span>
                           <span className="text-slate-400">
-                            ~{policy.pages_count || 20} Pages
+                            ~{policy.pages_count || 20} Pages • {policy.file_size || 'PDF'}
                           </span>
                         </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                          {policy.status || 'Active Standard'}
-                        </span>
                       </td>
 
                       <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">
@@ -788,7 +787,7 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
       {/* Real Document Reader Modal */}
       {selectedDocForView && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
-          <div className="relative flex max-h-[92vh] w-full max-w-4xl flex-col rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+          <div className="relative flex max-h-[92vh] w-full max-w-5xl flex-col rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-100 p-6 dark:border-slate-800">
               <div className="flex items-center gap-3">
@@ -800,9 +799,6 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                       {selectedDocForView.title}
                     </h3>
-                    <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
-                      Authoritative Standard
-                    </span>
                   </div>
                   <div className="mt-0.5 flex flex-wrap items-center gap-3 text-xs text-slate-400">
                     <span>{selectedDocForView.source_file}</span>
@@ -821,6 +817,34 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
               </div>
 
               <div className="flex items-center gap-2">
+                {/* View Mode Toggle */}
+                {(selectedDocForView.blobUrl || selectedDocForView.id) && (
+                  <div className="flex items-center rounded-xl bg-slate-100 p-1 text-xs dark:bg-slate-800">
+                    <button
+                      onClick={() => setActiveViewTab('document')}
+                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition ${
+                        activeViewTab === 'document'
+                          ? 'bg-white text-blue-600 shadow-sm dark:bg-slate-900 dark:text-blue-400'
+                          : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
+                      }`}
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
+                      Document Reading
+                    </button>
+                    <button
+                      onClick={() => setActiveViewTab('pdf')}
+                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition ${
+                        activeViewTab === 'pdf'
+                          ? 'bg-white text-blue-600 shadow-sm dark:bg-slate-900 dark:text-blue-400'
+                          : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
+                      }`}
+                    >
+                      <FileCode className="h-3.5 w-3.5" />
+                      Original PDF
+                    </button>
+                  </div>
+                )}
+
                 <button
                   onClick={() => window.print()}
                   className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50 hover:text-slate-700 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-800"
@@ -853,72 +877,84 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
               </div>
             </div>
 
-            {/* In-Document Search Bar */}
-            <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-3 dark:border-slate-800 dark:bg-slate-950/30">
-              <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search inside this document (e.g. PPE, forklift speed, walkway clearance, hazardous storage)..."
-                  value={docSearchQuery}
-                  onChange={(e) => setDocSearchQuery(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-4 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
-                />
+            {/* In-Document Search Bar (Active in Document View) */}
+            {activeViewTab === 'document' && (
+              <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-3 dark:border-slate-800 dark:bg-slate-950/30">
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search inside this document (e.g. PPE, forklift speed, walkway clearance, hazardous storage)..."
+                    value={docSearchQuery}
+                    onChange={(e) => setDocSearchQuery(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-4 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Document Content Paper */}
+            {/* Document Content Display */}
             <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-100/60 dark:bg-slate-950/60">
-              <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200/90 bg-white p-8 md:p-12 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                {/* Document Header Page Badge */}
-                <div className="mb-8 border-b border-slate-100 pb-6 text-center dark:border-slate-800">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    SiteSense Operations & Compliance Manual
+              {activeViewTab === 'pdf' ? (
+                <div className="mx-auto h-[640px] max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                  <iframe
+                    src={selectedDocForView.blobUrl || getPolicyFileUrl(selectedDocForView.id)}
+                    className="h-full w-full border-0"
+                    title={selectedDocForView.title}
+                  />
+                </div>
+              ) : (
+                <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200/90 bg-white p-8 md:p-12 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                  {/* Document Header Page Badge */}
+                  <div className="mb-8 border-b border-slate-100 pb-6 text-center dark:border-slate-800">
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      SiteSense Operations & Compliance Manual
+                    </div>
+                    <h2 className="mt-3 text-2xl font-extrabold text-slate-900 dark:text-white">
+                      {selectedDocForView.title}
+                    </h2>
+                    <p className="mt-2 text-xs text-slate-400">
+                      Document Reference: {selectedDocForView.source_file} | Edition: v{selectedDocForView.version} | Published: {selectedDocForView.effective_date || '2026'}
+                    </p>
+                    {selectedDocForView.description && (
+                      <div className="mx-auto mt-4 max-w-xl rounded-xl bg-slate-50 p-3 text-xs text-slate-600 dark:bg-slate-950/40 dark:text-slate-300">
+                        <strong>Executive Summary:</strong> {selectedDocForView.description}
+                      </div>
+                    )}
                   </div>
-                  <h2 className="mt-3 text-2xl font-extrabold text-slate-900 dark:text-white">
-                    {selectedDocForView.title}
-                  </h2>
-                  <p className="mt-2 text-xs text-slate-400">
-                    Document Reference: {selectedDocForView.source_file} | Edition: v{selectedDocForView.version} | Published: {selectedDocForView.effective_date || '2026'}
-                  </p>
-                  {selectedDocForView.description && (
-                    <div className="mx-auto mt-4 max-w-xl rounded-xl bg-slate-50 p-3 text-xs text-slate-600 dark:bg-slate-950/40 dark:text-slate-300">
-                      <strong>Executive Summary:</strong> {selectedDocForView.description}
+
+                  {/* Document Body Sections */}
+                  {isLoadingDoc ? (
+                    <div className="flex min-h-[220px] flex-col items-center justify-center py-12">
+                      <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                      <p className="mt-3 text-xs text-slate-500">Loading document pages...</p>
+                    </div>
+                  ) : filteredSections.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500 dark:border-slate-800">
+                      No passages found matching "{docSearchQuery}".
+                    </div>
+                  ) : (
+                    <div className="space-y-8">
+                      {filteredSections.map((sec, idx) => (
+                        <div key={idx} className="group">
+                          <div className="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-slate-800">
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition">
+                              {sec.heading}
+                            </h3>
+                            <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                              Page {sec.page}
+                            </span>
+                          </div>
+                          <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-line font-serif md:text-[14px]">
+                            {sec.text}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
-
-                {/* Document Body Sections */}
-                {isLoadingDoc ? (
-                  <div className="flex min-h-[220px] flex-col items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-                    <p className="mt-3 text-xs text-slate-500">Loading document pages...</p>
-                  </div>
-                ) : filteredSections.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500 dark:border-slate-800">
-                    No passages found matching "{docSearchQuery}".
-                  </div>
-                ) : (
-                  <div className="space-y-8">
-                    {filteredSections.map((sec, idx) => (
-                      <div key={idx} className="group">
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-slate-800">
-                          <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition">
-                            {sec.heading}
-                          </h3>
-                          <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                            Page {sec.page}
-                          </span>
-                        </div>
-                        <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-line font-serif md:text-[14px]">
-                          {sec.text}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              )}
             </div>
 
             {/* Modal Footer */}

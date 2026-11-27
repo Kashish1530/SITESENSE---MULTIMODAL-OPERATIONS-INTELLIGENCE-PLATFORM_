@@ -653,6 +653,11 @@ export async function getPoliciesApi(q?: string): Promise<any[]> {
   return Array.isArray(data) ? data : (data?.items || [])
 }
 
+export async function getPolicyChunksApi(policyId: string): Promise<any[]> {
+  const data = await apiFetch<any>(`/policies/${policyId}/chunks`)
+  return Array.isArray(data) ? data : []
+}
+
 export async function uploadPolicyApi(payload: {
   siteId: string
   title: string

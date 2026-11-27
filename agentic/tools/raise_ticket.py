@@ -12,7 +12,7 @@ from agentic.tools.registry import registry
 from agentic.tools.query_database import get_db_url
 
 @registry.register(
-    name="raise_ticket",
+    name="raise_ticket", 
     description="Propose a remediation ticket from a non-compliant or failed finding. The ticket is held in 'proposed' status and requires human approval before creation.",
     parameters={
         "type": "object",

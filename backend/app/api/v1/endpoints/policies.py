@@ -113,6 +113,52 @@ def get_policy(
 
 
 @router.get(
+    "/{policy_id}/document",
+    summary="Get Full Policy Document Content",
+    description="Returns the full compiled text and section hierarchy of the policy document for viewing.",
+)
+def get_policy_document_content(
+    policy_id: uuid.UUID,
+    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> Dict[str, Any]:
+    policy = db.query(Policy).filter(Policy.id == policy_id).first()
+    if not policy:
+        raise HTTPException(status_code=404, detail="Policy document not found.")
+
+    chunks = (
+        db.query(PolicyChunk)
+        .filter(PolicyChunk.policy_id == policy_id)
+        .order_by(PolicyChunk.chunk_index.asc())
+        .all()
+    )
+
+    sections = [
+        {
+            "heading": c.section_heading or f"Section {c.chunk_index + 1}",
+            "page": c.page_number,
+            "text": c.content,
+        }
+        for c in chunks
+    ]
+
+    full_text = "\n\n".join([f"### {s['heading']} (Page {s['page']})\n{s['text']}" for s in sections])
+
+    return {
+        "id": str(policy.id),
+        "title": policy.title,
+        "version": policy.version,
+        "source_file": policy.source_file,
+        "effective_date": policy.effective_date.isoformat() if policy.effective_date else None,
+        "description": policy.description,
+        "status": policy.status,
+        "site_id": str(policy.site_id) if policy.site_id else None,
+        "sections": sections,
+        "full_text": full_text,
+    }
+
+
+@router.get(
     "/{policy_id}/chunks",
     summary="Get Chunks for Policy",
     description="Returns all extracted and vectorized policy chunks for inspection by admin/reviewers.",

@@ -658,6 +658,10 @@ export async function getPolicyChunksApi(policyId: string): Promise<any[]> {
   return Array.isArray(data) ? data : []
 }
 
+export async function getPolicyDocumentApi(policyId: string): Promise<any> {
+  return await apiFetch<any>(`/policies/${policyId}/document`)
+}
+
 export async function uploadPolicyApi(payload: {
   siteId: string
   title: string

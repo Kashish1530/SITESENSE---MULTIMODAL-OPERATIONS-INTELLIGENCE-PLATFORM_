@@ -21,13 +21,28 @@ class AdminUserUpdate(BaseModel):
 
 class AdminUserResponse(BaseModel):
     id: uuid.UUID
+    user_id: Optional[uuid.UUID] = None
+    serial_no: Optional[int] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     name: str
     email: str
     role: str
+    supervision: Optional[str] = None
+    site_id: Optional[uuid.UUID] = None
+    gender: Optional[str] = None
+    phone_number: Optional[str] = None
+    is_valid: Optional[bool] = True
+    address: Optional[Dict[str, Any]] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    pincode: Optional[str] = None
     is_active: bool
     site_ids: List[uuid.UUID] = Field(default_factory=list, description="Assigned site IDs")
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    last_login_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 

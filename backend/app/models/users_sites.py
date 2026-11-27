@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
-from sqlalchemy import Boolean, DateTime, ForeignKey, JSON, String, UniqueConstraint, Uuid
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, String, UniqueConstraint, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin, UUIDMixin
 
@@ -17,8 +17,50 @@ class User(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "users"
 
+    serial_no: Mapped[Optional[int]] = mapped_column(
+        Integer, nullable=True, doc="Autoincrementing display sequence number"
+    )
+    user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), nullable=True, index=True, doc="User UUID identifier (mirrors id)"
+    )
     name: Mapped[str] = mapped_column(
         String(255), nullable=False, doc="Full display name"
+    )
+    first_name: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, doc="User given name"
+    )
+    last_name: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, doc="User family/surname"
+    )
+    supervision: Mapped[Optional[str]] = mapped_column(
+        String(255), nullable=True, doc="Supervisory role or manager title"
+    )
+    site_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("sites.id", ondelete="SET NULL"), nullable=True, doc="Assigned primary site ID"
+    )
+    gender: Mapped[Optional[str]] = mapped_column(
+        String(20), default="Unspecified", nullable=True, doc="Gender identity"
+    )
+    phone_number: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True, doc="Contact telephone number"
+    )
+    is_valid: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default="true", nullable=False, doc="Identity validity check"
+    )
+    address: Mapped[Optional[Dict[str, Any]]] = mapped_column(
+        JSON, nullable=True, doc="Address object containing city, state, country, pincode"
+    )
+    city: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, doc="Address city"
+    )
+    state: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, doc="Address state or province"
+    )
+    country: Mapped[Optional[str]] = mapped_column(
+        String(100), default="United Kingdom", nullable=True, doc="Address country"
+    )
+    pincode: Mapped[Optional[str]] = mapped_column(
+        String(20), nullable=True, doc="Postal/PIN code"
     )
     email: Mapped[str] = mapped_column(
         String(255), unique=True, index=True, nullable=False, doc="Unique email address"
@@ -32,8 +74,14 @@ class User(Base, UUIDMixin, TimestampMixin):
     password_hash: Mapped[Optional[str]] = mapped_column(
         String(255), nullable=True, doc="Bcrypt / Argon2 hashed password"
     )
+    hashed_password: Mapped[Optional[str]] = mapped_column(
+        String(255), nullable=True, doc="Hashed password (mirrors password_hash)"
+    )
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, server_default="true", nullable=False, doc="Active status flag"
+    )
+    last_login_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, doc="Timestamp of latest login"
     )
 
     def __init__(self, **kwargs: Any) -> None:
@@ -41,6 +89,10 @@ class User(Base, UUIDMixin, TimestampMixin):
             kwargs["name"] = kwargs.pop("full_name")
         if "hashed_password" in kwargs and "password_hash" not in kwargs:
             kwargs["password_hash"] = kwargs.pop("hashed_password")
+        if "password_hash" in kwargs and "hashed_password" not in kwargs:
+            kwargs["hashed_password"] = kwargs["password_hash"]
+        if "id" in kwargs and "user_id" not in kwargs:
+            kwargs["user_id"] = kwargs["id"]
         super().__init__(**kwargs)
 
     @property
@@ -85,6 +137,15 @@ class Site(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "sites"
 
+    serial_no: Mapped[Optional[int]] = mapped_column(
+        Integer, nullable=True, doc="Autoincrementing display sequence number"
+    )
+    site_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), nullable=True, index=True, doc="Site UUID identifier (mirrors id)"
+    )
+    user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, doc="Assigned site manager or lead user"
+    )
     name: Mapped[str] = mapped_column(
         String(255), index=True, nullable=False, doc="Site name or identifier"
     )
@@ -93,11 +154,26 @@ class Site(Base, UUIDMixin, TimestampMixin):
         nullable=False,
         doc="Site type (retail, warehouse, construction, service_centre, depot)",
     )
+    city: Mapped[Optional[str]] = mapped_column(
+        String(100), default="London", nullable=True, doc="City where site is situated"
+    )
+    state: Mapped[Optional[str]] = mapped_column(
+        String(100), default="Greater London", nullable=True, doc="State or province"
+    )
+    country: Mapped[Optional[str]] = mapped_column(
+        String(100), default="United Kingdom", nullable=True, doc="Country location"
+    )
+    pincode: Mapped[Optional[str]] = mapped_column(
+        String(20), default="E1 6AN", nullable=True, doc="Postal/PIN code"
+    )
     location: Mapped[str] = mapped_column(
-        String(255), nullable=False, doc="Physical address or zone description"
+        String(255), default="Operational Zone", nullable=False, doc="Physical address or zone description"
     )
     active: Mapped[bool] = mapped_column(
         Boolean, default=True, server_default="true", nullable=False, doc="Active status of the site"
+    )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default="true", nullable=False, doc="Active status flag (mirrors active)"
     )
     metadata_json: Mapped[Optional[Dict[str, Any]]] = mapped_column(
         "metadata",
@@ -108,7 +184,11 @@ class Site(Base, UUIDMixin, TimestampMixin):
 
     def __init__(self, **kwargs: Any) -> None:
         if "is_active" in kwargs and "active" not in kwargs:
-            kwargs["active"] = kwargs.pop("is_active")
+            kwargs["active"] = kwargs["is_active"]
+        if "active" in kwargs and "is_active" not in kwargs:
+            kwargs["is_active"] = kwargs["active"]
+        if "id" in kwargs and "site_id" not in kwargs:
+            kwargs["site_id"] = kwargs["id"]
         super().__init__(**kwargs)
 
     @property

@@ -27,6 +27,12 @@ class Inspection(Base, UUIDMixin):
 
     __tablename__ = "inspections"
 
+    serial_no: Mapped[Optional[int]] = mapped_column(
+        Integer, nullable=True, doc="Autoincrementing display sequence number"
+    )
+    inspection_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True), nullable=True, index=True, doc="Inspection UUID identifier (mirrors id)"
+    )
     site_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True),
         ForeignKey("sites.id", ondelete="CASCADE"),
@@ -60,12 +66,27 @@ class Inspection(Base, UUIDMixin):
     summary: Mapped[Optional[str]] = mapped_column(
         Text, nullable=True, doc="Executive summary of findings"
     )
+    comments: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, doc="Auditor or supervisor compliance comments"
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=datetime.utcnow,
         nullable=False,
         doc="Record creation timestamp in UTC",
     )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+        doc="Record last update timestamp in UTC",
+    )
+
+    def __init__(self, **kwargs: Any) -> None:
+        if "id" in kwargs and "inspection_id" not in kwargs:
+            kwargs["inspection_id"] = kwargs["id"]
+        super().__init__(**kwargs)
 
     # Relationships
     site: Mapped["Site"] = relationship("Site", back_populates="inspections")

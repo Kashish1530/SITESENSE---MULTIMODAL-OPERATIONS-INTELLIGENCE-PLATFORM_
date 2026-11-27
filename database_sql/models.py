@@ -33,10 +33,18 @@ class Site(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    site_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4)
+    serial_no: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    user_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    city: Mapped[Optional[str]] = mapped_column(String(100), default="London")
+    state: Mapped[Optional[str]] = mapped_column(String(100), default="Greater London")
+    country: Mapped[Optional[str]] = mapped_column(String(100), default="United Kingdom")
+    pincode: Mapped[Optional[str]] = mapped_column(String(20), default="E1 6AN")
     location: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.utcnow
     )
@@ -56,15 +64,34 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    user_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4)
+    serial_no: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    first_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    last_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
+    supervision: Mapped[Optional[str]] = mapped_column(String(255), default="Direct Site Manager")
+    site_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("sites.id", ondelete="SET NULL"), nullable=True)
+    gender: Mapped[Optional[str]] = mapped_column(String(20), default="Unspecified")
+    phone_number: Mapped[Optional[str]] = mapped_column(String(50), default="+1-555-0199")
+    is_valid: Mapped[bool] = mapped_column(Boolean, default=True)
+    address: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSONB, nullable=True)
+    city: Mapped[Optional[str]] = mapped_column(String(100), default="London")
+    state: Mapped[Optional[str]] = mapped_column(String(100), default="Greater London")
+    country: Mapped[Optional[str]] = mapped_column(String(100), default="United Kingdom")
+    pincode: Mapped[Optional[str]] = mapped_column(String(20), default="EC1A 1BB")
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
-    role: Mapped[str] = mapped_column(String(50), nullable=False)
+    hashed_password: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     password_hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    role: Mapped[str] = mapped_column(String(50), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.utcnow
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+    last_login_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow
     )
 
     __table_args__ = (
@@ -92,6 +119,8 @@ class Inspection(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    inspection_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4)
+    serial_no: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     site_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("sites.id", ondelete="CASCADE"),
@@ -100,14 +129,20 @@ class Inspection(Base):
     user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow
-    )
     status: Mapped[str] = mapped_column(
         String(50), default="pending", nullable=False
     )
     job_id: Mapped[Optional[str]] = mapped_column(
         String(255), unique=True, nullable=True
+    )
+    pass_rate: Mapped[Optional[float]] = mapped_column(Numeric(5, 2), nullable=True)
+    summary: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    comments: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
     # Relationships

@@ -10,10 +10,18 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- The physical locations being inspected (stores, warehouses, construction sites, etc.)
 CREATE TABLE IF NOT EXISTS sites (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    site_id UUID DEFAULT gen_random_uuid(),
+    serial_no SERIAL,
+    user_id UUID,
     name VARCHAR(255) NOT NULL,
     type VARCHAR(100),
+    city VARCHAR(100) DEFAULT 'London',
+    state VARCHAR(100) DEFAULT 'Greater London',
+    country VARCHAR(100) DEFAULT 'United Kingdom',
+    pincode VARCHAR(20) DEFAULT 'E1 6AN',
     location VARCHAR(255),
     active BOOLEAN DEFAULT TRUE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
@@ -22,23 +30,50 @@ CREATE TABLE IF NOT EXISTS sites (
 -- Role drives what the UI shows and the API allows (admin / manager / field / reviewer)
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID DEFAULT gen_random_uuid(),
+    serial_no SERIAL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
     name VARCHAR(255) NOT NULL,
+    supervision VARCHAR(255) DEFAULT 'Direct Site Manager',
+    site_id UUID REFERENCES sites(id) ON DELETE SET NULL,
+    gender VARCHAR(20) DEFAULT 'Unspecified',
+    phone_number VARCHAR(50) DEFAULT '+1-555-0199',
+    is_valid BOOLEAN DEFAULT TRUE,
+    address JSONB DEFAULT '{"city": "London", "state": "Greater London", "country": "United Kingdom", "pincode": "EC1A 1BB"}'::jsonb,
+    city VARCHAR(100) DEFAULT 'London',
+    state VARCHAR(100) DEFAULT 'Greater London',
+    country VARCHAR(100) DEFAULT 'United Kingdom',
+    pincode VARCHAR(20) DEFAULT 'EC1A 1BB',
     email VARCHAR(255) UNIQUE NOT NULL,
-    role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'manager', 'field', 'reviewer')),
+    hashed_password VARCHAR(255),
     password_hash VARCHAR(255),
+    role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'manager', 'field', 'reviewer')),
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    last_login_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add foreign key constraint for sites.user_id -> users.id
+ALTER TABLE sites DROP CONSTRAINT IF EXISTS fk_sites_user;
+ALTER TABLE sites ADD CONSTRAINT fk_sites_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 -- 3. INSPECTIONS
 -- One upload session from one site
 CREATE TABLE IF NOT EXISTS inspections (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    inspection_id UUID DEFAULT gen_random_uuid(),
+    serial_no SERIAL,
     site_id UUID NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) DEFAULT 'pending' NOT NULL,
-    job_id VARCHAR(255) UNIQUE
+    job_id VARCHAR(255) UNIQUE,
+    pass_rate DOUBLE PRECISION,
+    summary TEXT,
+    comments TEXT DEFAULT 'Routine compliance verification audit.',
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 4. MEDIA

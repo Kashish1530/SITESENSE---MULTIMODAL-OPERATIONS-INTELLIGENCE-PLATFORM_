@@ -61,13 +61,18 @@ class InspectionCreate(BaseModel):
 
 class InspectionListItem(BaseModel):
     id: uuid.UUID
+    inspection_id: Optional[uuid.UUID] = None
+    serial_no: Optional[int] = None
     site_id: uuid.UUID
     site_name: Optional[str] = None
     user_id: Optional[uuid.UUID] = None
     status: str
     job_id: Optional[str] = None
     pass_rate: Optional[float] = None
+    summary: Optional[str] = None
+    comments: Optional[str] = None
     created_at: datetime
+    updated_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 

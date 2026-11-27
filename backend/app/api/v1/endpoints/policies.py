@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, require_policy_uploader
+from app.api.deps import get_current_user, get_db, require_admin, require_policy_uploader
 from app.models.knowledge_compliance import Policy, PolicyChunk
 from app.models.users_sites import User
 from app.services.policy_ingestion_service import PolicyIngestionService
@@ -221,3 +221,40 @@ def upload_policy(
             status_code=500,
             detail="Policy ingestion failed. Check backend logs.",
         )
+
+
+@router.delete(
+    "/{policy_id}",
+    summary="Delete a Policy Document",
+    description="Permanently deletes a policy document, purging all associated vector chunks and storage files. Restricted to Administrators.",
+)
+def delete_policy(
+    policy_id: uuid.UUID,
+    _admin: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> Dict[str, Any]:
+    policy = db.query(Policy).filter(Policy.id == policy_id).first()
+    if not policy:
+        raise HTTPException(status_code=404, detail="Policy document not found.")
+
+    # 1. Clean up physical file if it exists
+    if policy.file_path:
+        try:
+            from pathlib import Path
+            from app.config.settings import get_settings
+            settings = get_settings()
+            full_path = Path(settings.MEDIA_STORAGE_PATH).resolve() / policy.file_path
+            if full_path.exists():
+                full_path.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+    # 2. Delete database record (cascades to policy_chunks automatically)
+    db.delete(policy)
+    db.commit()
+
+    return {
+        "success": True,
+        "message": f"Policy '{policy.title}' and all associated vector chunks were deleted successfully.",
+        "deleted_id": str(policy_id),
+    }

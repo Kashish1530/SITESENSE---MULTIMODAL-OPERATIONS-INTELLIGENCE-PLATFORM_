@@ -662,6 +662,12 @@ export async function getPolicyDocumentApi(policyId: string): Promise<any> {
   return await apiFetch<any>(`/policies/${policyId}/document`)
 }
 
+export async function deletePolicyApi(policyId: string): Promise<any> {
+  return await apiFetch<any>(`/policies/${policyId}`, {
+    method: 'DELETE',
+  })
+}
+
 export async function uploadPolicyApi(payload: {
   siteId: string
   title: string

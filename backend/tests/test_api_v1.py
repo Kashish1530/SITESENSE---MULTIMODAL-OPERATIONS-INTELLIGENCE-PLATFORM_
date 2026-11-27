@@ -17,10 +17,19 @@ def api_test_setup():
     default_pw = hash_password("SiteSense@2026")
 
     # 1. Users
-    admin = User(name="API Admin", email="api_admin@sitesense.io", role="admin", password_hash=default_pw)
-    manager = User(name="API Manager", email="api_manager@sitesense.io", role="manager", password_hash=default_pw)
-    field_user = User(name="API Field", email="api_field@sitesense.io", role="field", password_hash=default_pw)
-    session.add_all([admin, manager, field_user])
+    admin = session.query(User).filter(User.email == "api_admin@sitesense.io").first()
+    manager = session.query(User).filter(User.email == "api_manager@sitesense.io").first()
+    field_user = session.query(User).filter(User.email == "api_field@sitesense.io").first()
+
+    if not admin:
+        admin = User(name="API Admin", email="api_admin@sitesense.io", role="admin", password_hash=default_pw)
+        session.add(admin)
+    if not manager:
+        manager = User(name="API Manager", email="api_manager@sitesense.io", role="manager", password_hash=default_pw)
+        session.add(manager)
+    if not field_user:
+        field_user = User(name="API Field", email="api_field@sitesense.io", role="field", password_hash=default_pw)
+        session.add(field_user)
     session.flush()
 
     # 2. Site
@@ -277,3 +286,48 @@ def test_tickets_creation_and_approval_workflow(client: TestClient, api_test_set
     list_res = client.get(f"/api/v1/tickets?finding_id={finding_id}", headers=headers)
     assert list_res.status_code == 200
     assert list_res.json()["total"] >= 1
+
+
+def test_policy_deletion_and_rbac(client: TestClient, api_test_setup):
+    """Verify Policy deletion is restricted to Admins and cascades properly."""
+    from app.models.knowledge_compliance import Policy, PolicyChunk
+
+    session: Session = SessionLocal()
+    policy = Policy(
+        title="Temporary Delete Test Standard",
+        version="0.9",
+        source_file="temp_policy_test.pdf",
+        status="active",
+        site_id=uuid.UUID(api_test_setup["site_id"]),
+    )
+    session.add(policy)
+    session.flush()
+
+    chunk = PolicyChunk(
+        policy_id=policy.id,
+        chunk_index=0,
+        content="Temporary clause text for test",
+        page_number=1,
+    )
+    session.add(chunk)
+    session.commit()
+    policy_id = str(policy.id)
+    session.close()
+
+    field_token = get_token(client, api_test_setup["field_email"])
+    admin_token = get_token(client, api_test_setup["admin_email"])
+
+    # 1. Field user cannot delete policy (403 Forbidden)
+    res_field = client.delete(f"/api/v1/policies/{policy_id}", headers={"Authorization": f"Bearer {field_token}"})
+    assert res_field.status_code == 403
+
+    # 2. Admin successfully deletes policy (200 OK)
+    res_admin = client.delete(f"/api/v1/policies/{policy_id}", headers={"Authorization": f"Bearer {admin_token}"})
+    assert res_admin.status_code == 200
+    assert res_admin.json()["success"] is True
+
+    # 3. Verify policy and chunk no longer exist
+    verify_session: Session = SessionLocal()
+    assert verify_session.query(Policy).filter(Policy.id == uuid.UUID(policy_id)).first() is None
+    assert verify_session.query(PolicyChunk).filter(PolicyChunk.policy_id == uuid.UUID(policy_id)).count() == 0
+    verify_session.close()

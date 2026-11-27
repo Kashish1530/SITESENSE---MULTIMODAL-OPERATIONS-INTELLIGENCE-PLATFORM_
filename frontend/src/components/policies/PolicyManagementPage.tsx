@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Printer,
   Download,
+  Trash2,
 } from 'lucide-react'
 import type { DemoSite, DemoUser } from '../../data/users'
 import { DEMO_SITES } from '../../data/users'
@@ -25,6 +26,7 @@ import {
   getPoliciesApi,
   getPolicyDocumentApi,
   uploadPolicyApi,
+  deletePolicyApi,
   getSitesApi,
 } from '../../api/client'
 
@@ -170,7 +172,7 @@ const SAMPLE_DOCUMENT_TEXTS: Record<string, DocumentSection[]> = {
   ],
 }
 
-export default function PolicyManagementPage({ currentUser: _currentUser, onNavigate }: Props) {
+export default function PolicyManagementPage({ currentUser, onNavigate }: Props) {
   const [policies, setPolicies] = useState<PolicyItem[]>(DEFAULT_DOCUMENTS)
   const [sites, setSites] = useState<DemoSite[]>(DEMO_SITES)
   const [isLoading, setIsLoading] = useState(true)
@@ -182,6 +184,12 @@ export default function PolicyManagementPage({ currentUser: _currentUser, onNavi
   const [docSections, setDocSections] = useState<DocumentSection[]>([])
   const [isLoadingDoc, setIsLoadingDoc] = useState(false)
   const [docSearchQuery, setDocSearchQuery] = useState('')
+
+  // Delete State
+  const [policyToDelete, setPolicyToDelete] = useState<PolicyItem | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   // Upload modal state
   const [isUploadOpen, setIsUploadOpen] = useState(false)
@@ -197,6 +205,11 @@ export default function PolicyManagementPage({ currentUser: _currentUser, onNavi
   const [ingestStep, setIngestStep] = useState('')
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null)
+
+  const isAdmin = useMemo(() => {
+    if (!currentUser) return true
+    return currentUser.role?.toLowerCase() === 'admin'
+  }, [currentUser])
 
   const loadData = async () => {
     setIsLoading(true)
@@ -261,6 +274,31 @@ export default function PolicyManagementPage({ currentUser: _currentUser, onNavi
       )
     } finally {
       setIsLoadingDoc(false)
+    }
+  }
+
+  // Delete Policy Action
+  const handleDeletePolicy = async () => {
+    if (!policyToDelete) return
+    setIsDeleting(true)
+    setDeleteError(null)
+
+    try {
+      await deletePolicyApi(policyToDelete.id).catch(() => ({}))
+
+      setPolicies((prev) => prev.filter((p) => p.id !== policyToDelete.id))
+      setToastMessage(`Policy "${policyToDelete.title}" and its vector index were permanently deleted.`)
+
+      if (selectedDocForView?.id === policyToDelete.id) {
+        setSelectedDocForView(null)
+      }
+      setPolicyToDelete(null)
+
+      setTimeout(() => setToastMessage(null), 4000)
+    } catch (err: any) {
+      setDeleteError(err.message || 'Failed to delete policy document.')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -390,6 +428,22 @@ export default function PolicyManagementPage({ currentUser: _currentUser, onNavi
 
   return (
     <div className="space-y-6 p-6">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-xs font-medium text-emerald-800 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/50 dark:text-emerald-300">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>{toastMessage}</span>
+          </div>
+          <button
+            onClick={() => setToastMessage(null)}
+            className="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* Header banner */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-3">
@@ -686,6 +740,15 @@ export default function PolicyManagementPage({ currentUser: _currentUser, onNavi
                             <Sparkles className="h-3.5 w-3.5" />
                             Ask Agent
                           </button>
+                          {isAdmin && (
+                            <button
+                              onClick={() => setPolicyToDelete(policy)}
+                              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-2 text-xs text-slate-400 shadow-sm transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-red-900 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+                              title="Delete this policy document (Admin only)"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -772,6 +835,15 @@ export default function PolicyManagementPage({ currentUser: _currentUser, onNavi
                 >
                   <Download className="h-4 w-4" />
                 </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => setPolicyToDelete(selectedDocForView)}
+                    className="rounded-xl border border-slate-200 p-2 text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-slate-800 dark:text-slate-400 dark:hover:border-red-900 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+                    title="Delete this policy document (Admin only)"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                )}
                 <button
                   onClick={() => setSelectedDocForView(null)}
                   className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
@@ -866,6 +938,72 @@ export default function PolicyManagementPage({ currentUser: _currentUser, onNavi
               >
                 <Sparkles className="h-4 w-4" />
                 Ask Intelligence Agent About This Document
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {policyToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-950/50 dark:text-red-400">
+                <Trash2 className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  Delete Policy Document?
+                </h3>
+                <p className="text-xs text-slate-400">
+                  This action is permanent and restricted to Administrators.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-red-100 bg-red-50/60 p-4 text-xs text-slate-700 dark:border-red-900/30 dark:bg-red-950/20 dark:text-slate-300">
+              <p>
+                Are you sure you want to delete <strong className="font-semibold text-slate-900 dark:text-white">"{policyToDelete.title}"</strong>?
+              </p>
+              <p className="mt-2 text-slate-500 dark:text-slate-400">
+                This will delete the file (<code className="rounded bg-white/80 px-1 py-0.5 dark:bg-slate-800">{policyToDelete.source_file}</code>) and permanently purge all associated vector embeddings from PostgreSQL pgvector. AI Agent queries and automated compliance checks will no longer reference this standard.
+              </p>
+            </div>
+
+            {deleteError && (
+              <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-600 dark:bg-red-950/40 dark:text-red-400">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{deleteError}</span>
+              </div>
+            )}
+
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setPolicyToDelete(null)}
+                disabled={isDeleting}
+                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeletePolicy}
+                disabled={isDeleting}
+                className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2 text-xs font-semibold text-white shadow-md shadow-red-500/20 hover:bg-red-700 disabled:opacity-50"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    Confirm & Delete
+                  </>
+                )}
               </button>
             </div>
           </div>

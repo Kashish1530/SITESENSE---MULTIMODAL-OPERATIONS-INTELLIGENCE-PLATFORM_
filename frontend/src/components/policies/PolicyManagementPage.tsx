@@ -660,7 +660,6 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                 <tr>
                   <th className="px-6 py-3.5">Policy Document</th>
                   <th className="px-6 py-3.5">Facility</th>
-                  <th className="px-6 py-3.5">Version</th>
                   <th className="px-6 py-3.5">Effective Date</th>
                   <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
@@ -682,8 +681,13 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                             <FileText className="h-5 w-5" />
                           </div>
                           <div>
-                            <div className="font-semibold text-slate-900 dark:text-white">
-                              {policy.title}
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-slate-900 dark:text-white">
+                                {policy.title}
+                              </span>
+                              <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
+                                v{policy.version || '1.0'}
+                              </span>
                             </div>
                             <div className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-400">
                               <span className="font-mono">{policy.source_file}</span>
@@ -700,12 +704,6 @@ export default function PolicyManagementPage({ currentUser, onNavigate }: Props)
                         <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                           <Building2 className="h-3.5 w-3.5 text-slate-400" />
                           {facilityName}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
-                          v{policy.version || '1.0'}
                         </span>
                       </td>
 
